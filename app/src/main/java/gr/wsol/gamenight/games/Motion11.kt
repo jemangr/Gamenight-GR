@@ -224,6 +224,9 @@ fun DroneGame(host: GameHost) {
 
 /* ======================= 💣 Αφόπλισε τη βόμβα: ομαλή πάσα ======================= */
 object DefuseRules {
+    /** The tasks come from «Βρες 10» («Πες 10 …»): with the bomb in hand it's 3, as the rules say. */
+    fun three(task: String) = task.replaceFirst(Regex("\\b10\\b"), "3")
+
     const val MAX_TILT = 15.0
     const val MAX_JERK = 7.5f
 
@@ -288,7 +291,7 @@ fun DefuseGame(host: GameHost) {
             val frac = (tl / DefuseRules.MAX_TILT).toFloat().coerceIn(0f, 1f)
             Column(Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding().padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(14.dp)) {
                 Text(who, style = Type.h, color = colorOf(who))
-                Text(if (passing) t("Δώσ' το απαλά στον επόμενο!", "Hand it gently to the next!") else task?.t ?: "", style = Type.title, color = C.text, textAlign = TextAlign.Center)
+                Text(if (passing) t("Δώσ' το απαλά στον επόμενο!", "Hand it gently to the next!") else DefuseRules.three(task?.t ?: ""), style = Type.title, color = C.text, textAlign = TextAlign.Center)
                 Canvas(Modifier.fillMaxWidth().weight(1f)) {
                     val c = Offset(size.width / 2, size.height / 2); val R = minOf(size.width, size.height) * 0.42f
                     drawCircle(C.green.copy(alpha = 0.18f), R, c); drawCircle(C.green, R, c, style = Stroke(6f))

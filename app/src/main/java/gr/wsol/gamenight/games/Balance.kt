@@ -129,8 +129,10 @@ fun BalanceGame(host: GameHost) {
                 var lastSec = BalanceBall.SECONDS
                 while (true) {
                     val now = withFrameNanos { it }
-                    val dt = ((now - last) / 1e9f).coerceAtMost(0.05f); last = now
-                    elapsed += (dt * 1000).toLong()
+                    val real = (now - last) / 1e9f; last = now
+                    // the clock counts real time; only the physics step is capped when frames drop
+                    val dt = real.coerceAtMost(0.05f)
+                    elapsed += (real * 1000).toLong()
                     left = (BalanceBall.SECONDS * 1000L - elapsed).coerceAtLeast(0)
                     if (ball.step(tilt, dt)) { Sfx.wrong(); Sfx.pattern(200, 60, 200); lives[who] = (lives[who] ?: 1) - 1; phase = Bl.Hit; break }
                     pos = ball.pos

@@ -199,7 +199,7 @@ fun TabooGame(host: GameHost) {
         }
 
         TabooPhase.Over -> GameOver(game, host, tally, extra = if (coop) ({
-            val key = "taboo-coop-$seconds"
+            val key = "taboo-coop-$seconds-$each" // a record per length of game
             val record = remember { Store.record(key, coopTotal) }
             Panel {
                 Text(t("Μαζί βρήκατε $coopTotal", "Together you got $coopTotal"), style = Type.title, color = C.text)

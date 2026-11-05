@@ -184,7 +184,7 @@ fun RingRun(key: Int, onOver: (Int) -> Unit) {
             drawCircle(Color.White, sw * 0.45f, Offset(c.x + br * cos(g.ballA), c.y + br * sin(g.ballA)))
             drawCircle(Color.White.copy(alpha = 0.3f), 6f, c)
         }
-        Column { Hud(g.score, 1, t("αναπηδήσεις: ${g.bounces}", "bounces: ${g.bounces}")); ArcadeNote(t("Πάτα για να αλλάξει φορά ο δακτύλιος. Η μπίλια να πέφτει στα ήσυχα κομμάτια, όχι στα κόκκινα. Τα κίτρινα: +3.", "Tap to reverse the ring. Let the ball hit the calm parts, not the red ones. Yellow: +3.")) }
+        Column { Hud(g.score, 1, t("αναπηδήσεις: ${g.bounces}", "bounces: ${g.bounces}")); ArcadeNote(t("Πάτα για να αλλάξει φορά ο δακτύλιος. Η μπίλια να πέφτει στα ήσυχα κομμάτια, όχι στα κόκκινα. Τα κίτρινα: +3 επιπλέον.", "Tap to reverse the ring. Let the ball hit the calm parts, not the red ones. Yellow: +3 extra.")) }
     }
 }
 
@@ -274,7 +274,7 @@ fun LaserRun(key: Int, onOver: (Int) -> Unit) {
             val m = pt(g.r + 0.5f, g.c + 0.5f)
             drawRoundRect(C.cyan, Offset(m.x - th * 0.3f, m.y - th * 0.75f), Size(th * 0.6f, th * 0.75f), CornerRadius(6f))
         }
-        Column { Hud(g.score, 1, "❤️".repeat(g.lives.coerceAtLeast(0))); ArcadeNote(t("Σύρε διαγώνια για ένα κελί. Φύγε από τη γραμμή που αναβοσβήνει· μάζεψε τους κίτρινους πυρήνες πριν σκάσουν.", "Swipe diagonally to move one cell. Leave the flashing line; grab the yellow cores before they blow.")) }
+        Column { Hud(g.score, 1, "❤️".repeat(g.lives.coerceAtLeast(0))); ArcadeNote(t("Σύρε διαγώνια για ένα κελί. Φύγε από τη γραμμή που αναβοσβήνει: το λέιζερ τελειώνει το παιχνίδι. Μάζεψε τους κίτρινους πυρήνες πριν σκάσουν (κάθε πυρήνας που σκάει τρώει μία καρδιά).", "Swipe diagonally to move one cell. Leave the flashing line: the laser ends the game. Grab the yellow cores before they blow (each core that blows costs a heart).")) }
     }
 }
 
