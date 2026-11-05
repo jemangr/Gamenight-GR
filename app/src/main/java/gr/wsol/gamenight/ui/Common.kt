@@ -40,6 +40,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.withFrameNanos
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -227,11 +228,12 @@ fun rememberCountdown(seconds: Int, running: Boolean, key: Any? = Unit, tickLast
     gr.wsol.gamenight.chaos.TimedScreen(running && left > 0)
     LaunchedEffect(key, running) {
         if (!running) return@LaunchedEffect
-        var last = System.nanoTime()
+        // the time of the frames (Compose's clock): real time on the phone, and the tests can move it on
+        var last = withFrameNanos { it }
         var lastSec = (left / 1000).toInt()
         while (left > 0) {
             delay(50)
-            val now = System.nanoTime()
+            val now = withFrameNanos { it }
             left = (left - (now - last) / 1_000_000).coerceAtLeast(0)
             last = now
             val s = ((left + 999) / 1000).toInt()

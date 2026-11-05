@@ -66,6 +66,12 @@ private enum class H { Intro, Setup, Deal, Night, Morning, Day, Hunter, Talk, Vo
 
 /** Each step of the night lasts at least this long, so nobody can tell from the time which roles are still in. */
 private const val STEP_MS = 9000L
+/**
+ * After a role has chosen: its «close your eyes» and then silence, before the next role is woken.
+ * The one who chose has time to put the phone back in the middle and close their eyes, so they
+ * don't see (or hear right next to them) who takes it next.
+ */
+private const val SLEEP_MS = 7000L
 
 @Composable
 fun HouseGame(host: GameHost) {
@@ -97,7 +103,9 @@ fun HouseGame(host: GameHost) {
         ), players.size >= 4) { phase = H.Setup }
 
         H.Setup -> Page(t("🏚️ Οι ρόλοι", "🏚️ The roles"), onBack = { phase = H.Intro }, bottom = {
-            val ok = setup.size() <= players.size && setup.zombies + (if (setup.leader) 1 else 0) >= 1
+            val z = setup.zombies + (if (setup.leader) 1 else 0)
+            // the zombies must start fewer than the rest, or the game ends after the first night
+            val ok = setup.size() <= players.size && z >= 1 && z < players.size - z
             BigButton(t("Μοίρασε τους ρόλους", "Deal the roles"), {
                 e = HouseEngine(players, setup); gameNo++; last = null; tally.bySide.clear(); phase = H.Deal
             }, color = C.ghost, enabled = ok)
@@ -150,7 +158,10 @@ fun HouseGame(host: GameHost) {
         H.Day -> {
             QuitGuard(host)
             val g = e!!; val r = last!!
-            val line = remember(g.night) { r.eaten?.let { HouseTexts.eaten(it) } ?: HouseTexts.nobody() }
+            val line = remember(g.night) {
+                (r.eaten?.let { HouseTexts.eaten(it) } ?: HouseTexts.nobody(g.ghosts.isNotEmpty())) +
+                    r.alsoLeft.joinToString("") { t(" Μαζί του έφυγε από αγάπη και ο/η $it.", " $it left with them, out of love.") }
+            }
             LaunchedEffect(g.night) { Narrator.say(HouseTexts.lightsOn() + " " + line) }
             Announce(if (r.eaten != null) "👻" else "🕯️", r.eaten ?: t("Κανείς", "Nobody"), line, t("Συνέχεια", "Continue"), C.ghost) { next(H.Talk) }
         }
@@ -185,7 +196,7 @@ fun HouseGame(host: GameHost) {
         H.Out -> {
             QuitGuard(host)
             val p = votedOut
-            val line = remember(e!!.night, p) { p?.let { HouseTexts.out(it) } ?: HouseTexts.tie() }
+            val line = remember(e!!.night, p) { (p?.let { HouseTexts.out(it) } ?: HouseTexts.tie()) + e!!.alsoLeftByVote.joinToString("") { t(" Μαζί έφυγε από αγάπη και ο/η $it.", " $it left too, out of love.") } }
             LaunchedEffect(line) { Narrator.say(line) }
             Announce(if (p == null) "🤝" else "🚪", p ?: t("Ισοψηφία", "A tie"), line, t("Συνέχεια", "Continue"), C.ghost) { next(H.Night) }
         }
@@ -193,7 +204,7 @@ fun HouseGame(host: GameHost) {
         H.Over -> {
             val g = e!!
             remember(gameNo) {
-                g.points().forEach { (p, v) -> tally.add(host, listOf(p), v) }
+                tally.addAll(host, g.points())
                 host.log(t("Στοιχειωμένο σπίτι: ", "Haunted house: ") + winnerText(g))
                 Sfx.win(); Narrator.say(winnerText(g))
             }
@@ -246,7 +257,7 @@ private fun NightScreen(g: HouseEngine, gameNo: Int, onDone: (NightResult) -> Un
     LaunchedEffect(minDone, chosen, active) {
         if (minDone && (chosen || !active)) {
             step?.let { Narrator.say(HouseTexts.sleep(it)) }
-            delay(1800)
+            delay(SLEEP_MS)
             if (i + 1 < steps.size) i++ else onDone(g.resolveNight(acts))
         }
     }
@@ -279,7 +290,8 @@ private fun NightScreen(g: HouseEngine, gameNo: Int, onDone: (NightResult) -> Un
             }
             Role.Healer -> {
                 Body(t("Ποιον προστατεύεις; (Όχι τον ίδιο δύο φορές στη σειρά.)", "Whom do you protect? (Not the same twice in a row.)"), color = C.text)
-                g.healable().forEach { p -> GhostButton(p, { acts = acts.copy(protect = p); chosen = true }, Modifier.fillMaxWidth(), color = C.ghost) }
+                // everyone is listed (last night's one greyed), so a peek shows nothing about who was guarded
+                g.alive.forEach { p -> GhostButton(p, { acts = acts.copy(protect = p); chosen = true }, Modifier.fillMaxWidth(), color = C.ghost, enabled = p != g.lastGuarded) }
             }
             Role.Mage -> {
                 var seen by remember(g.night) { mutableStateOf<String?>(null) }

@@ -134,7 +134,9 @@ data class TBoard(val kind: TavliKind, val pts: List<Pt>, val bar: List<Int> = l
         if (first.isEmpty()) return emptyList()
         val memo = HashMap<Pair<TBoard, List<Int>>, Int>()
         fun depth(b: TBoard, left: List<Int>): Int {
-            if (left.isEmpty() || b.winner != null) return 0
+            if (left.isEmpty()) return 0
+            // a move that wins the game counts as using every die left (nothing is left to play)
+            if (b.winner != null) return left.size
             val key = b to left.sorted()
             memo[key]?.let { return it }
             var best = 0

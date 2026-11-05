@@ -316,7 +316,7 @@ fun InterroGame(host: GameHost) {
         Interro11.Intro -> Intro(game, host, listOf(
             t("🕵️ «Ανακρίνετε το AI»: το AI παίζει έναν χαρακτήρα που κρύβει ένα μυστικό. Με τη σειρά, κάνετε ερωτήσεις (γράφοντας). Όταν νομίζετε ότι το βρήκατε, το λέτε.", "🕵️ «Question the AI»: the AI plays a character hiding a secret. In turn, you type questions. When you think you've got it, say it."),
             t("${InterroRules.QUESTIONS} ερωτήσεις και ${InterroRules.STRIKES} λάθος μαντεψιές. Αν το βρείτε, όλοι +1 και +2 όποιος το είπε.", "${InterroRules.QUESTIONS} questions and ${InterroRules.STRIKES} wrong guesses. Solve it: everyone +1, +2 to whoever said it."),
-            t("🔦 «Το AI ανακρίνει»: ένας ύποπτος μαθαίνει κρυφά αν είναι ένοχος (τότε λέει ψέματα) ή αθώος. Το AI τον ρωτάει, εκείνος απαντά δυνατά και γράφει την απάντηση. Μετά ψηφίζετε κι εσείς κι το AI.", "🔦 «The AI questions»: a suspect learns in secret if they're guilty (then they lie) or innocent. The AI asks, they answer out loud and type it. Then you and the AI give a verdict."),
+            t("🔦 «Το AI ανακρίνει»: ένας ύποπτος μαθαίνει κρυφά αν είναι ένοχος (τότε λέει ψέματα) ή αθώος. Το AI τον ρωτάει, εκείνος απαντά δυνατά και γράφει την απάντηση. Μετά ψηφίζετε κι εσείς και το AI.", "🔦 «The AI questions»: a suspect learns in secret if they're guilty (then they lie) or innocent. The AI asks, they answer out loud and type it. Then you and the AI give a verdict."),
             t("Εκεί: σωστή ψήφος +1· ο ύποπτος +1 για κάθε λάθος ψήφο και +2 αν ξεγελάσει το AI.", "There: right vote +1; the suspect +1 per wrong vote and +2 for fooling the AI."),
         ), AiGames.ready(), {
             if (!AiGames.ready()) AiNeeded()
@@ -393,11 +393,14 @@ fun InterroGame(host: GameHost) {
                 scope.launch {
                     val r = AiGames.ask(t("Είσαι ένας αστείος δικαστής ανακρίσεων.", "You are a funny judge of interrogations."), InterroRules.verdictPrompt(transcript()))
                     val o = (r as? AiResult.Ok)?.let { AiGames.parse(it.text) }
-                    aiGuilty = AiGames.bool(o, "guilty") ?: kotlin.random.Random.nextBoolean(); say = AiGames.str(o, "why"); busy = false
+                    // no answer from the AI: no AI verdict (and no bonus for fooling it), never a random one
+                    aiGuilty = AiGames.bool(o, "guilty"); say = AiGames.str(o, "why"); busy = false
                     val g = t("Ένοχος", "Guilty")
                     var wrong = 0
-                    v.forEach { (p, c) -> if ((c == g) == guilty) tally.add(host, listOf(p), 1) else wrong++ }
-                    tally.add(host, listOf(suspect), wrong + if (aiGuilty != guilty) 2 else 0)
+                    val right = v.filter { (_, c) -> (c == g) == guilty }.keys
+                    wrong = v.size - right.size
+                    tally.add(host, right, 1)
+                    tally.add(host, listOf(suspect), wrong + if (aiGuilty != null && aiGuilty != guilty) 2 else 0)
                     host.log(t("Ανακριτής: $suspect ήταν ${if (guilty) "ένοχος" else "αθώος"}", "Interrogator: $suspect was ${if (guilty) "guilty" else "innocent"}"))
                 }
             }
@@ -410,7 +413,7 @@ fun InterroGame(host: GameHost) {
                 BigButton(if (round + 1 < n.names.size) t("Επόμενος ύποπτος", "Next suspect") else t("Αποτελέσματα", "Results"), { if (round + 1 < n.names.size) { round++; loadSuspect() } else phase = Interro11.Over }, color = color)
             }) {
                 Text(suspect + ": " + if (guilty) t("ΕΝΟΧΟΣ", "GUILTY") else t("ΑΘΩΟΣ", "INNOCENT"), style = Type.big, color = if (guilty) C.red else C.green)
-                Panel { Label(t("ΤΟ AI ΕΙΠΕ", "THE AI SAID")); Text(if (aiGuilty == true) t("Ένοχος", "Guilty") else t("Αθώος", "Innocent"), style = Type.h, color = color); if (say.isNotBlank()) Body(say, color = C.text) }
+                Panel { Label(t("ΤΟ AI ΕΙΠΕ", "THE AI SAID")); Text(when (aiGuilty) { true -> t("Ένοχος", "Guilty"); false -> t("Αθώος", "Innocent"); null -> t("Δεν απάντησε (χωρίς bonus)", "No answer (no bonus)") }, style = Type.h, color = color); if (say.isNotBlank()) Body(say, color = C.text) }
                 Panel { Tally11.counts(votes).forEach { (c, k) -> Row { Text(c, style = Type.body, color = C.text, modifier = Modifier.weight(1f)); Text("$k", style = Type.h, color = C.text) } } }
             }
         }
@@ -849,7 +852,7 @@ fun AiqGame(host: GameHost) {
             QuitGuard(host)
             val byAnswer = answers.entries.associate { it.value to it.key }
             remember(round) {
-                AiqRules.points(votes, aiText, byAnswer).forEach { (p, v) -> tally.add(host, listOf(p), v) }
+                tally.addAll(host, AiqRules.points(votes, aiText, byAnswer))
                 if (votes.values.none { it == aiText }) host.log(t("Ποιος είναι το AI: το AI ξεγέλασε όλους με «$aiText»", "Who is the AI: the AI fooled everyone with «$aiText»"))
                 0
             }
@@ -937,7 +940,7 @@ fun OracleGame(host: GameHost) {
         }
 
         Oracle11.Vote -> { QuitGuard(host); SecretVote(n.names, preds.keys.toList(), key = gameNo, question = t("Ποια πρόβλεψη ήταν η πιο αστεία;", "Which prediction was the funniest?")) { v ->
-            Tally11.tops(v).forEach { tally.add(host, listOf(it), 1) }
+            tally.add(host, Tally11.tops(v), 1)
             host.log(t("Μάντης: η πιο αστεία για ${Tally11.tops(v).joinToString()}", "Oracle: funniest for ${Tally11.tops(v).joinToString()}"))
             phase = Oracle11.Over
         } }

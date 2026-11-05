@@ -144,6 +144,8 @@ class OrbitGame(private val rnd: Random = Random) {
 
     fun release() { hold = null }
 
+    private companion object { const val GRAVITY = 0.5f }
+
     fun step(dt: Float) {
         if (over) return
         val speed = (0.45f + 0.02f * best).coerceAtMost(0.9f)
@@ -154,8 +156,11 @@ class OrbitGame(private val rnd: Random = Random) {
             vel = Offset(-sin(ang) * dirSign, cos(ang) * dirSign) * speed
             pos = np
         } else {
-            val v = hypot(vel.x, vel.y).coerceAtLeast(0.01f)
-            vel = vel * (speed / v)
+            // free flight slows down and falls back (gravity): only holding the anchors takes you up,
+            // so doing nothing can't beat playing
+            vel += Offset(0f, -GRAVITY * dt)
+            val v = hypot(vel.x, vel.y)
+            if (v > speed) vel = vel * (speed / v)
             pos += vel * dt
         }
         if (pos.y > best) best = pos.y
@@ -239,7 +244,8 @@ fun PathRun(key: Int, onOver: (Int) -> Unit) {
     var round by remember(key) { mutableIntStateOf(0) }
     var traced by remember(key) { mutableStateOf(listOf<Int>()) }
     var flash by remember(key) { mutableStateOf<Boolean?>(null) }
-    LaunchedEffect(key, round) { showing = true; delay(g.showMs); showing = false }
+    // the new path waits for the green/red flash of the last trace (400 ms), then shows for its full time
+    LaunchedEffect(key, round) { showing = true; if (round > 0) delay(450); delay(g.showMs); showing = false }
     LaunchedEffect(flash) { if (flash != null) { delay(400); flash = null } }
     ArcadeBody {
         Canvas(Modifier.fillMaxSize().background(Color(0xFF07110C)).pointerInput(key, round, showing) {
@@ -258,6 +264,7 @@ fun PathRun(key: Int, onOver: (Int) -> Unit) {
                 val r = i / 5; val c = i % 5
                 val lit = (showing && i in g.path) || i in traced
                 val color = when { flash == true -> C.green; flash == false -> C.red; lit -> C.green; else -> Color(0xFF16261C) }
+                // (while the flash lasts the path isn't drawn: it starts right after, see the LaunchedEffect above)
                 drawRoundRect(color, Offset(c * cell + 6f, top + r * cell + 6f), Size(cell - 12f, cell - 12f), androidx.compose.ui.geometry.CornerRadius(18f))
             }
             if (showing && g.path.isNotEmpty()) { val s = g.path.first(); drawCircle(Color.White, cell * 0.15f, Offset((s % 5 + 0.5f) * cell, top + (s / 5 + 0.5f) * cell)) }

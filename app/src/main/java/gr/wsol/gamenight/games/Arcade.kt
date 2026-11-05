@@ -35,12 +35,13 @@ import gr.wsol.gamenight.ui.PassTo
 import gr.wsol.gamenight.ui.Seg
 import gr.wsol.gamenight.ui.Type
 
-/** The group's high-score showdown: +3, +2, +1 to the best three runs. */
+/**
+ * The group's high-score showdown: +3, +2, +1 to the best three runs. Equal scores get the same
+ * points (two firsts: +3 each, then the next one is third: +1).
+ */
 object Showdown {
-    fun points(scores: List<Pair<String, Int>>): Map<String, Int> {
-        val sorted = scores.sortedByDescending { it.second }
-        return sorted.take(3).mapIndexed { i, (p, _) -> p to (3 - i) }.toMap()
-    }
+    fun points(scores: List<Pair<String, Int>>): Map<String, Int> =
+        scores.mapNotNull { (p, s) -> val rank = scores.count { it.second > s }; if (rank < 3) p to (3 - rank) else null }.toMap()
 }
 
 private enum class AP { Intro, Pass, Run, Over, Podium }

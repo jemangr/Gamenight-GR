@@ -144,7 +144,8 @@ fun WitnessScene(s: WScene, modifier: Modifier = Modifier) {
         if (s.night) { drawCircle(Color(0xFFF5F0C8), w * 0.07f, Offset(w * 0.85f, h * 0.1f)); drawCircle(sky, w * 0.06f, Offset(w * 0.82f, h * 0.09f)) }
         else drawCircle(Color(0xFFFFD54F), w * 0.07f, Offset(w * 0.85f, h * 0.1f))
         repeat(s.clouds) { i -> val cx = w * (0.15f + i * 0.25f); val cy = h * (0.08f + (i % 2) * 0.05f); listOf(-0.04f, 0f, 0.04f).forEach { dx -> drawCircle(Color.White.copy(alpha = if (s.night) 0.35f else 0.9f), w * 0.04f, Offset(cx + dx * w, cy)) } }
-        repeat(s.birds) { i -> val bx = w * (0.1f + i * 0.13f); val by = h * (0.2f + (i % 3) * 0.04f); val p = Path().apply { moveTo(bx - w * 0.025f, by); quadraticTo(bx - w * 0.012f, by - h * 0.015f, bx, by); quadraticTo(bx + w * 0.012f, by - h * 0.015f, bx + w * 0.025f, by) }; drawPath(p, Color(0xFF333333), style = Stroke(w * 0.006f)) }
+        // the birds fly on the right of the sky, away from the house and its roof (drawn later, they would hide them)
+        repeat(s.birds) { i -> val bx = w * (0.54f + i * 0.085f); val by = h * (0.2f + (i % 3) * 0.04f); val p = Path().apply { moveTo(bx - w * 0.025f, by); quadraticTo(bx - w * 0.012f, by - h * 0.015f, bx, by); quadraticTo(bx + w * 0.012f, by - h * 0.015f, bx + w * 0.025f, by) }; drawPath(p, Color(0xFF333333), style = Stroke(w * 0.006f)) }
         // Ground
         val ground = when (s.place) { 1 -> Color(0xFFF2D59B); 2 -> Color(0xFF7CC56B); else -> Color(0xFFB9B9B9) }
         if (s.place == 1) drawRect(Color(0xFF3C8DD9), Offset(0f, h * 0.52f), Size(w, h * 0.1f))

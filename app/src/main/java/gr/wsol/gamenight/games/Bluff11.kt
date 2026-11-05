@@ -3,6 +3,9 @@ package gr.wsol.gamenight.games
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -145,7 +148,7 @@ fun ClosestGame(host: GameHost) {
             QuitGuard(host)
             val q = card ?: return
             val pts = remember(round) { ClosestRules.points(q.n, guesses.toMap(), bets.toMap()).also { m ->
-                m.forEach { (p, v) -> tally.add(host, listOf(p), v) }
+                tally.addAll(host, m)
                 host.log(t("Το κοντινότερο: ${m.maxByOrNull { it.value }?.key}", "Closest wins: ${m.maxByOrNull { it.value }?.key}"))
             } }
             Page(q.q, onBack = null, bottom = {
@@ -185,7 +188,7 @@ fun QuizGame(host: GameHost) {
     val game = Games.byId("quiz")!!
     val ctx = LocalContext.current
     val n = Store.night
-    val sides = remember { n.sides() }
+    val sides = remember { n.playingSides() }
     var phase by remember { mutableStateOf(Quiz11.Intro) }
     var rounds by remember { mutableIntStateOf(10) }
     var round by remember { mutableIntStateOf(0) }
@@ -226,7 +229,12 @@ fun QuizGame(host: GameHost) {
                     val can = buzzed == null && shown == null && s !in locked
                     Box(Modifier.align(corners[k]).padding(10.dp).fillMaxWidth(0.46f).heightIn(min = 96.dp).clip(RoundedCornerShape(22.dp))
                         .background(if (buzzed == s) c else c.copy(alpha = if (can) 0.35f else 0.12f)).border(2.dp, c, RoundedCornerShape(22.dp))
-                        .clickable(enabled = can, role = Role.Button) { buzzed = s; Sfx.buzz(80, true); Sfx.tap() }.rotate(if (top) 180f else 0f),
+                        // the buzzer fires when the finger touches it (not when it lifts): the fastest finger wins
+                        .pointerInput(can) {
+                            if (!can) return@pointerInput
+                            awaitEachGesture { awaitFirstDown(requireUnconsumed = false); if (buzzed == null && shown == null) { buzzed = s; Sfx.buzz(80, true); Sfx.tap() } }
+                        }
+                        .clickable(enabled = can, role = Role.Button) { if (buzzed == null) { buzzed = s; Sfx.buzz(80, true); Sfx.tap() } }.rotate(if (top) 180f else 0f),
                         contentAlignment = Alignment.Center) {
                         Text(n.label(s) + if (s in locked) " ✗" else "", color = if (buzzed == s) Color.Black else C.text, fontWeight = FontWeight.Black, fontSize = 18.sp, textAlign = TextAlign.Center)
                     }

@@ -116,7 +116,8 @@ class Playthrough11Test {
     @Test fun whoOfUs() {
         // everyone votes for Γιώργος: everyone who voted for the top one gets +1, 8 questions
         play("whois", pick = { l -> l.firstOrNull { it == "Γιώργος" } ?: forward(main)(l) })
-        assertEquals(8 * 4, awards.sumOf { it.second })
+        // one award per value: the voters of a question together (so in teams a team gets it once)
+        assertEquals(8 * 4, awards.sumOf { it.first.size * it.second })
         assertTrue(awards.all { it.second == 1 })
     }
 

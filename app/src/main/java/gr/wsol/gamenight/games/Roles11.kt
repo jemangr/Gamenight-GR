@@ -50,14 +50,16 @@ object WhisperRules {
         players.shuffled(rnd).take(if (two && players.size >= 6) 2 else 1)
 
     /**
-     * Caught suspects (on top of the vote): +1 to each who voted for them. A suspect who wasn't
-     * caught and said the word: +3. [said] = suspects the group agrees said their word.
+     * As the rules say: +1 to everyone who voted for a suspect. A suspect is caught when on top of
+     * the vote (with two suspects: with 2 votes or more); one who wasn't caught and said the word: +3.
+     * [said] = suspects the group agrees said their word.
      */
     fun points(votes: Map<String, String>, suspects: List<String>, said: Set<String>): Map<String, Int> {
         val tops = Tally11.tops(votes)
+        fun caught(s: String) = if (suspects.size == 1) s in tops else votes.values.count { it == s } >= 2
         val out = mutableMapOf<String, Int>()
-        votes.forEach { (v, c) -> if (c in suspects && c in tops) out[v] = (out[v] ?: 0) + 1 }
-        suspects.forEach { s -> if (s !in tops && s in said) out[s] = (out[s] ?: 0) + 3 }
+        votes.forEach { (v, c) -> if (c in suspects && c != v) out[v] = (out[v] ?: 0) + 1 }
+        suspects.forEach { s -> if (!caught(s) && s in said) out[s] = (out[s] ?: 0) + 3 }
         return out
     }
 }
@@ -131,7 +133,7 @@ fun WhisperGame(host: GameHost) {
             val todo = sus.filter { it !in said }
             Page(t("Ποιος ήταν;", "Who was it?"), onBack = null, bottom = {
                 BigButton(t("Αποτελέσματα γύρου", "Round results"), {
-                    WhisperRules.points(votes, sus, said).forEach { (p, v) -> tally.add(host, listOf(p), v) }
+                    tally.addAll(host, WhisperRules.points(votes, sus, said))
                     host.log(t("Ψίθυρος: ${sus.joinToString { "$it («${word[it]}»)" }}", "Whisper: ${sus.joinToString { "$it («${word[it]}»)" }}"))
                     phase = Whisper11.Result
                 }, color = game.color)
@@ -210,7 +212,7 @@ fun SpyGame(host: GameHost) {
 
     fun finish(win: Boolean) {
         spyWins = win
-        SpyRules.points(n.names, spy, win).forEach { (p, v) -> tally.add(host, listOf(p), v) }
+        tally.addAll(host, SpyRules.points(n.names, spy, win))
         if (win) host.stat(spy, "sneaky")
         host.log(t("Κατάσκοπος: $spy · ${place?.place}", "Spy: $spy · ${place?.place}"))
         Sfx.win(); phase = Spy11.Over
@@ -372,7 +374,7 @@ fun LieTowerGame(host: GameHost) {
 
         Tower11.Vote -> { QuitGuard(host); SecretVote(n.names, n.names, key = round, question = t("Ποιος είπε ψέμα;", "Who lied?")) { v ->
             votes = v; Sfx.end()
-            TowerRules.points(v, liars).forEach { (p, pts) -> tally.add(host, listOf(p), pts) }
+            tally.addAll(host, TowerRules.points(v, liars))
             liars.forEach { host.stat(it, "sneaky") }
             host.log(t("Πύργος από ψέματα: ψεύτες ${liars.joinToString()}", "Tower of lies: liars ${liars.joinToString()}"))
             phase = Tower11.Result

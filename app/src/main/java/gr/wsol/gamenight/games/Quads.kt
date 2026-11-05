@@ -89,7 +89,7 @@ fun QuadsGame(host: GameHost) {
     val game = Games.byId("quads")!!
     val ctx = LocalContext.current
     val n = Store.night
-    val sides = n.sides()
+    val sides = n.playingSides()
     var versus by remember { mutableStateOf(sides.size >= 2) }
     var phase by remember { mutableStateOf(QPhase.Intro) }
     val deck = remember { Deck("quads", Cards.get(ctx).quads, { it.a }) }
@@ -117,7 +117,10 @@ fun QuadsGame(host: GameHost) {
                 Seg(listOf(false to t("Μαζί", "Together"), true to t("Κόντρα", "Versus")), versus, { versus = it })
                 Text(t("${deck.size} γρίφοι", "${deck.size} puzzles"), style = Type.small, color = C.dim)
             }) else null,
-        ) { turn = 0; results.clear(); newBoard(); phase = if (versus) QPhase.Pass else QPhase.Play }
+        ) {
+            // in versus each side gets its puzzle on its own «Start» (not one here, that would be wasted)
+            turn = 0; results.clear(); if (versus) phase = QPhase.Pass else { newBoard(); phase = QPhase.Play }
+        }
 
         QPhase.Pass -> {
             QuitGuard(host)

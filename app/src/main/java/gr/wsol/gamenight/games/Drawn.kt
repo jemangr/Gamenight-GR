@@ -164,7 +164,7 @@ fun FakeArtistGame(host: GameHost) {
 }
 
 private fun finishFake(host: GameHost, tally: Tally, players: List<String>, faker: String, caught: Boolean, guessed: Boolean, word: Word) {
-    FakeRules.points(players, faker, caught, guessed).forEach { (p, v) -> tally.add(host, listOf(p), v) }
+    tally.addAll(host, FakeRules.points(players, faker, caught, guessed))
     if (!caught || guessed) host.stat(faker, "sneaky")
     host.log(t("Ένας λείπει: «${word.w}», απατεώνας $faker", "One is missing: «${word.w}», faker $faker"))
     Sfx.win()
@@ -222,7 +222,8 @@ fun TelephoneGame(host: GameHost) {
                     Text((prev as? Page2.Text)?.s ?: "", style = Type.title, color = C.text)
                     Text(if (started) "${(left + 999) / 1000}″" else t("Ο χρόνος ξεκινά με την πρώτη γραμμή", "The clock starts with the first line"), style = Type.small, color = C.lime)
                     DrawPad(lines, color, enabled = !timeUp, onStart = { started = true }) { lines.add(it) }
-                    BigButton(t("Έτοιμο", "Done"), { pages.add(Page2.Pic(who, lines.toList())); if (step + 1 < order.size) step++ else phase = TP.Show }, color = C.lime, enabled = lines.isNotEmpty())
+                    // when the time is up the drawing goes on as it is (even empty), or the game would be stuck
+                    BigButton(t("Έτοιμο", "Done"), { pages.add(Page2.Pic(who, lines.toList())); if (step + 1 < order.size) step++ else phase = TP.Show }, color = C.lime, enabled = lines.isNotEmpty() || timeUp)
                 } else {
                     var text by remember(step) { mutableStateOf("") }
                     if (step == 0) {
@@ -263,7 +264,7 @@ fun TelephoneGame(host: GameHost) {
                         pages.filterIsInstance<Page2.Pic>().map { it.who }.distinct().forEach { p -> Chip(p, selected = best == p, color = C.lime, onClick = { best = if (best == p) null else p }) }
                     }
                     pages.filterIsInstance<Page2.Pic>().forEach { pic ->
-                        GhostButton(t("Κοινοποίηση σχεδίου: ${pic.who}", "Share drawing: ${pic.who}"), { Drawing.share(ctx, pic.lines, "Gamenight GR · Χαλασμένο τηλέφωνο") }, Modifier.fillMaxWidth())
+                        GhostButton(t("Κοινοποίηση σχεδίου: ${pic.who}", "Share drawing: ${pic.who}"), { Drawing.share(ctx, pic.lines, "Gamenight GR · " + t("Χαλασμένο τηλέφωνο", "Broken telephone")) }, Modifier.fillMaxWidth())
                     }
                 }
             }

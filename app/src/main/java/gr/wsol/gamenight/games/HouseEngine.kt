@@ -57,6 +57,8 @@ data class NightResult(
     val incense: Boolean,
     val mageSaw: Pair<String, Boolean>?,
     val mediumSaw: Pair<String, Role>?,
+    /** Who left with the eaten one (the lover): the morning says it too. */
+    val alsoLeft: List<String> = emptyList(),
 )
 
 /**
@@ -104,9 +106,13 @@ class HouseEngine(val players: List<String>, setup: HouseSetup, rnd: Random = Ra
 
     /** Who the healer may protect tonight (not the same as last night). */
     fun healable() = alive.filter { it != lastProtected }
+    val lastGuarded: String? get() = lastProtected
 
     fun resolveNight(a: NightActions): NightResult {
         night++
+        // what the mage saw on screen: before tonight's bite and exorcism change anything
+        val mage = a.look?.takeIf { has(Role.Mage) && it in alive }?.let { it to isZombie(it) }
+        val before = alive.toSet()
         val blocked = a.incense && !incenseUsed && has(Role.Granny)
         if (a.incense && has(Role.Granny)) incenseUsed = true
         val target = a.bite?.takeIf { it in alive && !blocked }
@@ -123,7 +129,8 @@ class HouseEngine(val players: List<String>, setup: HouseSetup, rnd: Random = Ra
             exorcistUsed = true
             if (role[a.exorcise] == Role.Zombie) { role[a.exorcise] = Role.Human; cured = a.exorcise }
         }
-        val mage = a.look?.takeIf { has(Role.Mage) && it in alive }?.let { it to isZombie(it) }
+        // bitten-and-infected and exorcised the same night: human again, so not «you're a zombie now»
+        if (cured != null && cured == infected) infected = null
         val medium = a.medium?.takeIf { has(Role.Medium) && it in ghosts }?.let { it to original[it]!! }
         story += t("Σκοτάδι $night: ", "Night $night: ") + listOfNotNull(
             if (blocked) t("η γιαγιά θύμιασε το σπίτι", "granny censed the house") else null,
@@ -135,7 +142,7 @@ class HouseEngine(val players: List<String>, setup: HouseSetup, rnd: Random = Ra
         ).joinToString(", ").ifEmpty { t("ησυχία", "quiet") }
         if (eaten != null) leave(eaten, byVote = false)
         decide()
-        return NightResult(eaten, infected, cured, saved, blocked, mage, medium)
+        return NightResult(eaten, infected, cured, saved, blocked, mage, medium, alsoLeft = (before - alive - setOfNotNull(eaten)).toList())
     }
 
     /** [p] leaves the house (eaten or thrown out): becomes a ghost, takes the lover along, and a hunter takes one. */
@@ -156,12 +163,17 @@ class HouseEngine(val players: List<String>, setup: HouseSetup, rnd: Random = Ra
         decide()
     }
 
+    /** Who left the house with the one voted out (the lover). */
+    var alsoLeftByVote: List<String> = emptyList(); private set
+
     /** The vote of the day; [votes] voter → choice, ghosts' votes included. Returns who leaves (null on a tie). */
     fun vote(votes: Map<String, String>): String? {
         votes.keys.filter { it in ghosts }.forEach { ghostVoteUsed += it }
+        val before = alive.toSet()
         val out = Votes.top(votes.filterValues { it in alive })
         if (out != null) { story += t("Η παρέα πέταξε έξω τον/την $out", "The group threw out $out"); leave(out, byVote = true) }
         else story += t("Ισοψηφία: δεν βγήκε κανείς", "A tie: nobody left")
+        alsoLeftByVote = (before - alive - setOfNotNull(out)).toList()
         decide()
         return out
     }

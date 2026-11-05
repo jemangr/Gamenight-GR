@@ -47,7 +47,8 @@ fun PlayersScreen() {
     val n = Store.night
     var name by remember { mutableStateOf("") }
     fun add() {
-        val v = name.trim().take(16)
+        // a leading «#» is how teams are named inside the app («#0», «#1»): never in a player's name
+        val v = name.trim().trimStart('#').trim().take(16)
         if (v.isEmpty() || n.players.size >= MAX_PLAYERS || n.players.any { it.name.equals(v, true) }) return
         val used = n.players.map { it.color }.toSet()
         val color = Palette.players.indices.firstOrNull { Palette.players[it] !in used }?.let { Palette.players[it] } ?: Palette.players[0]

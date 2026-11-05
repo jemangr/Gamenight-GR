@@ -115,7 +115,10 @@ fun CoreGame(host: GameHost) {
         CP.Podium -> {
             val ranked = runs.entries.filter { it.value.solved }.sortedWith(compareBy({ it.value.nodes }, { it.value.cycles }, { -it.value.robust }))
             remember(level.id) {
-                Showdown.points(ranked.mapIndexed { i, e -> e.key to (1000 - i) }).forEach { (p, v) -> tally.add(host, listOf(p), v) }
+                // equal results (nodes, cycles, robustness) share the same place
+                val key = { e: Map.Entry<String, *> -> runs[e.key]!!.let { Triple(it.nodes, it.cycles, -it.robust) } }
+                val score = ranked.map { e -> e.key to -ranked.map(key).distinct().indexOf(key(e)) }
+                tally.addAll(host, Showdown.points(score))
                 host.log(t("Πυρήνας ${level.id}: κόντρα", "Core ${level.id}: showdown"))
             }
             GameOver(game, host, tally, headline = t("Επίπεδο ${level.id}", "Level ${level.id}"), extra = {
