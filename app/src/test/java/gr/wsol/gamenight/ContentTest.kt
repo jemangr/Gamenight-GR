@@ -79,6 +79,17 @@ class ContentTest {
         assertTrue(el.missions.count { it.story } >= 25)
     }
 
+    @Test fun englishContentIsValid() {
+        val en = load("en")
+        assertTrue("en taboo ${en.taboo.size}", en.taboo.size >= 150)
+        assertEquals(emptySet<String>(), dupes(en.taboo.map { it.w }))
+        en.taboo.forEach { c -> assertEquals(c.w, 5, c.no.size); c.no.forEach { assertTrue("${c.w}: $it", Greek.fold(it) != Greek.fold(c.w)) } }
+        en.quads.forEach { p -> assertEquals(4, p.groups.size); assertEquals(16, p.groups.flatMap { it.words }.map { Greek.fold(it) }.toSet().size); p.groups.forEach { assertEquals(it.name, 4, it.words.size) } }
+        listOf(en.bomb, en.find10, en.related, en.song, en.phrases, en.penalties, en.gifts, en.curses, en.roasts).forEach { assertTrue(it.size >= 10); assertEquals(emptySet<String>(), dupes(it.map { p -> p.t })) }
+        en.mines.forEach { assertEquals(it.w, 3, it.mines.size) }
+        assertTrue(en.movies.size >= 50 && en.alien.size >= 100 && en.forehead.size >= 200 && en.facts.size >= 60 && en.scenes.size >= 40 && en.draw.size >= 100 && en.missions.size >= 40)
+    }
+
     @Test fun noCapitalAccentsInTitles() {
         // House rule: no Greek capitals with accents in all-caps text; in mixed case they're fine.
         el.quads.flatMap { it.groups }.forEach { assertTrue(it.name, it.name != it.name.uppercase() || it.name.none { c -> c in "ΆΈΉΊΌΎΏ" }) }

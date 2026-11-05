@@ -54,7 +54,10 @@ object Store {
     fun init(c: Context) {
         prefs = c.getSharedPreferences("gamenight", Context.MODE_PRIVATE)
         prefs.getString("night", null)?.let { s -> runCatching { json.decodeFromString(Night.serializer(), s) }.getOrNull()?.let { nightState = it } }
-        prefs.getString("settings", null)?.let { s -> runCatching { json.decodeFromString(Settings.serializer(), s) }.getOrNull()?.let { settingsState = it } }
+        val saved = prefs.getString("settings", null)
+        saved?.let { s -> runCatching { json.decodeFromString(Settings.serializer(), s) }.getOrNull()?.let { settingsState = it } }
+        // First start: English unless the phone is in Greek.
+        if (saved == null) settingsState = settingsState.copy(english = java.util.Locale.getDefault().language != "el")
         Lang.english = settingsState.english
     }
 

@@ -1,0 +1,249 @@
+@Animals
+Lion
+Elephant
+Giraffe
+Penguin
+Kangaroo
+Crocodile
+Turtle
+Dolphin
+Shark
+Octopus
+Owl
+Parrot
+Monkey
+Gorilla
+Zebra
+Hippo
+Rhino
+Camel
+Wolf
+Fox
+Bear
+Panda
+Koala
+Squirrel
+Hedgehog
+Rabbit
+Mouse
+Cat
+Dog
+Horse
+Donkey
+Goat
+Sheep
+Cow
+Pig
+Chicken
+Duck
+Bee
+Butterfly
+Spider
+Snail
+Frog
+Snake
+Bat
+Whale
+Seal
+Crab
+Jellyfish
+Peacock
+Flamingo
+@Jobs
+Doctor
+Dentist
+Teacher
+Police officer
+Firefighter
+Chef
+Waiter
+Pilot
+Taxi driver
+Hairdresser
+Baker
+Fisherman
+Farmer
+Electrician
+Plumber
+Engineer
+Architect
+Lawyer
+Judge
+Postman
+Lifeguard
+Referee
+Actor
+Singer
+Dancer
+Painter
+Photographer
+Journalist
+Clown
+Astronaut
+Scientist
+Vet
+Nurse
+Pharmacist
+Barista
+DJ
+Tailor
+Butcher
+Gardener
+Cleaner
+@Food
+Pizza
+Spaghetti
+Hamburger
+Hot dog
+Sushi
+Pancakes
+Omelette
+Toast
+Waffle
+Ice cream
+Chocolate
+Birthday cake
+Popcorn
+Watermelon
+Banana
+Strawberry
+Pineapple
+Orange
+Lemon
+Avocado
+Corn
+Potato
+Onion
+Garlic
+Chips
+Salad
+Soup
+Sandwich
+Doughnut
+Cheese
+Feta
+Moussaka
+Souvlaki
+Baklava
+Olives
+@Famous places
+Eiffel Tower
+Big Ben
+Statue of Liberty
+Great Wall of China
+Pyramids
+Colosseum
+Acropolis
+Santorini
+Mount Everest
+Niagara Falls
+Grand Canyon
+Taj Mahal
+Sydney Opera House
+Tower of Pisa
+Stonehenge
+Venice
+Hollywood
+Las Vegas
+Times Square
+Amazon rainforest
+North Pole
+Sahara
+Mount Olympus
+Disneyland
+London Eye
+@Myths and legends
+Zeus
+Hera
+Poseidon
+Athena
+Apollo
+Aphrodite
+Hermes
+Hercules
+Odysseus
+Achilles
+Medusa
+Minotaur
+Cyclops
+Pegasus
+Pandora
+Icarus
+Trojan Horse
+Mermaid
+Unicorn
+Dragon
+Vampire
+Werewolf
+Robin Hood
+King Arthur
+Santa Claus
+@Make the sound
+Train
+Ambulance
+Car horn
+Doorbell
+Alarm clock
+Vacuum cleaner
+Washing machine
+Motorbike
+Plane taking off
+Phone ringing
+Thunder
+Rain
+Wind
+Waves
+Church bell
+Sneeze
+Snoring
+Hiccups
+Cough
+Applause
+Birdsong
+Barking
+Meowing
+Mooing
+Rooster
+Bleating
+Neighing
+Frog
+Bee
+Lion
+@Films and series
+Titanic
+The Lion King
+Harry Potter
+The Lord of the Rings
+Star Wars
+Jurassic Park
+Shrek
+Frozen
+Toy Story
+Finding Nemo
+The Matrix
+Spider-Man
+Batman
+Rocky
+Jaws
+Pirates of the Caribbean
+Mamma Mia!
+Game of Thrones
+Friends
+Squid Game
+Stranger Things
+The Simpsons
+SpongeBob
+Tom and Jerry
+Sherlock
+Money Heist
+@18+
+!Mother-in-law
+!Hangover
+!Ex
+!Stingy
+!Gossip
+!Grumpy
+!Lazy
+!Drunk
+!Show-off
+!Party animal

@@ -1,0 +1,153 @@
+Coffee|Tea|drinks
+Sea|Swimming pool|places
+Cat|Dog|animals
+Pizza|Pie|food
+Beer|Wine|drinks
+Mountain|Hill|places
+Football|Basketball|sports
+Guitar|Violin|music
+Bus|Train|transport
+Plane|Helicopter|transport
+Bicycle|Motorbike|transport
+Orange|Tangerine|fruit
+Apple|Pear|fruit
+Watermelon|Melon|fruit
+Strawberry|Cherry|fruit
+Tomato|Pepper|vegetables
+Potato|Carrot|vegetables
+Ice cream|Frozen yoghurt|desserts
+Chocolate|Sweets|desserts
+Cake|Muffin|desserts
+Milk|Yoghurt|food
+Bread|Toast|food
+Honey|Jam|food
+Salt|Pepper|food
+Spoon|Fork|home
+Knife|Scissors|home
+Pan|Pot|home
+Fridge|Freezer|home
+Sofa|Armchair|home
+Pillow|Blanket|home
+Shower|Bath|home
+Toothbrush|Comb|home
+Soap|Shampoo|home
+Window|Door|home
+Balcony|Roof terrace|home
+Lift|Escalator|home
+Television|Computer|tech
+Phone|Tablet|tech
+Headphones|Speaker|tech
+Watch|Alarm clock|home
+Umbrella|Raincoat|clothes
+Shoes|Slippers|clothes
+Sunglasses|Glasses|clothes
+Cap|Beanie|clothes
+Gloves|Socks|clothes
+Skirt|Dress|clothes
+Jeans|Tracksuit|clothes
+Tie|Bow tie|clothes
+Swimsuit|Pyjamas|clothes
+Doctor|Nurse|jobs
+Teacher|Professor|jobs
+Police officer|Soldier|jobs
+Chef|Waiter|jobs
+Pilot|Flight attendant|jobs
+Taxi driver|Bus driver|jobs
+Hairdresser|Barber|jobs
+Lawyer|Judge|jobs
+Baker|Pastry chef|jobs
+Electrician|Plumber|jobs
+Singer|Dancer|jobs
+Actor|Director|jobs
+Lion|Tiger|animals
+Elephant|Rhino|animals
+Horse|Donkey|animals
+Cow|Buffalo|animals
+Sheep|Goat|animals
+Chicken|Duck|animals
+Eagle|Hawk|animals
+Pigeon|Seagull|animals
+Dolphin|Whale|animals
+Shark|Octopus|animals
+Bee|Wasp|animals
+Butterfly|Ladybird|animals
+Snake|Lizard|animals
+Frog|Turtle|animals
+Mouse|Hamster|animals
+Bear|Wolf|animals
+Monkey|Gorilla|animals
+Penguin|Seal|animals
+Beach|Lake|places
+Island|Peninsula|places
+River|Waterfall|places
+Forest|Jungle|places
+Desert|Savannah|places
+Village|Town|places
+Square|Park|places
+School|University|places
+Hospital|Pharmacy|places
+Church|Monastery|places
+Supermarket|Corner shop|places
+Bakery|Cake shop|places
+Café|Bar|places
+Restaurant|Fast-food place|places
+Cinema|Theatre|places
+Museum|Gallery|places
+Stadium|Gym|places
+Airport|Harbour|places
+Hotel|Campsite|places
+Bank|Post office|places
+Christmas|New Year|holidays
+Easter|Carnival|holidays
+Wedding|Engagement|events
+Birthday|Anniversary|events
+Summer|Spring|seasons
+Winter|Autumn|seasons
+Morning|Noon|times
+Evening|Dawn|times
+Rain|Snow|weather
+Sun|Moon|sky
+Star|Planet|sky
+Cloud|Fog|weather
+Wind|Storm|weather
+Chess|Draughts|games
+Cards|Dice|games
+Hide and seek|Tag|games
+Tennis|Table tennis|sports
+Swimming|Diving|sports
+Running|Walking|sports
+Yoga|Pilates|sports
+Skiing|Snowboarding|sports
+Painting|Sculpture|arts
+Piano|Organ|music
+Drums|Tambourine|music
+Rock|Metal|music
+Book|Magazine|things
+Newspaper|Radio|things
+Letter|Email|things
+Pencil|Pen|things
+Rubber|Sharpener|things
+Backpack|Suitcase|things
+Wallet|Handbag|things
+Key|Lock|things
+Candle|Torch|things
+Matches|Lighter|things
+Ring|Bracelet|things
+Gold|Silver|things
+Diamond|Pearl|things
+Wizard|Witch|fantasy
+Dragon|Dinosaur|fantasy
+Ghost|Vampire|fantasy
+Pirate|Knight|fantasy
+King|President|people
+Bride|Bridesmaid|people
+Grandma|Aunt|people
+Baby|Child|people
+Neighbour|Colleague|people
+Friend|Brother|people
+!Hangover|Dizziness|18+
+!Party all night|Insomnia|18+
+!Mother-in-law|Sister-in-law|18+
+!Ex|Best friend|18+
+!Gossip|Rumour|18+
+!Tequila|Vodka|18+

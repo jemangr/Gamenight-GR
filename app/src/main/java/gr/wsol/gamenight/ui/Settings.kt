@@ -40,6 +40,11 @@ fun SettingsScreen() {
     var checking by remember { mutableStateOf<String?>(null) }
     Page(t("Ρυθμίσεις", "Settings"), onBack = { Nav.back() }) {
         Panel {
+            Label(t("ΓΛΩΣΣΑ · LANGUAGE", "LANGUAGE · ΓΛΩΣΣΑ"))
+            Seg(listOf(false to "Ελληνικά", true to "English"), s.english, { Store.settings = s.copy(english = it) })
+            Text(t("Οι κάρτες αλλάζουν και αυτές· οι ελληνικές είναι περισσότερες.", "The cards change too; there are more in Greek."), style = Type.small, color = C.muted)
+        }
+        Panel {
             Toggle(t("Παρέα 18+", "18+ group"), t("Πιο τολμηρές λέξεις και ερωτήσεις (αργκό, πειράγματα). Ποτέ σεξουαλικό περιεχόμενο.", "Bolder words and questions (slang, teasing). Never sexual content."), s.adult) { Store.settings = s.copy(adult = it) }
             Toggle(t("Ήχοι", "Sounds"), null, s.sounds) { Store.settings = s.copy(sounds = it) }
             Toggle(t("Δόνηση", "Vibration"), null, s.haptics) { Store.settings = s.copy(haptics = it) }

@@ -106,4 +106,10 @@ class ScreenshotsTest {
     @Test fun s34_core_levels() = shot("34-core-levels") { game("core")(host) }
     @Test fun s35_core_board() { (1..10).forEach { Store.forceBest("core.$it.solved", 1) }; shot("35-core-board", "11") { game("core")(host) } }
     @Test fun s36_chaos() = shot("36-chaos") { gr.wsol.gamenight.chaos.ChaosOverlay(gr.wsol.gamenight.chaos.Chaos.Event(gr.wsol.gamenight.chaos.Chaos.Kind.Penalty, "🚨", "Ποινή!", "Νίκος: −1, γιατί δεν πότισε το καναρίνι.", "Νίκος", -1)) {} }
+
+    private fun english() { Store.settings = Store.settings.copy(english = true) }
+    @Test fun e01_home() { english(); shot("en-01-home") { HomeScreen() } }
+    @Test fun e02_taboo() { english(); shot("en-02-taboo", "Let's go", "Start the clock") { game("taboo")(host) } }
+    @Test fun e03_house() { english(); shot("en-03-house", "Let's go") { game("house")(host) } }
+    @Test fun e04_settings() { english(); shot("en-04-settings") { SettingsScreen() } }
 }

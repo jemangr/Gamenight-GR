@@ -1,0 +1,55 @@
+L|Name capital cities of Europe|Istanbul
+L|Name planets of the solar system|Pluto
+L|Name mammals|Shark
+L|Name fruits|Potato
+L|Name vegetables|Banana
+L|Name animals that lay eggs|Dolphin
+L|Name insects|Spider
+L|Name countries in South America|Mexico
+L|Name cities in Italy|Barcelona
+L|Name cities in Spain|Lisbon
+L|Name countries in Asia|Egypt
+L|Name landlocked countries|Portugal
+L|Name Greek gods of Olympus|Hercules
+L|Name musical instruments with strings|Flute
+L|Name instruments you blow|Violin
+L|Name sports with a ball|Chess
+L|Name days of the week|March
+L|Name months with 31 days|June
+L|Name star signs|Ophiuchus
+L|Name colours of the rainbow|Pink
+L|Name body parts that come in pairs|Nose
+L|Name animals of Africa|Penguin
+L|Name animals of Australia|Panda
+L|Name drinks without alcohol|Cider
+L|Name things you find in a kitchen|Shower
+L|Name jobs with a uniform|Accountant
+L|Name seas around Greece|Baltic Sea
+L|Name sea animals|Hippo
+L|Name birds that can't fly|Duck
+L|Name trees that lose their leaves in winter|Pine
+L|Name shapes with four sides|Triangle
+L|Name metals|Plastic
+L|Name dances from Greece|Tango
+L|Name Disney cartoons|SpongeBob
+L|Name German car brands|Fiat
+S|One day on the beach, Nick found a bottle with a letter inside…|umbrella
+S|The ferry was two hours late, and then…|goat
+S|Grandma decided to learn to ride a motorbike…|shoe
+S|A new teacher came to school, a bit strange…|banana
+S|One night the fridge started talking…|bicycle
+S|The neighbour's dog ran off to the supermarket…|hat
+S|Aliens landed in the village square…|sausage
+S|At the cousin's wedding, the cake vanished…|helicopter
+S|Grandpa won the lottery and told nobody…|penguin
+S|A pirate found a treasure map…|television
+S|The lift got stuck between floors…|trumpet
+S|A magician turned up at the village fair…|fridge
+S|The village team reached the final…|dinosaur
+S|Santa lost his sleigh in the city…|doughnut
+S|A cat became mayor…|scooter
+S|The alarm went off three hours early…|gorilla
+S|In the taxi, the driver started singing opera…|watermelon
+S|The neighbour built a pool on the balcony…|crocodile
+S|A robot came to work at the bakery…|flower
+S|On the school trip, the bus took the wrong road…|monkey
