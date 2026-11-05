@@ -1,0 +1,103 @@
+package gr.wsol.gamenight.ui
+
+import android.content.Intent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import gr.wsol.gamenight.core.Night
+import gr.wsol.gamenight.core.Store
+import gr.wsol.gamenight.core.t
+import gr.wsol.gamenight.games.Games
+
+/** The text shared at the end of the night. */
+fun shareText(n: Night): String = buildString {
+    val r = n.ranking()
+    appendLine(t("🎲 Gamenight GR: ο νικητής της βραδιάς", "🎲 Gamenight GR: tonight's winner"))
+    r.firstOrNull()?.let { appendLine("🏆 ${n.label(it.first)} · ${it.second}") }
+    appendLine()
+    r.forEachIndexed { i, (s, p) -> appendLine("${i + 1}. ${n.label(s)}: $p") }
+    val games = n.log.map { it.game }.distinct().mapNotNull { Games.byId(it) }
+    if (games.isNotEmpty()) { appendLine(); append(t("Παίξαμε: ", "We played: ") + games.joinToString(", ") { "${it.emoji} ${it.title}" }) }
+}.trim()
+
+@Composable
+fun ScoreScreen() {
+    val n = Store.night
+    val ctx = LocalContext.current
+    var confirm by remember { mutableStateOf(false) }
+    val r = n.ranking()
+    val top = (r.maxOfOrNull { it.second } ?: 0).coerceAtLeast(1)
+    Page(t("Πίνακας της βραδιάς", "Tonight's scores"), onBack = { Nav.back() }, bottom = {
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            BigButton(t("Κοινοποίηση", "Share"), {
+                val i = Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, shareText(n))
+                runCatching { ctx.startActivity(Intent.createChooser(i, null)) }
+            }, Modifier.weight(1f), enabled = r.isNotEmpty())
+            GhostButton(t("Νέα βραδιά", "New night"), { confirm = true }, Modifier.weight(1f))
+        }
+    }) {
+        if (r.isEmpty()) Body(t("Πρόσθεσε παίκτες για να ξεκινήσει ο πίνακας.", "Add players to start the scoreboard."))
+        r.firstOrNull()?.takeIf { it.second > 0 }?.let { (s, p) ->
+            Panel(color = C.panel2) {
+                Text("🏆", fontSize = 40.sp, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+                Text(n.label(s), style = Type.big, color = Color(n.colorOf(s)), modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+                Text(t("$p πόντοι · πρώτος απόψε", "$p points · leading tonight"), style = Type.body, color = C.muted, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+            }
+        }
+        r.forEachIndexed { i, (s, p) ->
+            Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(C.panel).padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                Text("${i + 1}", fontFamily = Serif, fontWeight = FontWeight.Black, fontSize = 20.sp, color = C.dim, modifier = Modifier.width(28.dp))
+                Column(Modifier.weight(1f)) {
+                    SideName(n, s)
+                    if (n.teams) Text(n.membersOf(s).joinToString(", "), style = Type.small, color = C.muted)
+                    Spacer(Modifier.height(6.dp))
+                    Box(Modifier.fillMaxWidth().height(8.dp).clip(RoundedCornerShape(4.dp)).background(C.line)) {
+                        Box(Modifier.fillMaxWidth(p.coerceAtLeast(0).toFloat() / top).fillMaxHeight().clip(RoundedCornerShape(4.dp)).background(Color(n.colorOf(s))))
+                    }
+                }
+                Spacer(Modifier.width(12.dp))
+                Text("$p", style = Type.title, color = C.text)
+            }
+        }
+        if (n.log.isNotEmpty()) {
+            Label(t("ΤΙ ΕΓΙΝΕ ΑΠΟΨΕ", "WHAT HAPPENED TONIGHT"))
+            n.log.asReversed().take(30).forEach { e ->
+                val g = Games.byId(e.game)
+                Text("${g?.emoji ?: "•"} ${e.note}", style = Type.small, color = C.muted)
+            }
+        }
+    }
+    if (confirm) androidx.compose.material3.AlertDialog(
+        onDismissRequest = { confirm = false },
+        title = { Text(t("Νέα βραδιά;", "New night?"), color = C.text) },
+        text = { Text(t("Οι πόντοι μηδενίζονται. Οι παίκτες και οι ομάδες μένουν.", "Points go back to zero. Players and teams stay."), color = C.muted) },
+        confirmButton = { TextButton(onClick = { Store.night = n.copy(points = emptyMap(), log = emptyList(), started = System.currentTimeMillis()); confirm = false }) { Text(t("Μηδενισμός", "Reset"), color = C.amber) } },
+        dismissButton = { TextButton(onClick = { confirm = false }) { Text(t("Άκυρο", "Cancel"), color = C.muted) } },
+        containerColor = C.panel,
+    )
+}
