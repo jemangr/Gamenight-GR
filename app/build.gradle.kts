@@ -23,13 +23,16 @@ android {
 
     // The release key comes from keystore.properties (git-ignored, written by CI from the repository's
     // secrets); without it, release builds are signed with the debug key (test builds only).
+    // In CI the passwords come straight from the environment (no escaping by Properties, so a "\\" in a
+    // password survives), with a pasted trailing newline removed.
     val keys = rootProject.file("keystore.properties").takeIf { it.exists() }?.let { f -> Properties().apply { f.inputStream().use { load(it) } } }
+    fun secret(env: String, prop: String): String? = (System.getenv(env)?.takeIf { it.isNotEmpty() } ?: keys?.getProperty(prop))?.trimEnd('\r', '\n')
     signingConfigs {
         if (keys != null) create("release") {
             storeFile = rootProject.file(keys.getProperty("storeFile"))
-            storePassword = keys.getProperty("storePassword")
-            keyAlias = keys.getProperty("keyAlias")
-            keyPassword = keys.getProperty("keyPassword")
+            storePassword = secret("RELEASE_STORE_PASSWORD", "storePassword")
+            keyAlias = secret("RELEASE_KEY_ALIAS", "keyAlias")
+            keyPassword = secret("RELEASE_KEY_PASSWORD", "keyPassword")
         }
     }
 

@@ -26,18 +26,19 @@ jobs:
       - name: Release key
         env:
           KS: ${{ secrets.RELEASE_KEYSTORE }}
-          SP: ${{ secrets.RELEASE_STORE_PASSWORD }}
-          KA: ${{ secrets.RELEASE_KEY_ALIAS }}
-          KP: ${{ secrets.RELEASE_KEY_PASSWORD }}
         run: |
           if [ -n "$KS" ]; then
-            echo "$KS" | base64 -d > release.jks
-            printf 'storeFile=release.jks\nstorePassword=%s\nkeyAlias=%s\nkeyPassword=%s\n' "$SP" "$KA" "$KP" > keystore.properties
+            printf '%s' "$KS" | tr -d ' \r\n' | base64 -d > release.jks
+            printf 'storeFile=release.jks\n' > keystore.properties
           fi
       - name: Tests
         run: ./gradlew :app:testDebugUnitTest
       - name: APK
         id: apk
+        env:
+          RELEASE_STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
+          RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
         run: |
           v=$(grep -oP 'versionName = "\K[^"]+' app/build.gradle.kts)
           echo "version=$v" >> "$GITHUB_OUTPUT"
