@@ -93,4 +93,13 @@ class ScreenshotsTest {
     @Test fun s24_witness_scene() = shot("24-witness-scene") { gr.wsol.gamenight.games.WitnessScene(gr.wsol.gamenight.games.WitnessScenes.make(kotlin.random.Random(7))) }
 
     @Test fun s25_house_setup() = shot("25-house-setup", "Ξεκινάμε") { game("house")(host) }
+
+    @Test fun s26_gate() = shot("26-gate", "Ξεκινάμε", "Πάμε", wait = 1500) { game("gate")(host) }
+    @Test fun s27_tower() = shot("27-tower", "Ξεκινάμε", "Πάμε", wait = 1500) { game("tower")(host) }
+    @Test fun s28_grid() = shot("28-grid", "Ξεκινάμε", "Πάμε", wait = 1500) { game("grid")(host) }
+    @Test fun s29_slice() = shot("29-slice", "Ξεκινάμε", "Πάμε", wait = 1500) { game("slice")(host) }
+    @Test fun s30_drop() = shot("30-drop", "Ξεκινάμε", "Πάμε", wait = 1500) { game("drop")(host) }
+    @Test fun s31_orbit() = shot("31-orbit", "Ξεκινάμε", "Πάμε", wait = 1500) { game("orbit")(host) }
+    @Test fun s32_path() = shot("32-path", "Ξεκινάμε", "Πάμε", wait = 1500) { game("path")(host) }
+    @Test fun s33_sling() = shot("33-sling", "Ξεκινάμε", "Πάμε", wait = 1500) { game("sling")(host) }
 }

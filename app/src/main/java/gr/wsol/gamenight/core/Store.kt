@@ -78,4 +78,21 @@ object Store {
     }
 
     private val memBest = mutableMapOf<String, Int>()
+
+    /** Arcade records: all time, today and this week. Returns which of them [score] beat. */
+    fun arcadeRecord(game: String, score: Int, now: java.util.Calendar = java.util.Calendar.getInstance()): Set<String> {
+        val day = "%04d%03d".format(now.get(java.util.Calendar.YEAR), now.get(java.util.Calendar.DAY_OF_YEAR))
+        val week = "%04dw%02d".format(now.get(java.util.Calendar.YEAR), now.get(java.util.Calendar.WEEK_OF_YEAR))
+        val out = mutableSetOf<String>()
+        if (record("arc.$game", score)) out += "all"
+        if (record("arc.$game.$day", score)) out += "day"
+        if (record("arc.$game.$week", score)) out += "week"
+        return out
+    }
+
+    fun arcadeBest(game: String, now: java.util.Calendar = java.util.Calendar.getInstance()): Triple<Int, Int, Int> {
+        val day = "%04d%03d".format(now.get(java.util.Calendar.YEAR), now.get(java.util.Calendar.DAY_OF_YEAR))
+        val week = "%04dw%02d".format(now.get(java.util.Calendar.YEAR), now.get(java.util.Calendar.WEEK_OF_YEAR))
+        return Triple(best("arc.$game"), best("arc.$game.$day"), best("arc.$game.$week"))
+    }
 }
