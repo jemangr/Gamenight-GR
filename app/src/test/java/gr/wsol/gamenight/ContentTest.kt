@@ -71,6 +71,14 @@ class ContentTest {
         assertEquals(emptySet<String>(), dupes(el.mines.map { it.w }))
     }
 
+    @Test fun phase3Content() {
+        assertTrue("draw ${el.draw.size}", el.draw.size >= 150); assertEquals(emptySet<String>(), dupes(el.draw.map { it.w }))
+        assertTrue(el.phrases.size >= 60); assertEquals(emptySet<String>(), dupes(el.phrases.map { it.t }))
+        assertTrue(el.missions.size >= 70)
+        el.missions.forEach { m -> assertTrue(m.t, m.story || m.trap.isNotBlank()) }
+        assertTrue(el.missions.count { it.story } >= 25)
+    }
+
     @Test fun noCapitalAccentsInTitles() {
         // House rule: no Greek capitals with accents in all-caps text; in mixed case they're fine.
         el.quads.flatMap { it.groups }.forEach { assertTrue(it.name, it.name != it.name.uppercase() || it.name.none { c -> c in "ΆΈΉΊΌΎΏ" }) }

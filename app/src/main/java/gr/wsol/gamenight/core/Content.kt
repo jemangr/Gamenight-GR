@@ -32,6 +32,9 @@ import kotlinx.serialization.json.Json
 /** «Ναρκοπέδιο»: the start word and its 3 mines, each with the forms that also count. */
 @Serializable data class Minefield(val w: String, val mines: List<List<String>>, val a: Boolean = false)
 
+/** «Ο Σαμποτέρ»: a shared mission. A list mission has a [trap] (a wrong answer that sounds right); a story mission has a [word] to steer to. */
+@Serializable data class Mission(val t: String, val trap: String = "", val word: String = "", val a: Boolean = false) { val story get() = word.isNotEmpty() }
+
 @Serializable
 data class Content(
     val taboo: List<TabooCard> = emptyList(),
@@ -46,6 +49,9 @@ data class Content(
     val facts: List<Fact> = emptyList(),
     val scenes: List<Scene> = emptyList(),
     val mines: List<Minefield> = emptyList(),
+    val draw: List<Word> = emptyList(),
+    val phrases: List<Prompt> = emptyList(),
+    val missions: List<Mission> = emptyList(),
 )
 
 /** All the cards, from the JSON files in assets/content/<lang>/ (one per game). Loaded once. */
@@ -78,6 +84,9 @@ object Cards {
             facts = list("facts", Fact.serializer()),
             scenes = list("scenes", Scene.serializer()),
             mines = list("mines", Minefield.serializer()),
+            draw = list("draw", Word.serializer()),
+            phrases = list("phrases", Prompt.serializer()),
+            missions = list("missions", Mission.serializer()),
         )
     }
 }

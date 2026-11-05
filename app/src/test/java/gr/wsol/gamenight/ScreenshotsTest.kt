@@ -84,4 +84,11 @@ class ScreenshotsTest {
     @Test fun s16_lie() = shot("16-lie", "Ξεκινάμε", "Είμαι εγώ") { game("lie")(host) }
     @Test fun s17_number() = shot("17-number", "Ξεκινάμε") { game("number")(host) }
     @Test fun s18_minefield() = shot("18-minefield", "Ξεκινάμε") { game("minefield")(host) }
+
+    @Test fun s19_fake() = shot("19-fake", "Ξεκινάμε") { game("fake")(host) }
+    @Test fun s20_telephone() = shot("20-telephone", "Ξεκινάμε", "Είμαι εγώ") { game("telephone")(host) }
+    @Test fun s21_saboteur() = shot("21-saboteur", "Ξεκινάμε") { game("saboteur")(host) }
+    @Test fun s22_witness() = shot("22-witness", "Ξεκινάμε", "Δείξε τη σκηνή", wait = 500) { game("witness")(host) }
+    @Test fun s23_balance() = shot("23-balance", "Ξεκινάμε", "Ξεκίνα τα 5", wait = 500) { game("balance")(host) }
+    @Test fun s24_witness_scene() = shot("24-witness-scene") { gr.wsol.gamenight.games.WitnessScene(gr.wsol.gamenight.games.WitnessScenes.make(kotlin.random.Random(7))) }
 }

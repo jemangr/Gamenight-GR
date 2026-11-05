@@ -101,3 +101,17 @@ dump("forehead", fh)
 dump("facts", [with_a({"q": p[0], "ans": p[1]}, a) for p, a in split_lines("facts", 2)])
 dump("scenes", [with_a({"t": p[0], "lo": p[1], "hi": p[2]}, a) for p, a in split_lines("scenes", 3)])
 dump("mines", [with_a({"w": p[0], "mines": [[v.strip() for v in m.split("/")] for m in p[1].split(";")]}, a) for p, a in split_lines("mines", 2)])
+
+dr, cat = [], ""
+for l in lines("draw"):
+    if not l.strip(): continue
+    if l.startswith("@"): cat = l[1:].strip(); continue
+    l, a = adult(l)
+    dr.append(with_a({"w": l.strip(), "c": cat}, a))
+dump("draw", dr)
+prompts("phrases")
+ms = []
+for p, a in split_lines("missions", 2):
+    kind, text, extra = p[0], p[1], p[2] if len(p) > 2 else ""
+    ms.append(with_a({"t": text, "trap": extra} if kind == "L" else {"t": text, "word": extra}, a))
+dump("missions", ms)

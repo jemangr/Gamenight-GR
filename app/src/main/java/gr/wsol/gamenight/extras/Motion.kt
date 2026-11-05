@@ -66,3 +66,21 @@ fun OnTilt(enabled: Boolean = true, onDown: () -> Unit, onUp: () -> Unit) {
         onDispose { sm.unregisterListener(l) }
     }
 }
+
+/** The phone's tilt as gravity along x and y (m/s²), updated while on screen. Zero without a sensor. */
+@Composable
+fun rememberTilt(): androidx.compose.runtime.State<androidx.compose.ui.geometry.Offset> {
+    val ctx = LocalContext.current
+    val state = androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(androidx.compose.ui.geometry.Offset.Zero) }
+    DisposableEffect(Unit) {
+        val sm = ctx.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        val s = sm.getDefaultSensor(Sensor.TYPE_GRAVITY) ?: sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+        val l = object : SensorEventListener {
+            override fun onSensorChanged(e: SensorEvent) { state.value = androidx.compose.ui.geometry.Offset(-e.values[0], e.values[1]) }
+            override fun onAccuracyChanged(s: Sensor?, a: Int) {}
+        }
+        s?.let { sm.registerListener(l, it, SensorManager.SENSOR_DELAY_GAME) }
+        onDispose { sm.unregisterListener(l) }
+    }
+    return state
+}

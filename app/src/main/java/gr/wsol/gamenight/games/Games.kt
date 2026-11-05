@@ -59,8 +59,8 @@ object Games {
         // 🕵️ Hidden roles
         Game("house", "🏚️", "Το στοιχειωμένο σπίτι", "The haunted house", Category.Roles, 4, 7, "Ζόμπι, θεραπευτές και μάγοι, με αφηγητή.", "Zombies, healers and mages, with a narrator.", C.ghost),
         Game("alien", "👽", "Ο Εξωγήινος", "The Alien", Category.Roles, 3, 7, "Όλοι έχουν την ίδια λέξη. Σχεδόν όλοι.", "Everyone has the same word. Almost.", C.green, { AlienGameScreen(it) }),
-        Game("saboteur", "🧨", "Ο Σαμποτέρ", "The Saboteur", Category.Roles, 3, 7, "Κοινή αποστολή, ένας τη χαλάει κρυφά.", "A shared mission, one wrecks it in secret.", C.red),
-        Game("fake", "🎨", "Ένας λείπει", "One is missing", Category.Roles, 3, 7, "Μια ζωγραφιά, ένας δεν ξέρει τι ζωγραφίζει.", "One drawing, one doesn't know what it is.", C.pink),
+        Game("saboteur", "🧨", "Ο Σαμποτέρ", "The Saboteur", Category.Roles, 3, 7, "Κοινή αποστολή, ένας τη χαλάει κρυφά.", "A shared mission, one wrecks it in secret.", C.red, { SaboteurGame(it) }),
+        Game("fake", "🎨", "Ένας λείπει", "One is missing", Category.Roles, 3, 7, "Μια ζωγραφιά, ένας δεν ξέρει τι ζωγραφίζει.", "One drawing, one doesn't know what it is.", C.pink, { FakeArtistGame(it) }),
         // 🗣️ Words
         Game("taboo", "🗣️", "Πες το αλλιώς", "Say it otherwise", Category.Words, 2, 7, "Περίγραψε τη λέξη χωρίς τις 5 απαγορευμένες.", "Describe the word without the 5 banned ones.", C.amber, { TabooGame(it) }),
         Game("forehead", "🤳", "Στο μέτωπο", "On your forehead", Category.Words, 2, 7, "Το κινητό στο μέτωπο, η παρέα σου δίνει στοιχεία.", "Phone on your forehead, the group gives clues.", C.cyan, { ForeheadGame(it) }),
@@ -71,15 +71,15 @@ object Games {
         // 🤥 Bluff and trivia
         Game("bluffer", "🃏", "Ο Μπλοφατζής", "The Bluffer", Category.Bluff, 3, 7, "Γράψε μπλόφα, βρες την αλήθεια.", "Write a bluff, find the truth.", C.ghost, { BlufferGame(it) }),
         Game("lie", "🤥", "Ψέμα υπό πίεση", "Lie under pressure", Category.Bluff, 2, 7, "Αλήθεια ή ψέμα; Ο επόμενος κρίνει.", "Truth or lie? The next one judges.", C.pink, { LieGame(it) }),
-        Game("witness", "🔍", "Ο Μάρτυρας", "The Witness", Category.Bluff, 2, 7, "4″ για μια σκηνή. Τι θυμάσαι;", "4″ to see a scene. What do you remember?", C.cyan),
+        Game("witness", "🔍", "Ο Μάρτυρας", "The Witness", Category.Bluff, 2, 7, "4″ για μια σκηνή. Τι θυμάσαι;", "4″ to see a scene. What do you remember?", C.cyan, { WitnessGame(it) }),
         Game("movies", "🎬", "Μάντεψε την ταινία ή σειρά", "Guess the film or series", Category.Bluff, 2, 7, "Ο τίτλος σε emoji.", "The title in emoji.", C.amber, { MoviesGame(it) }),
         // 🎭 Acting, singing, drawing
         Game("number", "🔢", "Το νούμερό σου", "Your number", Category.Stage, 3, 7, "Παίξε το σενάριο όπως το νούμερό σου.", "Act the scene like your number.", C.amber, { NumberGame(it) }),
-        Game("telephone", "📞", "Χαλασμένο τηλέφωνο", "Broken telephone", Category.Stage, 3, 7, "Φράση, σχέδιο, φράση… τι έμεινε στο τέλος;", "Phrase, drawing, phrase… what's left at the end?", C.lime),
+        Game("telephone", "📞", "Χαλασμένο τηλέφωνο", "Broken telephone", Category.Stage, 3, 7, "Φράση, σχέδιο, φράση… τι έμεινε στο τέλος;", "Phrase, drawing, phrase… what's left at the end?", C.lime, { TelephoneGame(it) }),
         Game("song", "🎤", "Λέξη σε τραγούδι", "Word in a song", Category.Stage, 2, 7, "Τραγούδησε κομμάτι με αυτή τη λέξη.", "Sing a song with this word.", C.pink, { SongGame(it) }),
         // ⚡ Reflexes
         Game("bomb", "⏱️", "Βόμβα", "Bomb", Category.Reflex, 2, 7, "Πες λέξη και πάσαρε, πριν σκάσει.", "Say a word and pass, before it blows.", C.red, { BombGame(it) }),
-        Game("balance", "⚖️", "Ισορροπία", "Balance", Category.Reflex, 2, 7, "Πέρνα το κινητό χωρίς να πέσει η μπίλια.", "Pass the phone without dropping the ball.", C.cyan),
+        Game("balance", "⚖️", "Ισορροπία", "Balance", Category.Reflex, 2, 7, "Πέρνα το κινητό χωρίς να πέσει η μπίλια.", "Pass the phone without dropping the ball.", C.cyan, { BalanceGame(it) }),
         // 🎮 Arcade
         Game("gate", "🌈", "Χρωματική πύλη", "Colour gate", Category.Arcade, 1, 7, "Tap για χρώμα, πέρνα από το ίδιο.", "Tap to change colour, pass the same one.", C.pink),
         Game("drop", "🕳️", "Βουτιά", "Dive", Category.Arcade, 1, 7, "Γείρε το κινητό, πέσε όσο πιο βαθιά.", "Tilt the phone, fall as deep as you can.", C.cyan),
