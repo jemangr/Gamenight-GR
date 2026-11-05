@@ -31,6 +31,11 @@ object Sfx {
     fun win() = play("win") { join(tone(0.12, sq(523.0), { 1.0 }), tone(0.12, sq(659.0), { 1.0 }), tone(0.12, sq(784.0), { 1.0 }), tone(0.5, sq(1046.0), dec(3.0))) }
     fun boom() = play("boom") { mix(noise(1.2, 1.0, 3.0), tone(0.8, { x -> sin(2 * PI * (90 - 50 * x) * x) }, dec(4.0))) }
 
+    // «Το στοιχειωμένο σπίτι»
+    fun wind() = play("wind") { noise(2.2, 0.55, 0.4) }
+    fun creak() = play("creak") { tone(0.7, { x -> 0.6 * sin(2 * PI * (180 + 90 * sin(2 * PI * 7 * x)) * x) }, { x -> sin(PI * x / 0.7) * 0.8 }) }
+    fun bell() = play("bell") { tone(2.0, { x -> sin(2 * PI * 196 * x) + 0.5 * sin(2 * PI * 392 * x) + 0.3 * sin(2 * PI * 587 * x) }, dec(1.6)) }
+
     private fun play(key: String, make: () -> ShortArray) {
         if (!Store.settings.sounds) return
         val pcm = synchronized(cache) { cache.getOrPut(key, make) }

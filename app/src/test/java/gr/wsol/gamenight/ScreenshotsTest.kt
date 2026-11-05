@@ -91,4 +91,6 @@ class ScreenshotsTest {
     @Test fun s22_witness() = shot("22-witness", "Ξεκινάμε", "Δείξε τη σκηνή", wait = 500) { game("witness")(host) }
     @Test fun s23_balance() = shot("23-balance", "Ξεκινάμε", "Ξεκίνα τα 5", wait = 500) { game("balance")(host) }
     @Test fun s24_witness_scene() = shot("24-witness-scene") { gr.wsol.gamenight.games.WitnessScene(gr.wsol.gamenight.games.WitnessScenes.make(kotlin.random.Random(7))) }
+
+    @Test fun s25_house_setup() = shot("25-house-setup", "Ξεκινάμε") { game("house")(host) }
 }

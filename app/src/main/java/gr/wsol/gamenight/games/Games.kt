@@ -57,7 +57,7 @@ class Game(
 object Games {
     val all: List<Game> = listOf(
         // 🕵️ Hidden roles
-        Game("house", "🏚️", "Το στοιχειωμένο σπίτι", "The haunted house", Category.Roles, 4, 7, "Ζόμπι, θεραπευτές και μάγοι, με αφηγητή.", "Zombies, healers and mages, with a narrator.", C.ghost),
+        Game("house", "🏚️", "Το στοιχειωμένο σπίτι", "The haunted house", Category.Roles, 4, 7, "Ζόμπι, θεραπευτές και μάγοι, με αφηγητή.", "Zombies, healers and mages, with a narrator.", C.ghost, { HouseGame(it) }),
         Game("alien", "👽", "Ο Εξωγήινος", "The Alien", Category.Roles, 3, 7, "Όλοι έχουν την ίδια λέξη. Σχεδόν όλοι.", "Everyone has the same word. Almost.", C.green, { AlienGameScreen(it) }),
         Game("saboteur", "🧨", "Ο Σαμποτέρ", "The Saboteur", Category.Roles, 3, 7, "Κοινή αποστολή, ένας τη χαλάει κρυφά.", "A shared mission, one wrecks it in secret.", C.red, { SaboteurGame(it) }),
         Game("fake", "🎨", "Ένας λείπει", "One is missing", Category.Roles, 3, 7, "Μια ζωγραφιά, ένας δεν ξέρει τι ζωγραφίζει.", "One drawing, one doesn't know what it is.", C.pink, { FakeArtistGame(it) }),
