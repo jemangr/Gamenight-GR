@@ -29,6 +29,8 @@ data class Settings(
     val aiProvider: String = "GEMINI",
     /** 1.1: 0 «Βραδιά» (dark), 1 «Καλοκαίρι», 2 «Χριστούγεννα»: colours and sounds. */
     val look: Int = 0,
+    /** 1.3: shake the phone to open the bug report (never while a game is on screen). */
+    val shakeReport: Boolean = true,
 )
 
 /**

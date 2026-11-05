@@ -19,7 +19,7 @@ object Updates {
     const val LATEST = "https://api.github.com/repos/jemangr/Gamenight-GR/releases/latest"
     /** The APK of the latest release, under a fixed name. */
     const val APK = "https://github.com/jemangr/Gamenight-GR/releases/latest/download/GamenightGR.apk"
-    const val EVERY_MS = 6 * 60 * 60 * 1000L
+    const val EVERY_MS = 60 * 60 * 1000L
 
     data class Release(val version: String, val notes: String, val apk: String, val page: String)
 

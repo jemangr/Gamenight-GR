@@ -137,6 +137,8 @@ fun UpdateBar() {
     val scope = rememberCoroutineScope()
     var progress by remember { mutableStateOf<Int?>(null) }
     var failed by remember { mutableStateOf(false) }
+    // a popup on the home screen as soon as the update is found (no need to look in the settings)
+    androidx.compose.ui.window.Dialog(onDismissRequest = { if (progress == null) UpdateState.release = null }) {
     Panel(color = C.panel2) {
         Text(t("Υπάρχει η έκδοση ${r.version}", "Version ${r.version} is out"), style = Type.h, color = C.amber)
         if (failed) Body(t("Το κατέβασμα δεν πέτυχε. Δοκίμασε ξανά με internet.", "The download failed. Try again online."), color = C.red)
@@ -154,6 +156,7 @@ fun UpdateBar() {
             GhostButton(t("Αργότερα", "Later"), { UpdateState.release = null }, Modifier.weight(1f))
         }
         Text(t("Την πρώτη φορά το Android ζητά να επιτρέψεις την εγκατάσταση από το Gamenight GR.", "The first time, Android asks you to allow installs from Gamenight GR."), style = Type.small, color = C.dim)
+    }
     }
 }
 

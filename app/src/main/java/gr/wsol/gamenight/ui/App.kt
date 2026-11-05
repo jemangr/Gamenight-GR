@@ -42,9 +42,11 @@ object Nav {
     fun home() { while (stack.size > 1) stack.removeAt(stack.lastIndex) }
 }
 
-/** The update found on GitHub, if any (shown as a bar on the home screen). */
+/** The update found on GitHub, if any (shown as a popup on the home screen). */
 object UpdateState {
     var release by mutableStateOf<Updates.Release?>(null)
+    /** Goes up every time the app comes to the front: the check runs then too, not only at a cold start. */
+    var resumes by mutableStateOf(0)
 }
 
 @Composable
@@ -52,9 +54,9 @@ fun AppRoot() {
     val ctx = LocalContext.current
     var crash by remember { mutableStateOf(Crash.last(ctx)) }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(UpdateState.resumes) {
         val s = Store.settings
-        if (BuildConfig.UPDATE_CHECK && s.updateCheck && System.currentTimeMillis() - Store.lastUpdateCheck > Updates.EVERY_MS) {
+        if (UpdateState.release == null && BuildConfig.UPDATE_CHECK && s.updateCheck && System.currentTimeMillis() - Store.lastUpdateCheck > Updates.EVERY_MS) {
             Store.lastUpdateCheck = System.currentTimeMillis()
             UpdateState.release = Updates.check(BuildConfig.VERSION_NAME)?.takeIf { it.version != s.skipVersion }
         }
