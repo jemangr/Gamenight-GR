@@ -116,7 +116,7 @@ class ScreenshotsTest {
 
     // ---- 1.1 ----
     private fun teams() { Store.night = Store.night.copy(teams = true, teamCount = 2, teamOf = names.withIndex().associate { (i, n) -> n to i % 2 }) }
-    private fun aiKey() { gr.wsol.gamenight.ai.Keys.set(gr.wsol.gamenight.ai.Provider.GEMINI, "AIzaTEST_ONLY_NOT_A_REAL_KEY_0000000000") }
+    private fun aiKey() { gr.wsol.gamenight.ai.Keys.set(gr.wsol.gamenight.ai.Provider.GEMINI, "test-key-for-screenshots") }
     @Test fun n01_whois() = shot("40-whois", "Ξεκινάμε") { game("whois")(host) }
     @Test fun n02_knowme() = shot("41-knowme", "Ξεκινάμε") { game("knowme")(host) }
     @Test fun n03_dice() = shot("42-dice", "Ξεκινάμε") { game("dice")(host) }
