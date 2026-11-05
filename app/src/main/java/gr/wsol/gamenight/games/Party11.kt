@@ -153,7 +153,8 @@ fun KnowMeGame(host: GameHost) {
             Seg(listOf(1 to "1", 2 to "2", 3 to "3"), each, { each = it }, color = game.color)
         }) { turn = 0; phase = Know11.Pass }
 
-        Know11.Pass -> { QuitGuard(host); PassTo(who, colorOf(who), note = t("Η ερώτηση είναι για σένα.", "The question is about you.")) { card = deck.next(); answer = ""; phase = Know11.Answer } }
+        // the answer screen has its own «give the phone to…»: no second one in a row
+        Know11.Pass -> { QuitGuard(host); androidx.compose.runtime.LaunchedEffect(turn) { card = deck.next(); answer = ""; phase = Know11.Answer } }
 
         Know11.Answer -> { QuitGuard(host); SecretInputRound(listOf(who), key = "a$turn", prompt = { card?.t ?: "" }, hint = t("Η αλήθεια σου", "Your truth")) { answer = it[who].orEmpty(); phase = Know11.Guess } }
 

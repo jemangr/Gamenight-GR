@@ -67,7 +67,7 @@ object ClosestRules {
         val norm = when {
             c.count { it == ',' } == 1 && c.count { it == '.' } >= 1 -> c.replace(".", "").replace(',', '.')
             c.count { it == ',' } == 1 && c.substringAfter(',').length != 3 -> c.replace(',', '.')
-            else -> c.replace(",", "").let { if (it.count { ch -> ch == '.' } > 1 || (it.contains('.') && it.substringAfter('.').length == 3 && it.substringBefore('.').length in 1..3)) it.replace(".", "") else it }
+            else -> c.replace(",", "").let { if (it.count { ch -> ch == '.' } > 1 || (it.contains('.') && it.substringAfter('.').length == 3 && it.substringBefore('.').length in 1..3 && !it.startsWith("0"))) it.replace(".", "") else it }
         }
         return norm.toDoubleOrNull()
     }

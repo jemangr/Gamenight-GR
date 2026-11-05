@@ -111,6 +111,7 @@ fun TavliGame(host: GameHost) {
             t("Πάτα «Ρίξε», μετά ένα πούλι σου και πού θα πάει (φωτίζονται οι επιτρεπτές θέσεις). Για μάζεμα, πάτα τη μεσαία λωρίδα.", "Press «Roll», then one of your checkers and where it goes (allowed spots light up). To bear off, tap the middle strip."),
             t("Το κινητό ελέγχει ότι παίζεις όσα ζάρια μπορείς. Μέχρι το «Τέλος σειράς» έχεις αναίρεση.", "The phone checks you play as many dice as you can. Until «End turn» you can undo."),
             t("Νίκη 1 πόντος, διπλή (αν ο άλλος δεν έχει μαζέψει κανένα) 2. Στο Πλακωτό, αν πλακώσεις τη «μάνα» του άλλου, παίρνεις διπλό.", "A win is 1 point, a double (if the other bore off none) 2. In Plakoto, pinning the other's «mother» is a double."),
+            t("Όποιος κερδίσει τον αγώνα (τους πόντους που διαλέγετε) παίρνει +2 ακόμα. Το επόμενο παιχνίδι το ξεκινά όποιος κέρδισε το προηγούμενο.", "Whoever wins the match (to the points you choose) gets +2 more. The winner of a game starts the next one."),
         ), picked.size == 2, {
             Label(t("ΠΟΙΟΙ ΠΑΙΖΟΥΝ (ΔΥΟ)", "WHO PLAYS (TWO)"))
             androidx.compose.foundation.layout.FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.fillMaxWidth()) {
@@ -135,7 +136,15 @@ fun TavliGame(host: GameHost) {
             fun play(m: TMove) {
                 undo += board to dice
                 board = board.move(turn, m); dice = dice - m.die; sel = null; Sfx.tap()
-                board.winner?.let { w -> lastWin = w; lastPts = board.points(); Sfx.win(); phase = Tav11.GameWon }
+                board.winner?.let { w ->
+                    lastWin = w; lastPts = board.points(); Sfx.win()
+                    // the points count as soon as the game is won (leaving before «Continue» doesn't lose them)
+                    match.won(w, lastPts); tally.add(host, listOf(picked[w]), lastPts)
+                    host.log(t("Τάβλι (${board.kind.title()}): ${picked[w]} +$lastPts", "Backgammon (${board.kind.title()}): ${picked[w]} +$lastPts"))
+                    starter = w
+                    match.winner?.let { mw -> tally.add(host, listOf(picked[mw]), 2); host.stat(picked[mw], "tavli") }
+                    phase = Tav11.GameWon
+                }
             }
             fun endTurn() { turn = 1 - turn; dice = emptyList(); rolled = null; sel = null; undo.clear() }
             Column(Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding().padding(10.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -184,10 +193,7 @@ fun TavliGame(host: GameHost) {
             val w = picked[lastWin]
             Announce("🎲", w, (if (board.motherPinned >= 0) t("Πλάκωσε τη μάνα! ", "Pinned the mother! ") else "") + if (lastPts == 2) t("Διπλή νίκη: +2", "Double win: +2") else t("Νίκη: +1", "Win: +1"),
                 t("Συνέχεια", "Continue"), game.color) {
-                match.won(lastWin, lastPts); tally.add(host, listOf(w), lastPts)
-                host.log(t("Τάβλι (${board.kind.title()}): $w +$lastPts", "Backgammon (${board.kind.title()}): $w +$lastPts"))
-                starter = 1 - lastWin
-                if (match.winner != null) { tally.add(host, listOf(picked[match.winner!!]), 2); host.stat(picked[match.winner!!], "tavli"); phase = Tav11.Over } else { newGame(); phase = Tav11.Play }
+                if (match.winner != null) phase = Tav11.Over else { newGame(); phase = Tav11.Play }
             }
         }
 

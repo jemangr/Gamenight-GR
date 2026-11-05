@@ -107,7 +107,7 @@ fun CoreGame(host: GameHost) {
 
         CP.Pass -> { QuitGuard(host); PassTo(who, Color(n.colorOf(n.sideOf(who))), note = t("Επίπεδο ${level.id}: ${level.name}", "Level ${level.id}: ${level.name}")) { phase = CP.Play } }
 
-        CP.Play -> CoreBoard(level, onBack = { phase = CP.Levels }, versusName = if (versus) who else null) { score, nodes ->
+        CP.Play -> CoreBoard(level, onBack = { phase = CP.Levels }, versusName = if (versus) who else null, onNext = { level = it }) { score, nodes ->
             if (versus) { runs[who] = score; phase = if (runs.size >= order.size) CP.Podium else CP.Pass }
             else { CoreSave.save(level.id, score, nodes) }
         }
@@ -130,7 +130,7 @@ fun CoreGame(host: GameHost) {
 }
 
 @Composable
-private fun CoreBoard(lv: CoreLevel, onBack: () -> Unit, versusName: String?, onSolved: (CoreScore, Map<Int, Node>) -> Unit) {
+private fun CoreBoard(lv: CoreLevel, onBack: () -> Unit, versusName: String?, onNext: (CoreLevel) -> Unit = {}, onSolved: (CoreScore, Map<Int, Node>) -> Unit) {
     val nodes = remember(lv.id, versusName) { mutableStateMapOf<Int, Node>().apply { if (versusName == null) putAll(CoreSave.layout(lv.id)) } }
     var pick by remember(lv.id) { mutableStateOf(lv.palette.keys.first()) }
     val inputs = remember(lv.id) { lv.inputSets()[0] }
@@ -147,7 +147,8 @@ private fun CoreBoard(lv: CoreLevel, onBack: () -> Unit, versusName: String?, on
             playing = false
             val s = CoreRules.score(lv, nodes.toMap())
             result = s
-            if (s.solved) { Sfx.win(); onSolved(s, nodes.toMap()) } else Sfx.wrong()
+            // solo: saved at once; versus: the player sees the score and passes on with «Next» (once)
+            if (s.solved) { Sfx.win(); if (versusName == null) onSolved(s, nodes.toMap()) } else Sfx.wrong()
         }
     }
 
@@ -199,7 +200,7 @@ private fun CoreBoard(lv: CoreLevel, onBack: () -> Unit, versusName: String?, on
             }
             if (s.solved) {
                 if (versusName != null) BigButton(t("Επόμενος", "Next"), { onSolved(s, nodes.toMap()) }, color = C.cyan)
-                else CoreLevels.byId(lv.id + 1)?.let { nx -> BigButton(t("Επόμενο επίπεδο", "Next level"), { onBack() }, color = C.cyan) }
+                else CoreLevels.byId(lv.id + 1)?.let { nx -> BigButton(t("Επόμενο επίπεδο", "Next level"), { onNext(nx) }, color = C.cyan) }
             }
         }
         if (versusName != null && result?.solved != true) GhostButton(t("Παραιτούμαι", "Give up"), { onSolved(CoreScore(false, 99, 999, 0), emptyMap()) }, Modifier.fillMaxWidth())

@@ -91,6 +91,9 @@ object AiGames {
     private val json = Json { ignoreUnknownKeys = true; isLenient = true }
 
     fun ready() = Keys.get(Havales.provider()).isNotBlank()
+
+    /** The first line with something on it (an AI answer may start with an empty line). */
+    fun firstLine(text: String) = text.lines().map { it.trim() }.firstOrNull { it.isNotEmpty() } ?: text.trim()
     fun seesPictures() = Havales.provider() == Provider.GEMINI
 
     fun system(role: String) = buildString {
@@ -271,19 +274,29 @@ fun InterroGame(host: GameHost) {
             val hist = chat.joinToString("\n") { (w, s, ai) -> (if (ai) who else w) + ": " + s }
             val r = AiGames.ask(InterroRules.role(who, case, secret), t("Η ανάκριση ως τώρα:\n", "The questioning so far:\n") + hist + t("\nΑπάντησε στην τελευταία ερώτηση.", "\nAnswer the last question."))
             busy = false
-            if (r is AiResult.Ok) { chat += Triple(who, r.text.take(500), true); Narrator.say(r.text.take(300)) } else chat += Triple(who, t("(δεν απάντησε, ρωτήστε ξανά)", "(no answer, ask again)"), true)
+            if (r is AiResult.Ok) { chat += Triple(who, r.text.take(500), true); Narrator.say(r.text.take(300)) }
+            else {
+                // no answer: the question doesn't count (it goes back in the box, to ask again)
+                chat.indexOfLast { !it.third }.takeIf { it >= 0 }?.let { i -> text = chat[i].second; chat.removeAt(i) }
+                chat += Triple(who, t("(δεν απάντησε, ρωτήστε ξανά)", "(no answer, ask again)"), true)
+            }
         }
     }
 
-    fun judge(g: String) {
+    var finder by remember { mutableStateOf<String?>(null) }
+
+    fun judge(g: String, by: String) {
         busy = true
         scope.launch {
             val r = AiGames.ask(InterroRules.role(who, case, secret), InterroRules.judgePrompt(secret, g))
             busy = false
             val o = (r as? AiResult.Ok)?.let { AiGames.parse(it.text) }
-            val ok = AiGames.bool(o, "ok") ?: AiGames.matches(g, secret)
+            val local = AiGames.matches(g, secret)
+            // the AI didn't judge and the words don't match: try again, without losing a try
+            if (AiGames.bool(o, "ok") == null && !local) { chat += Triple(who, t("(δεν μπόρεσα να το κρίνω, πείτε το ξανά)", "(couldn't judge it, say it again)"), true); phase = Interro11.Ask; return@launch }
+            val ok = AiGames.bool(o, "ok") ?: local
             say = AiGames.str(o, "say")
-            if (ok) { won = true; tally.add(host, n.names, 1); tally.add(host, listOf(Turns.player(n, turn)), 2); host.log(t("Ανακριτής: λύσατε «$case»", "Interrogator: you solved «$case»")); Sfx.win(); phase = Interro11.Judge }
+            if (ok) { won = true; tally.add(host, n.names, 1); tally.add(host, listOf(by), 2); host.log(t("Ανακριτής: λύσατε «$case»", "Interrogator: you solved «$case»")); Sfx.win(); phase = Interro11.Judge }
             else { strikes++; Sfx.wrong(); if (strikes >= InterroRules.STRIKES) { won = false; phase = Interro11.Judge } else { chat += Triple(who, say.ifBlank { t("Όχι! Λάθος.", "Nope! Wrong.") }, true); text = ""; phase = Interro11.Ask } }
         }
     }
@@ -350,10 +363,16 @@ fun InterroGame(host: GameHost) {
             QuitGuard(host)
             if (busy) AiWait(t("Το AI κρίνει…", "The AI judges…")) else
             Page(t("Ποιο είναι το μυστικό;", "What's the secret?"), onBack = { phase = Interro11.Ask }, bottom = {
-                BigButton(t("Αυτό είναι!", "That's it!"), { judge(text.trim()) }, color = color, enabled = text.isNotBlank())
+                BigButton(t("Αυτό είναι!", "That's it!"), { judge(text.trim(), finder ?: Turns.player(n, (turn - 1).coerceAtLeast(0))) }, color = color, enabled = text.isNotBlank())
             }) {
                 Body(case, color = C.text)
                 LongInput(text, { text = it }, t("Γράψτε τι πιστεύετε ότι κρύβει", "Type what you think it hides"), 200)
+                // the +2 goes to whoever found it (by default the last one who asked)
+                Body(t("Ποιος το βρήκε;", "Who found it?"), color = C.text)
+                val by = finder ?: Turns.player(n, (turn - 1).coerceAtLeast(0))
+                androidx.compose.foundation.layout.FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    n.names.forEach { p -> gr.wsol.gamenight.ui.Chip(p, selected = p == by, color = colorOf(p), onClick = { finder = p }) }
+                }
             }
         }
 
@@ -456,12 +475,15 @@ fun DrawAiGame(host: GameHost) {
         if (asking || lines.isEmpty() || found >= 0) return
         asking = true; lastAsk = System.currentTimeMillis()
         val img = AiGames.png(lines.toList())
+        val forTurn = turn
         scope.launch {
             val r = Ai.askImage(Havales.provider(), Keys.get(Havales.provider()), AiGames.system(t("Μαντεύεις ζωγραφιές σε παιχνίδι παρέας, σαν το Pictionary.", "You guess drawings in a party game, like Pictionary.")), DrawAiRules.prompt(), img)
             asking = false
+            // an answer that comes after the time is up (or in the next turn) doesn't count
+            if (turn != forTurn || phase != DrawAi11.Draw) return@launch
             when (r) {
                 is AiResult.Ok -> {
-                    val g = r.text.lines().first().trim().trimEnd('.').take(40)
+                    val g = AiGames.firstLine(r.text).trimEnd('.').take(40)
                     guesses.add(0, g)
                     if (word?.let { AiGames.matches(g, it.w) } == true && found < 0) { found = ((System.currentTimeMillis() - startAt) / 1000).toInt(); Sfx.correct() }
                 }
@@ -601,7 +623,7 @@ fun EndlessGame(host: GameHost) {
         Endless11.Intro -> Intro(game, host, listOf(
             t("Γράψε ένα θέμα («μόνο ποδόσφαιρο», «ταινίες των 90s», «Κρήτη») και το AI φτιάχνει 20 νέες κάρτες, χωρίς να επαναλαμβάνει όσες υπάρχουν ήδη.", "Type a theme («football only», «90s films», «Crete») and the AI makes 20 new cards, without repeating those that exist."),
             t("Παίξτε τες αμέσως (περιγράφεις, η ομάδα σου μαντεύει, 60″), ή κράτα τες για να μπαίνουν στα παιχνίδια όπως τα πακέτα.", "Play them right away (you describe, your team guesses, 60″), or keep them so they join the games like the packs do."),
-        ), AiGames.ready(), {
+        ), AiGames.ready() && theme.isNotBlank(), {
             if (!AiGames.ready()) AiNeeded()
             Label(t("ΓΙΑ ΠΟΙΟ ΠΑΙΧΝΙΔΙ", "FOR WHICH GAME"))
             Seg(listOf(EndlessRules.Kind.Taboo to t("Πες το αλλιώς", "Taboo"), EndlessRules.Kind.Forehead to t("Στο μέτωπο", "Forehead"), EndlessRules.Kind.Draw to t("Ζωγραφιά", "Drawing")), kind, { kind = it }, color = game.color)
@@ -703,7 +725,17 @@ fun CourtGame(host: GameHost) {
             when (val r = AiGames.ask(CourtRules.judge(), CourtRules.prompt(case, a, b, args.toList()))) {
                 is AiResult.Ok -> {
                     val o = AiGames.parse(r.text)
-                    winner = if (AiGames.str(o, "winner").uppercase().startsWith("B")) b else a
+                    // the winner as the AI wrote it: «A»/«B», or a name (also inside the text); never A by default
+                    val w = AiGames.str(o, "winner").trim()
+                    val pick = when {
+                        w.uppercase() == "A" || w.uppercase().startsWith("A ") || w.uppercase().startsWith("A:") -> a
+                        w.uppercase() == "B" || w.uppercase().startsWith("B ") || w.uppercase().startsWith("B:") -> b
+                        w.isNotBlank() && AiGames.matches(w, a) && !AiGames.matches(w, b) -> a
+                        w.isNotBlank() && AiGames.matches(w, b) && !AiGames.matches(w, a) -> b
+                        else -> listOf(a, b).filter { r.text.contains(it, ignoreCase = true) }.singleOrNull()
+                    }
+                    if (pick == null) { fail = AiResult.Fail(gr.wsol.gamenight.ai.Reason.MODEL, t("Το AI δεν έγραψε καθαρά ποιος κέρδισε.", "The AI didn't say clearly who won.")); phase = Court11.Failed; return@launch }
+                    winner = pick
                     verdict = AiGames.str(o, "verdict").ifBlank { r.text.take(500) }
                     tally.add(host, listOf(winner), 2); host.log(t("Δικαστήριο: «$case» · νίκη $winner", "Courtroom: «$case» · $winner wins"))
                     Narrator.say(verdict.take(400)); Sfx.win(); phase = Court11.Verdict
@@ -779,6 +811,9 @@ object AiqRules {
     }
 }
 
+/** The AI's answer in the vote (no player can have this name: it isn't a valid one). */
+private const val AI_ID = "#ai"
+
 private enum class Aiq11 { Intro, Card, Write, Load, Vote, Reveal, Over, Failed }
 
 @Composable
@@ -794,8 +829,9 @@ fun AiqGame(host: GameHost) {
     var card by remember { mutableStateOf<Prompt?>(null) }
     var answers by remember { mutableStateOf(mapOf<String, String>()) } // player → text
     var aiText by remember { mutableStateOf("") }
-    var shown by remember { mutableStateOf(listOf<String>()) }
-    var votes by remember { mutableStateOf(mapOf<String, String>()) }
+    // the answers to vote on, as (whose, text): by owner, not by text, so two equal answers stay two
+    var shown by remember { mutableStateOf(listOf<Pair<String, String>>()) }
+    var votes by remember { mutableStateOf(mapOf<String, String>()) } // voter → whose answer
     var fail by remember { mutableStateOf<AiResult.Fail?>(null) }
     val tally = remember { Tally() }
 
@@ -803,7 +839,10 @@ fun AiqGame(host: GameHost) {
         phase = Aiq11.Load
         scope.launch {
             when (val r = AiGames.ask(AiqRules.role(), AiqRules.prompt(card?.t ?: "", answers.values.take(3)))) {
-                is AiResult.Ok -> { aiText = r.text.lines().first().trim().trim('"', '«', '»').take(80); shown = (answers.values + aiText).distinct().shuffled(); phase = Aiq11.Vote }
+                is AiResult.Ok -> {
+                    aiText = AiGames.firstLine(r.text).trim('"', '«', '»').take(80)
+                    shown = (answers.entries.map { it.key to it.value } + (AI_ID to aiText)).shuffled(); phase = Aiq11.Vote
+                }
                 is AiResult.Fail -> { fail = r; phase = Aiq11.Failed }
             }
         }
@@ -839,9 +878,9 @@ fun AiqGame(host: GameHost) {
             if (!ready) { PassTo(who, colorOf(who), note = t("Κρυφή ψηφοφορία.", "Secret vote.")) { ready = true }; return }
             Page(card?.t ?: "", onBack = null) {
                 Text(t("$who, ποια έγραψε το AI;", "$who, which did the AI write?"), style = Type.h, color = colorOf(who))
-                shown.filter { it != answers[who] }.forEach { s ->
+                shown.filter { it.first != who }.forEach { (id, s) ->
                     GhostButton(s, {
-                        got[who] = s; Sfx.tap()
+                        got[who] = id; Sfx.tap()
                         if (i + 1 < n.names.size) { i++; ready = false } else { votes = got.toMap(); phase = Aiq11.Reveal }
                     }, Modifier.fillMaxWidth())
                 }
@@ -850,20 +889,20 @@ fun AiqGame(host: GameHost) {
 
         Aiq11.Reveal -> {
             QuitGuard(host)
-            val byAnswer = answers.entries.associate { it.value to it.key }
+            val byAnswer = answers.keys.associateWith { it }
             remember(round) {
-                tally.addAll(host, AiqRules.points(votes, aiText, byAnswer))
-                if (votes.values.none { it == aiText }) host.log(t("Ποιος είναι το AI: το AI ξεγέλασε όλους με «$aiText»", "Who is the AI: the AI fooled everyone with «$aiText»"))
+                tally.addAll(host, AiqRules.points(votes, AI_ID, byAnswer))
+                if (votes.values.none { it == AI_ID }) host.log(t("Ποιος είναι το AI: το AI ξεγέλασε όλους με «$aiText»", "Who is the AI: the AI fooled everyone with «$aiText»"))
                 0
             }
             Page(t("Το AI έγραψε…", "The AI wrote…"), onBack = null, bottom = {
                 BigButton(if (round + 1 < rounds) t("Επόμενος γύρος", "Next round") else t("Αποτελέσματα", "Results"), { if (round + 1 < rounds) { round++; card = deck.next(); phase = Aiq11.Card } else phase = Aiq11.Over }, color = game.color)
             }) {
                 Text("«$aiText»", style = Type.title, color = game.color)
-                shown.forEach { s ->
-                    val owner = if (s == aiText) "🤖 AI" else byAnswer[s] ?: ""
-                    val k = votes.values.count { it == s }
-                    Panel { Text(s, style = Type.body, color = C.text); Row { Text(owner, style = Type.small, color = if (s == aiText) game.color else colorOf(owner), modifier = Modifier.weight(1f)); Text(t("ψήφοι $k", "votes $k"), style = Type.small, color = C.muted) } }
+                shown.forEach { (id, s) ->
+                    val owner = if (id == AI_ID) "🤖 AI" else id
+                    val k = votes.values.count { it == id }
+                    Panel { Text(s, style = Type.body, color = C.text); Row { Text(owner, style = Type.small, color = if (id == AI_ID) game.color else colorOf(owner), modifier = Modifier.weight(1f)); Text(t("ψήφοι $k", "votes $k"), style = Type.small, color = C.muted) } }
                 }
             }
         }
@@ -905,8 +944,12 @@ fun OracleGame(host: GameHost) {
             when (val r = AiGames.ask(OracleRules.role(), OracleRules.prompt(n.names, OracleRules.themes[theme], Havales.summary(n)))) {
                 is AiResult.Ok -> {
                     val o = AiGames.parse(r.text) as? JsonObject
-                    val m = n.names.associateWith { name -> o?.entries?.firstOrNull { AiGames.norm(it.key) == AiGames.norm(name) }?.value?.let { (it as? JsonPrimitive)?.contentOrNull }.orEmpty() }.filterValues { it.isNotBlank() }
-                    if (m.isEmpty()) { fail = null; phase = Oracle11.Failed } else { preds = m; open = 0; gameNo++; phase = Oracle11.Show }
+                    // the names as the AI wrote them: exactly, or close («Γιάννη» for «Γιάννης»)
+                    fun pred(name: String) = (o?.entries?.firstOrNull { AiGames.norm(it.key) == AiGames.norm(name) } ?: o?.entries?.firstOrNull { AiGames.matches(it.key, name) })
+                        ?.value?.let { (it as? JsonPrimitive)?.contentOrNull }.orEmpty()
+                    val m = n.names.associateWith { pred(it) }.filterValues { it.isNotBlank() }
+                    // someone without a prediction (or only one in all): ask again, or the vote has nothing to choose from
+                    if (m.size < n.names.size || m.size < 2 && n.names.size >= 2) { fail = null; phase = Oracle11.Failed } else { preds = m; open = 0; gameNo++; phase = Oracle11.Show }
                 }
                 is AiResult.Fail -> { fail = r; phase = Oracle11.Failed }
             }

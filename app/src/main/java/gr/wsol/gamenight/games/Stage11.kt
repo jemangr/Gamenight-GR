@@ -198,7 +198,8 @@ fun MimeGame(host: GameHost) {
         Mime11.Play -> {
             QuitGuard(host)
             val left = rememberCountdown(secs, running = true, key = turn) { Sfx.wrong(); next() }
-            val guessers = if (n.teams) Turns.others(n, actor) else n.names.filter { it != actor }
+            // in teams the actor's own team guesses; a team of one has nobody to guess, then everyone else does
+            val guessers = (if (n.teams) Turns.others(n, actor) else emptyList()).ifEmpty { n.names.filter { it != actor } }
             Page(t("🙊 $actor παίζει", "🙊 $actor is acting"), onBack = null, bottom = {
                 GhostButton(t("Δεν το βρήκε κανείς", "Nobody got it"), { Sfx.wrong(); host.log(t("Μίμηση: κανείς δεν βρήκε «${card?.first?.t}»", "Mime: nobody got «${card?.first?.t}»")); next() }, Modifier.fillMaxWidth())
             }) {

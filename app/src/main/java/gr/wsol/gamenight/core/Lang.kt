@@ -22,7 +22,15 @@ object Greek {
     fun stem(s: String): String {
         val w = fold(s)
         if (w.length <= 3) return w
-        val ends = listOf("ουσ", "ων", "ου", "εσ", "ασ", "οσ", "ησ", "ια", "ιο", "ισ", "α", "ε", "η", "ι", "ο", "υ", "ω", "σ")
+        // English: plurals («fishes», «cities», «cats»)
+        if (w.all { it in 'a'..'z' || it == ' ' }) return when {
+            w.endsWith("ies") && w.length > 4 -> w.dropLast(3) + "y"
+            w.endsWith("es") && w.length > 4 -> w.dropLast(2)
+            w.endsWith("s") && !w.endsWith("ss") -> w.dropLast(1)
+            else -> w
+        }
+        // the longer endings first: «ψαριού» → «ψαρ», like «ψάρι» and «ψάρια»
+        val ends = listOf("ιου", "ιων", "ιασ", "ιεσ", "ιοσ", "ουσ", "ων", "ου", "εσ", "ασ", "οσ", "ησ", "ια", "ιο", "ισ", "α", "ε", "η", "ι", "ο", "υ", "ω", "σ")
         val e = ends.firstOrNull { w.endsWith(it) && w.length - it.length >= 3 } ?: return w
         return w.dropLast(e.length)
     }
