@@ -74,7 +74,7 @@ fun AppRoot() {
                     val host = remember(s.id) {
                         object : GameHost {
                             override fun award(who: Collection<String>, pts: Int) { Store.night = Store.night.award(who, pts) }
-                            override fun log(note: String) { Store.night = Store.night.note(s.id, note); Chaos.maybe(ctx) }
+                            override fun log(note: String) { Store.night = Store.night.note(s.id, note); Chaos.maybe(ctx); gr.wsol.gamenight.ai.Havales.maybe(ctx) }
                             override fun exit() { Report.game = null; Nav.back() }
                         }
                     }

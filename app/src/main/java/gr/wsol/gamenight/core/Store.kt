@@ -21,6 +21,12 @@ data class Settings(
     val chaos: Boolean = true,
     /** 0 rarely, 1 normally, 2 often. */
     val chaosFreq: Int = 1,
+    /** «🎙️ Χαβαλές», the optional AI teaser (the user's own key, see ai/Ai.kt). */
+    val havales: Boolean = false,
+    /** Mild friendly swearing allowed for the Χαβαλές. */
+    val havalesRude: Boolean = false,
+    /** Which provider the key below is for (Provider.name). */
+    val aiProvider: String = "GEMINI",
 )
 
 /**

@@ -33,6 +33,7 @@ import gr.wsol.gamenight.core.Night
 import gr.wsol.gamenight.core.Store
 import gr.wsol.gamenight.core.t
 import gr.wsol.gamenight.games.Games
+import kotlinx.coroutines.launch
 
 /** The text shared at the end of the night. */
 fun shareText(n: Night): String = buildString {
@@ -95,6 +96,7 @@ fun ScoreScreen() {
                 }, Modifier.fillMaxWidth())
             }
         }
+        if (n.log.isNotEmpty() && gr.wsol.gamenight.ai.Havales.ready()) StoryOfTheNight()
         gr.wsol.gamenight.chaos.Moments.last?.let { (title, lines) ->
             GhostButton(t("📸 Στιγμή της βραδιάς: $title", "📸 Moment of the night: $title"), { gr.wsol.gamenight.ui.Drawing.share(ctx, lines, "Gamenight GR · $title") }, Modifier.fillMaxWidth())
         }
@@ -114,4 +116,35 @@ fun ScoreScreen() {
         dismissButton = { TextButton(onClick = { confirm = false }) { Text(t("Άκυρο", "Cancel"), color = C.muted) } },
         containerColor = C.panel,
     )
+}
+
+/** «📜 Η ιστορία της βραδιάς», by the Χαβαλές (only with an AI key). */
+@Composable
+private fun StoryOfTheNight() {
+    val ctx = LocalContext.current
+    val scope = androidx.compose.runtime.rememberCoroutineScope()
+    var story by remember { mutableStateOf<String?>(null) }
+    var busy by remember { mutableStateOf(false) }
+    GhostButton(if (busy) t("📜 Γράφει…", "📜 Writing…") else t("📜 Η ιστορία της βραδιάς", "📜 The story of the night"), {
+        busy = true
+        scope.launch {
+            story = when (val r = gr.wsol.gamenight.ai.Havales.story()) {
+                is gr.wsol.gamenight.ai.AiResult.Ok -> r.text
+                is gr.wsol.gamenight.ai.AiResult.Fail -> reasonText(r.reason)
+            }
+            busy = false
+        }
+    }, Modifier.fillMaxWidth(), enabled = !busy)
+    story?.let { text ->
+        Panel {
+            Text(text, style = Type.body, color = C.text)
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                GhostButton(t("🔊 Διάβασέ τη", "🔊 Read it"), { gr.wsol.gamenight.extras.Narrator.init(ctx); gr.wsol.gamenight.extras.Narrator.say(text) }, Modifier.weight(1f))
+                GhostButton(t("Κοινοποίηση", "Share"), {
+                    val i = Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, text + "\n\nGamenight GR")
+                    runCatching { ctx.startActivity(Intent.createChooser(i, null)) }
+                }, Modifier.weight(1f))
+            }
+        }
+    }
 }

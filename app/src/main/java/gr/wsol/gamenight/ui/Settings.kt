@@ -53,6 +53,7 @@ fun SettingsScreen() {
             Toggle(t("🌀 Χάος", "🌀 Chaos"), t("Μικρές αστείες εκπλήξεις ανάμεσα στους γύρους: ποινές, δώρα, κατάρες, σερίφης, μονομαχίες. Και το κουμπί «🎯 Κράξε». Ποτέ μέσα σε χρονόμετρο ή σε κρυφή οθόνη.", "Small funny surprises between rounds: penalties, gifts, curses, a sheriff, duels. And the «🎯 Roast» button. Never during a timer or a secret screen."), s.chaos) { Store.settings = s.copy(chaos = it) }
             if (s.chaos) Seg(listOf(0 to t("Σπάνια", "Rarely"), 1 to t("Κανονικά", "Normal"), 2 to t("Συχνά", "Often")), s.chaosFreq, { Store.settings = s.copy(chaosFreq = it); gr.wsol.gamenight.chaos.Chaos.schedule() })
         }
+        AiPanel()
         if (BuildConfig.UPDATE_CHECK) Panel {
             Toggle(t("Έλεγχος για νέα έκδοση", "Check for new versions"), t("Μία ερώτηση στο GitHub το πολύ κάθε 6 ώρες. Δεν στέλνεται τίποτα δικό σας.", "One request to GitHub at most every 6 hours. Nothing of yours is sent."), s.updateCheck) { Store.settings = s.copy(updateCheck = it) }
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -78,8 +79,8 @@ fun SettingsScreen() {
         Panel {
             Label(t("ΙΔΙΩΤΙΚΟΤΗΤΑ", "PRIVACY"))
             Body(t(
-                "Όλα τα παιχνίδια δουλεύουν χωρίς internet. Στο κινητό μένουν μόνο τα ονόματα των παικτών, οι πόντοι και τα ρεκόρ. Δεν υπάρχει λογαριασμός, server, διαφημίσεις ή analytics. Το internet χρησιμοποιείται μόνο για τον έλεγχο νέας έκδοσης, αν είναι ανοιχτός.",
-                "Every game works offline. Only the players' names, the points and the records stay on the phone. No account, server, ads or analytics. The internet is used only for the update check, if it's on.",
+                "Όλα τα παιχνίδια δουλεύουν χωρίς internet. Στο κινητό μένουν μόνο τα ονόματα των παικτών, οι πόντοι και τα ρεκόρ. Δεν υπάρχει λογαριασμός, server, διαφημίσεις ή analytics. Το internet χρησιμοποιείται μόνο για τον έλεγχο νέας έκδοσης, αν είναι ανοιχτός, και για τον Χαβαλέ (AI), αν τον ανοίξεις με δικό σου κλειδί.",
+                "Every game works offline. Only the players' names, the points and the records stay on the phone. No account, server, ads or analytics. The internet is used only for the update check, if it's on, and for Havales (AI), if you turn it on with your own key.",
             ))
         }
         Panel {

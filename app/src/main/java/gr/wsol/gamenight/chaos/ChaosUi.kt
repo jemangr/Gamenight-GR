@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import gr.wsol.gamenight.core.Store
+import kotlinx.coroutines.launch
 import gr.wsol.gamenight.core.t
 import gr.wsol.gamenight.extras.Narrator
 import gr.wsol.gamenight.extras.Sfx
@@ -97,6 +98,7 @@ fun ChaosHomeBar() {
     val n = Store.night
     if (!Store.settings.chaos || n.players.size < 2) return
     var pick by remember { mutableStateOf<String?>(null) } // "roast" or "tax"
+    val scope = androidx.compose.runtime.rememberCoroutineScope()
     var tick by remember { mutableIntStateOf(0) }
     LaunchedEffect(Unit) { while (true) { kotlinx.coroutines.delay(5000); tick++ } }
     tick.let { }
@@ -113,7 +115,11 @@ fun ChaosHomeBar() {
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     n.names.filter { what == "roast" || it != Chaos.sheriff }.forEach { p ->
                         Chip(p, color = Color(n.colorOf(n.sideOf(p))), onClick = {
-                            if (what == "roast") Chaos.pending = Chaos.roast(ctx, p)
+                            if (what == "roast") {
+                                val ev = Chaos.roast(ctx, p)
+                                if (gr.wsol.gamenight.ai.Havales.ready()) scope.launch { Chaos.pending = gr.wsol.gamenight.ai.Havales.roast(p)?.let { ev.copy(emoji = "🎙️", text = it) } ?: ev }
+                                else Chaos.pending = ev
+                            }
                             else { Chaos.pending = Chaos.Event(Chaos.Kind.Sheriff, "🤠", t("Φόρος!", "Tax!"), t("Ο σερίφης ${Chaos.sheriff} φορολόγησε τον/την $p: −1. Νόμος είναι αυτός.", "Sheriff ${Chaos.sheriff} taxed $p: −1. That's the law."), p, -1); Chaos.sheriff = null }
                             pick = null
                         })

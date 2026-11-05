@@ -9,6 +9,8 @@ import androidx.compose.ui.test.performSemanticsAction
 import gr.wsol.gamenight.core.Night
 import gr.wsol.gamenight.core.Palette
 import gr.wsol.gamenight.core.Player
+import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.unit.dp
 import gr.wsol.gamenight.core.Settings
 import gr.wsol.gamenight.core.Store
 import gr.wsol.gamenight.games.GameHost
@@ -19,6 +21,9 @@ import gr.wsol.gamenight.ui.PlayersScreen
 import gr.wsol.gamenight.ui.ScoreScreen
 import gr.wsol.gamenight.ui.SettingsScreen
 import com.github.takahirom.roborazzi.captureRoboImage
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -69,6 +74,7 @@ class ScreenshotsTest {
     @Test fun s02_players() { Store.night = Store.night.copy(teams = true, teamOf = names.withIndex().associate { (i, n) -> n to i % 2 }); shot("02-players") { PlayersScreen() } }
     @Test fun s03_score() = shot("03-score") { ScoreScreen() }
     @Test fun s04_settings() = shot("04-settings") { SettingsScreen() }
+    @Test fun s04b_havales() { Store.settings = Store.settings.copy(havales = true); shot("04b-havales") { androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(16.dp)) { gr.wsol.gamenight.ui.AiPanel() } } }
     @Test fun s05_taboo_intro() = shot("05-taboo-intro") { game("taboo")(host) }
     @Test fun s06_taboo() = shot("06-taboo", "Ξεκινάμε", "Ξεκίνα τον χρόνο") { game("taboo")(host) }
     @Test fun s07_quads() = shot("07-quads", "Ξεκινάμε") { Store.night = Store.night.copy(players = Store.night.players.take(1)); game("quads")(host) }
@@ -112,4 +118,13 @@ class ScreenshotsTest {
     @Test fun e02_taboo() { english(); shot("en-02-taboo", "Let's go", "Start the clock") { game("taboo")(host) } }
     @Test fun e03_house() { english(); shot("en-03-house", "Let's go") { game("house")(host) } }
     @Test fun e04_settings() { english(); shot("en-04-settings") { SettingsScreen() } }
+
+    @Test fun logo() {
+        compose.setContent {
+            androidx.compose.foundation.layout.Box(androidx.compose.ui.Modifier.size(androidx.compose.ui.unit.Dp(180f)).background(androidx.compose.ui.graphics.Color(0xFF0B0A12), androidx.compose.foundation.shape.RoundedCornerShape(androidx.compose.ui.unit.Dp(40f)))) {
+                androidx.compose.foundation.Image(androidx.compose.ui.res.painterResource(R.drawable.ic_launcher_foreground), null, androidx.compose.ui.Modifier.fillMaxSize())
+            }
+        }
+        compose.onRoot().captureRoboImage("../docs/logo.png")
+    }
 }
