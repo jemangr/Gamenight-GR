@@ -17,6 +17,21 @@ import kotlinx.serialization.json.Json
 /** «Μάντεψε την ταινία ή σειρά»: emoji, the title, our own hint, and whether it's a film or a series. */
 @Serializable data class Movie(val e: String, val title: String, val hint: String, val series: Boolean = false, val gr: Boolean = false, val a: Boolean = false)
 
+/** «Ο Εξωγήινος»: the humans' word and the alien's similar one. */
+@Serializable data class AlienPair(val h: String, val x: String, val c: String = "", val a: Boolean = false)
+
+/** «Στο μέτωπο»: a word and its category. */
+@Serializable data class Word(val w: String, val c: String = "", val a: Boolean = false)
+
+/** A strange but true question with its answer («Ο Μπλοφατζής», «Ψέμα υπό πίεση»). */
+@Serializable data class Fact(val q: String, val ans: String, val a: Boolean = false)
+
+/** «Το νούμερό σου»: a scene with a 1–10 scale. */
+@Serializable data class Scene(val t: String, val lo: String, val hi: String, val a: Boolean = false)
+
+/** «Ναρκοπέδιο»: the start word and its 3 mines, each with the forms that also count. */
+@Serializable data class Minefield(val w: String, val mines: List<List<String>>, val a: Boolean = false)
+
 @Serializable
 data class Content(
     val taboo: List<TabooCard> = emptyList(),
@@ -26,6 +41,11 @@ data class Content(
     val related: List<Prompt> = emptyList(),
     val song: List<Prompt> = emptyList(),
     val movies: List<Movie> = emptyList(),
+    val alien: List<AlienPair> = emptyList(),
+    val forehead: List<Word> = emptyList(),
+    val facts: List<Fact> = emptyList(),
+    val scenes: List<Scene> = emptyList(),
+    val mines: List<Minefield> = emptyList(),
 )
 
 /** All the cards, from the JSON files in assets/content/<lang>/ (one per game). Loaded once. */
@@ -53,6 +73,11 @@ object Cards {
             related = list("related", Prompt.serializer()),
             song = list("song", Prompt.serializer()),
             movies = list("movies", Movie.serializer()),
+            alien = list("alien", AlienPair.serializer()),
+            forehead = list("forehead", Word.serializer()),
+            facts = list("facts", Fact.serializer()),
+            scenes = list("scenes", Scene.serializer()),
+            mines = list("mines", Minefield.serializer()),
         )
     }
 }

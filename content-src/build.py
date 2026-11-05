@@ -76,3 +76,28 @@ for l in lines("movies"):
     if a: it["a"] = True
     movies.append(it)
 dump("movies", movies)
+
+def split_lines(name, n):
+    for l in lines(name):
+        if not l.strip(): continue
+        l, a = adult(l)
+        p = [x.strip() for x in l.split("|")]
+        assert len(p) >= n, f"{name}: {l}"
+        yield p, a
+
+def with_a(d, a):
+    if a: d["a"] = True
+    return d
+
+dump("alien", [with_a({"h": p[0], "x": p[1], "c": p[2] if len(p) > 2 else ""}, a) for p, a in split_lines("alien", 2)])
+# forehead: "# Category" headers, then one word per line
+fh, cat = [], ""
+for l in lines("forehead"):
+    if not l.strip(): continue
+    if l.startswith("@"): cat = l[1:].strip(); continue
+    l, a = adult(l)
+    fh.append(with_a({"w": l.strip(), "c": cat}, a or cat == "18+"))
+dump("forehead", fh)
+dump("facts", [with_a({"q": p[0], "ans": p[1]}, a) for p, a in split_lines("facts", 2)])
+dump("scenes", [with_a({"t": p[0], "lo": p[1], "hi": p[2]}, a) for p, a in split_lines("scenes", 3)])
+dump("mines", [with_a({"w": p[0], "mines": [[v.strip() for v in m.split("/")] for m in p[1].split(";")]}, a) for p, a in split_lines("mines", 2)])

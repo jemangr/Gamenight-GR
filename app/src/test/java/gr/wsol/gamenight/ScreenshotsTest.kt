@@ -47,7 +47,7 @@ class ScreenshotsTest {
         override fun exit() {}
     }
 
-    private fun shot(name: String, vararg clicks: String, content: @Composable () -> Unit) {
+    private fun shot(name: String, vararg clicks: String, wait: Long = 1200, content: @Composable () -> Unit) {
         compose.mainClock.autoAdvance = false
         compose.setContent { GamenightTheme { content() } }
         compose.mainClock.advanceTimeBy(600)
@@ -59,7 +59,7 @@ class ScreenshotsTest {
             androidx.compose.runtime.snapshots.Snapshot.sendApplyNotifications()
             compose.mainClock.advanceTimeBy(700)
         }
-        compose.mainClock.advanceTimeBy(1200)
+        compose.mainClock.advanceTimeBy(wait)
         compose.onRoot().captureRoboImage("../docs/screenshots/$name.png")
     }
 
@@ -77,4 +77,11 @@ class ScreenshotsTest {
     @Test fun s10_related() = shot("10-related", "Ξεκινάμε") { game("related")(host) }
     @Test fun s11_song() = shot("11-song", "Ξεκινάμε", "Ξεκίνα τα 20") { game("song")(host) }
     @Test fun s12_movies() = shot("12-movies", "Ξεκινάμε") { game("movies")(host) }
+
+    @Test fun s13_alien() = shot("13-alien", "Ξεκινάμε", "Είμαι εγώ") { game("alien")(host) }
+    @Test fun s14_forehead() = shot("14-forehead", "Ξεκινάμε", "Έτοιμος", wait = 3600) { game("forehead")(host) }
+    @Test fun s15_bluffer() = shot("15-bluffer", "Ξεκινάμε", "Γράψτε μπλόφες", "Είμαι εγώ") { game("bluffer")(host) }
+    @Test fun s16_lie() = shot("16-lie", "Ξεκινάμε", "Είμαι εγώ") { game("lie")(host) }
+    @Test fun s17_number() = shot("17-number", "Ξεκινάμε") { game("number")(host) }
+    @Test fun s18_minefield() = shot("18-minefield", "Ξεκινάμε") { game("minefield")(host) }
 }

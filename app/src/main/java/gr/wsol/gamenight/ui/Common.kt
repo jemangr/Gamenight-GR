@@ -47,8 +47,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -259,3 +261,23 @@ fun PointsLine(night: Night, side: String, pts: Int) {
 
 /** The current night, read from the store (recomposes when points change). */
 val night: Night get() = Store.night
+
+/** A text field in the app's colours, focused at once (the keyboard opens). */
+@Composable
+fun Input(value: String, onChange: (String) -> Unit, placeholder: String, modifier: Modifier = Modifier, onDone: () -> Unit = {}) {
+    val focus = remember { androidx.compose.ui.focus.FocusRequester() }
+    androidx.compose.material3.OutlinedTextField(
+        value, { onChange(it.take(60)) }, modifier.fillMaxWidth().focusRequester(focus),
+        placeholder = { Text(placeholder, color = C.dim) }, singleLine = true, textStyle = Type.title.copy(color = C.text),
+        keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(imeAction = androidx.compose.ui.text.input.ImeAction.Done),
+        keyboardActions = androidx.compose.foundation.text.KeyboardActions(onDone = { onDone() }),
+        colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(focusedBorderColor = C.amber, unfocusedBorderColor = C.line, focusedTextColor = C.text, unfocusedTextColor = C.text, cursorColor = C.amber),
+    )
+    LaunchedEffect(Unit) { runCatching { focus.requestFocus() } }
+}
+
+/** Lays the content out turned 90° (for a phone held sideways): it gets the height as its width. */
+fun Modifier.sideways(): Modifier = this.layout { m, c ->
+    val p = m.measure(androidx.compose.ui.unit.Constraints(maxWidth = c.maxHeight, maxHeight = c.maxWidth))
+    layout(p.height, p.width) { p.placeWithLayer((p.height - p.width) / 2, (p.width - p.height) / 2) { rotationZ = 90f } }
+}

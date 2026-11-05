@@ -35,3 +35,34 @@ fun OnShake(enabled: Boolean = true, onShake: () -> Unit) {
         onDispose { sm.unregisterListener(l) }
     }
 }
+
+/**
+ * For «Στο μέτωπο»: the phone held on the forehead, screen towards the group. Tilting the screen
+ * towards the floor calls [onDown] (correct), towards the ceiling [onUp] (pass). It must come back
+ * upright before the next tilt counts.
+ */
+@Composable
+fun OnTilt(enabled: Boolean = true, onDown: () -> Unit, onUp: () -> Unit) {
+    val ctx = LocalContext.current
+    val down = rememberUpdatedState(onDown)
+    val up = rememberUpdatedState(onUp)
+    DisposableEffect(enabled) {
+        if (!enabled) return@DisposableEffect onDispose { }
+        val sm = ctx.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        val s = sm.getDefaultSensor(Sensor.TYPE_GRAVITY) ?: sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+        var armed = true
+        val l = object : SensorEventListener {
+            override fun onSensorChanged(e: SensorEvent) {
+                val z = e.values[2] // + : screen to the ceiling, − : screen to the floor
+                when {
+                    armed && z < -6.5f -> { armed = false; down.value() }
+                    armed && z > 6.5f -> { armed = false; up.value() }
+                    !armed && kotlin.math.abs(z) < 3.5f -> armed = true
+                }
+            }
+            override fun onAccuracyChanged(s: Sensor?, a: Int) {}
+        }
+        s?.let { sm.registerListener(l, it, SensorManager.SENSOR_DELAY_GAME) }
+        onDispose { sm.unregisterListener(l) }
+    }
+}

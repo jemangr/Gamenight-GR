@@ -55,6 +55,22 @@ class ContentTest {
         el.movies.forEach { assertTrue(it.title, it.e.isNotBlank() && it.hint.isNotBlank()) }
     }
 
+    @Test fun phase2Content() {
+        assertTrue("alien ${el.alien.size}", el.alien.size >= 150)
+        el.alien.forEach { assertTrue("${it.h}/${it.x}", Greek.fold(it.h) != Greek.fold(it.x)) }
+        assertEquals(emptySet<String>(), dupes(el.alien.map { it.h + "|" + it.x }))
+        assertTrue(el.forehead.size >= 300); assertEquals(emptySet<String>(), dupes(el.forehead.map { it.c + "|" + it.w }))
+        assertTrue(el.facts.size >= 80); el.facts.forEach { assertTrue(it.q, it.q.endsWith("?") || it.q.endsWith(";") && it.ans.isNotBlank()) }
+        assertTrue(el.scenes.size >= 50); el.scenes.forEach { assertTrue(it.t, it.lo.isNotBlank() && it.hi.isNotBlank()) }
+        assertTrue(el.mines.size >= 70)
+        el.mines.forEach { m ->
+            assertEquals(m.w, 3, m.mines.size)
+            // A mine must not be the start word itself.
+            m.mines.flatten().forEach { assertTrue("${m.w}: $it", Greek.stem(it) != Greek.stem(m.w)) }
+        }
+        assertEquals(emptySet<String>(), dupes(el.mines.map { it.w }))
+    }
+
     @Test fun noCapitalAccentsInTitles() {
         // House rule: no Greek capitals with accents in all-caps text; in mixed case they're fine.
         el.quads.flatMap { it.groups }.forEach { assertTrue(it.name, it.name != it.name.uppercase() || it.name.none { c -> c in "ΆΈΉΊΌΎΏ" }) }
