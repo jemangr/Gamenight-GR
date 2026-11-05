@@ -9,7 +9,7 @@
   <a href="https://github.com/jemangr/Gamenight-GR/releases/latest/download/GamenightGR.apk"><img src="https://img.shields.io/badge/Download-APK-FFB020?style=for-the-badge&logo=android&logoColor=black" width="230" alt="Download APK"></a>
 </p>
 
-<p align="center">Android 10+ · 1 έως 7 παίκτες ή ομάδες · ελληνικά και English · ανοιχτός κώδικας (MIT) · offline · αυτόματες ενημερώσεις</p>
+<p align="center">Android 10+ · 1 έως 7 παίκτες ή ομάδες · ελληνικά και English · ανοιχτός κώδικας (MIT) · offline · αυτόματες ενημερώσεις · <a href="https://platebit.app/game">platebit.app/game</a></p>
 
 <p align="center">
 <img src="docs/screenshots/01-home.png" width="190" alt="Η αρχική οθόνη">
