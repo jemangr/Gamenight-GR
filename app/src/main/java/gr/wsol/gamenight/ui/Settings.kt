@@ -78,6 +78,7 @@ fun SettingsScreen() {
             }
             checking?.let { Body(it) }
         }
+        SharePanel()
         Panel(onClick = { Nav.go(Screen.Report) }) {
             Text(t("🐞 Αναφορά προβλήματος", "🐞 Report a problem"), style = Type.body, color = C.text)
             Text(t("Με email στο ${Report.EMAIL}. Χωρίς τα ονόματα των παικτών.", "By email to ${Report.EMAIL}. Without the players' names."), style = Type.small, color = C.muted)
@@ -155,3 +156,34 @@ fun CrashDialog(report: String, onClose: () -> Unit) {
     )
 }
 
+
+
+/** 1.1.1: «Μοιράσου το Gamenight»: the download link, to send to friends. */
+object ShareApp {
+    const val LINK = "https://platebit.app/game"
+    fun text() = t(
+        "Gamenight GR: 54 παιχνίδια παρέας σε ένα κινητό, δωρεάν και χωρίς διαφημίσεις. Κατέβασέ το: $LINK",
+        "Gamenight GR: 54 party games on one phone, free and without ads. Get it here: $LINK",
+    )
+}
+
+@Composable
+fun SharePanel() {
+    val ctx = LocalContext.current
+    val clipboard = LocalClipboard.current
+    val scope = rememberCoroutineScope()
+    var copied by remember { mutableStateOf(false) }
+    Panel {
+        Text(t("📤 Μοιράσου το Gamenight", "📤 Share Gamenight"), style = Type.body, color = C.text)
+        Text(t("Στείλε στην παρέα το link για να το κατεβάσουν: ${ShareApp.LINK}", "Send the group the download link: ${ShareApp.LINK}"), style = Type.small, color = C.muted)
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            BigButton(t("Μοιράσου", "Share"), {
+                val i = Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, ShareApp.text())
+                runCatching { ctx.startActivity(Intent.createChooser(i, null)) }
+            }, Modifier.weight(1f))
+            GhostButton(if (copied) t("✓ Αντιγράφηκε", "✓ Copied") else t("Αντιγραφή link", "Copy link"), {
+                scope.launch { clipboard.setClipEntry(ClipEntry(ClipData.newPlainText("Gamenight GR", ShareApp.LINK))); copied = true }
+            }, Modifier.weight(1f))
+        }
+    }
+}

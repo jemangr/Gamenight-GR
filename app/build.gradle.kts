@@ -16,8 +16,8 @@ android {
         applicationId = "gr.wsol.gamenight"
         minSdk = 29
         targetSdk = 36
-        versionCode = 9
-        versionName = "1.1.0"
+        versionCode = 10
+        versionName = "1.1.1"
         buildConfigField("boolean", "UPDATE_CHECK", (!project.hasProperty("noUpdateCheck")).toString())
     }
 

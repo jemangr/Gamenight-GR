@@ -287,5 +287,12 @@ class Games11Test {
         val f = SafeDial(listOf(5, 30, 10)); f.feed(0f, 1 / 60f); assertEquals("reset", f.feed(40f, 1 / 60f))
     }
 
+    @Test fun shareTextHasTheDownloadLink() {
+        assertTrue(gr.wsol.gamenight.ui.ShareApp.text().endsWith("https://platebit.app/game"))
+        Store.settings = Store.settings.copy(english = true)
+        assertTrue(gr.wsol.gamenight.ui.ShareApp.text().startsWith("Gamenight GR: 54 party games"))
+        Store.settings = Store.settings.copy(english = false)
+    }
+
     private fun abs(f: Float) = kotlin.math.abs(f)
 }
