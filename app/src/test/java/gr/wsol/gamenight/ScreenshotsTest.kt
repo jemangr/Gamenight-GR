@@ -113,6 +113,51 @@ class ScreenshotsTest {
     @Test fun s35_core_board() { (1..10).forEach { Store.forceBest("core.$it.solved", 1) }; shot("35-core-board", "11") { game("core")(host) } }
     @Test fun s36_chaos() = shot("36-chaos") { gr.wsol.gamenight.chaos.ChaosOverlay(gr.wsol.gamenight.chaos.Chaos.Event(gr.wsol.gamenight.chaos.Chaos.Kind.Penalty, "🚨", "Ποινή!", "Νίκος: −1, γιατί δεν πότισε το καναρίνι.", "Νίκος", -1)) {} }
 
+
+    // ---- 1.1 ----
+    private fun teams() { Store.night = Store.night.copy(teams = true, teamCount = 2, teamOf = names.withIndex().associate { (i, n) -> n to i % 2 }) }
+    private fun aiKey() { gr.wsol.gamenight.ai.Keys.set(gr.wsol.gamenight.ai.Provider.GEMINI, "AIzaTEST_ONLY_NOT_A_REAL_KEY_0000000000") }
+    @Test fun n01_whois() = shot("40-whois", "Ξεκινάμε") { game("whois")(host) }
+    @Test fun n02_knowme() = shot("41-knowme", "Ξεκινάμε") { game("knowme")(host) }
+    @Test fun n03_dice() = shot("42-dice", "Ξεκινάμε") { game("dice")(host) }
+    @Test fun n04_bottle() = shot("43-bottle", "Ξεκινάμε") { game("bottle")(host) }
+    @Test fun n05_closest() = shot("44-closest", "Ξεκινάμε") { game("closest")(host) }
+    @Test fun n06_quiz() { teams(); shot("45-quiz", "Ξεκινάμε") { game("quiz")(host) } }
+    @Test fun n07_chain() = shot("46-chain-intro") { game("chain")(host) }
+    @Test fun n08_mime() = shot("47-mime-intro") { game("mime")(host) }
+    @Test fun n09_whisper() = shot("48-whisper-intro") { game("whisper")(host) }
+    @Test fun n10_spy() = shot("49-spy-intro") { game("spy")(host) }
+    @Test fun n11_lietower() = shot("50-lietower-intro") { game("lietower")(host) }
+    @Test fun n12_tavli_intro() = shot("51-tavli-intro") { game("tavli")(host) }
+    @Test fun n13_tavli() = shot("52-tavli", "Ξεκινάμε", "Ρίξε") { game("tavli")(host) }
+    @Test fun n14_interro() { aiKey(); shot("53-interro-intro") { game("interro")(host) } }
+    @Test fun n15_drawai() { aiKey(); shot("54-drawai-intro") { game("drawai")(host) } }
+    @Test fun n16_endless() { aiKey(); shot("55-endless-intro") { game("endless")(host) } }
+    @Test fun n17_court() { aiKey(); shot("56-court-intro") { game("court")(host) } }
+    @Test fun n18_aiq() { aiKey(); shot("57-aiq-intro") { game("aiq")(host) } }
+    @Test fun n19_oracle() { aiKey(); shot("58-oracle-intro") { game("oracle")(host) } }
+    @Test fun n20_noai() = shot("59-ai-needs-key") { game("court")(host) }
+    @Test fun n21_dual() = shot("60-dual", "Ξεκινάμε", "Πάμε", wait = 1500) { game("dual")(host) }
+    @Test fun n22_ring() = shot("61-ring", "Ξεκινάμε", "Πάμε", wait = 1500) { game("ring")(host) }
+    @Test fun n23_laser() = shot("62-laser", "Ξεκινάμε", "Πάμε", wait = 1500) { game("laser")(host) }
+    @Test fun n24_spiral() = shot("63-spiral", "Ξεκινάμε", "Πάμε", wait = 1500) { game("spiral")(host) }
+    @Test fun n25_drone() = shot("64-drone", "Ξεκινάμε", "Απογείωση", wait = 800) { game("drone")(host) }
+    @Test fun n26_defuse() = shot("65-defuse-intro") { game("defuse")(host) }
+    @Test fun n27_icequiz() = shot("66-icequiz", "Ξεκινάμε", "Πάμε", wait = 800) { game("icequiz")(host) }
+    @Test fun n28_safe() = shot("67-safe", "Ξεκινάμε", "Ανοίγουμε", wait = 800) { game("safe")(host) }
+    @Test fun n29_settings_packs() = shot("68-settings-packs") { androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(16.dp)) { gr.wsol.gamenight.ui.PacksPanel() } }
+    @Test fun n30_history() {
+        gr.wsol.gamenight.core.History.clear()
+        listOf(mapOf("Μαρία" to 9, "Γιάννης" to 7), mapOf("Μαρία" to 5, "Νίκος" to 8), mapOf("Μαρία" to 11, "Ελένη" to 6)).forEach { gr.wsol.gamenight.core.History.add(Store.night.copy(points = it)) }
+        shot("69-history") { gr.wsol.gamenight.ui.HistoryScreen() }
+    }
+    @Test fun n31_summer() { Store.settings = Store.settings.copy(look = 1); shot("70-summer") { HomeScreen() } }
+    @Test fun n32_christmas() { Store.settings = Store.settings.copy(look = 2); shot("71-christmas", "Ξεκινάμε") { game("whois")(host) } }
+    @Test fun n33_en_spy() { english(); shot("en-05-spy-intro") { game("spy")(host) } }
+    @Test fun n34_en_tavli() { english(); shot("en-06-tavli", "Let's go", "Roll") { game("tavli")(host) } }
+    @Test fun n35_en_closest() { english(); shot("en-07-closest", "Let's go") { game("closest")(host) } }
+    @Test fun n36_en_court() { english(); aiKey(); shot("en-08-court-intro") { game("court")(host) } }
+
     private fun english() { Store.settings = Store.settings.copy(english = true) }
     @Test fun e01_home() { english(); shot("en-01-home") { HomeScreen() } }
     @Test fun e02_taboo() { english(); shot("en-02-taboo", "Let's go", "Start the clock") { game("taboo")(host) } }

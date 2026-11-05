@@ -1,0 +1,76 @@
+# «Whisper in the dark»: t|topic to chat about or w|secret word. '!' = 18+ (never sexual).
+t|The best holiday you've had
+t|What you'd do if you won the lottery
+t|The worst food you've ever eaten
+t|What the perfect weekend looks like
+t|The funniest story from school
+t|Which animal you'd like as a pet
+t|What you'd change in your town
+t|The strangest job you know of
+t|The best islands for summer
+t|What you'd take to a desert island
+t|Which film is worth watching tonight
+t|How you'd throw a big party
+t|What you cook best
+t|The worst habits on the road
+t|The best concert you've been to
+t|What you'd do with a free month
+t|Where to get the best coffee
+t|What you do in a power cut
+t|Which sport you'd like to learn
+t|The best snacks to go with a drink
+t|The best present you've ever had
+t|Your first job
+t|What your dream house looks like
+t|What reminds you of childhood summers
+t|The worst traffic jam you've been in
+w|penguin
+w|pineapple
+w|remote control
+w|diving suit
+w|moustache
+w|umbrella
+w|helicopter
+w|watermelon
+w|dinosaur
+w|shoe
+w|moon
+w|soap bubble
+w|camel
+w|banana
+w|owl
+w|toast
+w|beanie
+w|trumpet
+w|pillow
+w|crocodile
+w|jumper
+w|volcano
+w|rabbit
+w|sponge
+w|cassette player
+w|mushroom
+w|chestnut
+w|ice cream
+w|sunglasses
+w|beans
+w|comet
+w|saucepan
+w|cicada
+w|doughnut
+w|kite
+w|lobster
+w|chimney
+w|grapes
+w|magnet
+w|bicycle
+w|slippers
+w|saxophone
+w|melon
+w|captain
+w|broomstick
+w|kitten
+w|toaster
+w|pretzel
+w|zebra
+w|firefighter

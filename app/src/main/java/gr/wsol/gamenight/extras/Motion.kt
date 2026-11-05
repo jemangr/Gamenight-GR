@@ -84,3 +84,29 @@ fun rememberTilt(): androidx.compose.runtime.State<androidx.compose.ui.geometry.
     }
     return state
 }
+
+/** 1.1: gravity in 3D (m/s², phone axes) and how hard the phone is being jerked (m/s², gravity removed). */
+data class MotionNow(val gx: Float = 0f, val gy: Float = 9.81f, val gz: Float = 0f, val jerk: Float = 0f, val has: Boolean = false)
+
+@Composable
+fun rememberMotion(): androidx.compose.runtime.State<MotionNow> {
+    val ctx = LocalContext.current
+    val state = androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(MotionNow()) }
+    DisposableEffect(Unit) {
+        val sm = ctx.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        val g = sm.getDefaultSensor(Sensor.TYPE_GRAVITY) ?: sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+        val lin = sm.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
+        val l = object : SensorEventListener {
+            override fun onSensorChanged(e: SensorEvent) {
+                val v = e.values
+                state.value = if (e.sensor.type == Sensor.TYPE_LINEAR_ACCELERATION) state.value.copy(jerk = sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]))
+                else state.value.copy(gx = v[0], gy = v[1], gz = v[2], has = true)
+            }
+            override fun onAccuracyChanged(s: Sensor?, a: Int) {}
+        }
+        g?.let { sm.registerListener(l, it, SensorManager.SENSOR_DELAY_GAME) }
+        lin?.let { sm.registerListener(l, it, SensorManager.SENSOR_DELAY_GAME) }
+        onDispose { sm.unregisterListener(l) }
+    }
+    return state
+}

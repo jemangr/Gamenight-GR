@@ -14,9 +14,9 @@ import org.junit.Test
 import kotlin.random.Random
 
 class GamesTest {
-    @Test fun all28GamesWithUniqueIds() {
-        assertEquals(28, Games.all.size)
-        assertEquals(28, Games.all.map { it.id }.toSet().size)
+    @Test fun all54GamesWithUniqueIds() {
+        assertEquals(54, Games.all.size)
+        assertEquals(54, Games.all.map { it.id }.toSet().size)
         Games.all.forEach { assertTrue("${it.id} players", it.min in 1..7 && it.max in it.min..7) }
     }
 

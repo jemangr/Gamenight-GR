@@ -1,0 +1,41 @@
+# «The spy in the house»: place|roles separated by commas.
+Hospital|doctor,nurse,patient,visitor,porter,cleaner
+School|teacher,pupil,head teacher,caretaker,parent,canteen worker
+Airport|pilot,flight attendant,traveller,customs officer,porter,air traffic controller
+Tavern|cook,waiter,customer,musician,cashier,owner's child
+Beach|lifeguard,swimmer,corn seller,child with a bucket,tourist,umbrella hire
+Supermarket|cashier,customer,delivery rider,shelf stacker,security guard,manager
+Football stadium|referee,coach,player,fan,snack seller,camera operator
+Island ferry|captain,sailor,passenger,cook,cabin steward,passenger's dog
+Bank|cashier,customer,manager,guard,loan adviser,cleaner
+Cinema|usher,viewer,popcorn seller,projectionist,critic,couple in the back row
+Wedding|bride,groom,best man,priest,photographer,aunt asking when you'll marry
+Village festival|clarinet player,grill master,dancer,grandma,child with candy floss,village mayor
+Funfair|ride operator,child,parent,candy floss seller,clown,guard
+Library|librarian,student,writer,child,pensioner,cleaner
+Space station|astronaut,engineer,scientist,pilot,doctor,space tourist
+Circus|acrobat,clown,magician,spectator,animal trainer,ticket seller
+Hair salon|hairdresser,customer,assistant,manicurist,crying child,coffee delivery
+Police station|police officer,suspect,witness,lawyer,duty officer,journalist
+Ski resort|ski instructor,skier,lift operator,chalet barman,beginner,rescuer
+Museum|guard,guide,tourist,archaeologist,pupil on a trip,painter
+Street market|greengrocer,shopper with a trolley,fishmonger,cheese seller,child,warden
+Gym|trainer,beginner,bodybuilder,receptionist,runner,cleaner
+Building site|engineer,builder,crane operator,foreman,passer-by watching,guard
+Campsite|camper,owner,child,campfire cook,tourist with a caravan,guitar player
+Train|driver,ticket inspector,passenger,coffee seller,tourist,student
+Zoo|keeper,vet,visitor,photographer,child,feeder
+Fire station|firefighter,engine driver,officer,dispatcher,trainee,team dog
+Radio station|producer,sound engineer,guest,caller on the line,DJ,intern
+Hotel|receptionist,housekeeper,guest,chef,doorman,manager
+Pharmacy|pharmacist,assistant,customer,doctor,delivery rider,grandad with a prescription
+Petrol station|attendant,driver,lorry driver,mechanic,customer with a dog,cashier
+Theatre|actor,director,spectator,stagehand,usher,prompter
+Pirate ship|captain,cabin boy,cook,lookout,prisoner,parrot
+TV studio|presenter,camera operator,guest,make-up artist,director,audience
+Fishing boat|fisherman,captain,sailor,tourist,seagull,fish trader
+Post office|clerk,customer,postman,pensioner,student,security guard
+Grandma's house|grandma,grandad,grandchild,cat,neighbour,uncle who came for lunch
+Café|barista,customer with a laptop,waiter,owner,couple,delivery rider
+Swimming pool|lifeguard,swimmer,child with armbands,coach,pensioner,cashier
+Operating theatre|surgeon,anaesthetist,nurse,patient,junior doctor,cleaner

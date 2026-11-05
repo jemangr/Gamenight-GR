@@ -54,7 +54,8 @@ fun AiPanel() {
             "Ένας AI πειραχτήρι που πού και πού πετάγεται ανάμεσα στους γύρους, κράζει όποιον πατήσεις στο «🎯 Κράξε» και γράφει την ιστορία της βραδιάς. Θέλει δικό σου δωρεάν κλειδί. Στον πάροχο πάνε μόνο τα ονόματα, οι πόντοι και τι έγινε απόψε.",
             "An AI joker who now and then pops in between rounds, roasts whoever you pick in «🎯 Roast» and writes the story of the night. Needs your own free key. Only the names, the points and what happened tonight go to the provider.",
         ), s.havales) { Store.settings = s.copy(havales = it) }
-        if (!s.havales) return@Panel
+        Body(t("Το ίδιο κλειδί παίζει και τα παιχνίδια 🤖 AI (Ανακριτής, Δικαστήριο, Ποιος είναι το AI…), ακόμα κι αν ο Χαβαλές είναι κλειστός.", "The same key also plays the 🤖 AI games (Interrogator, Courtroom, Who is the AI…), even with Havales off."))
+        Body(t("Στα παιχνίδια AI πάνε στον πάροχο μόνο όσα γράφετε μέσα στο παιχνίδι, τα ονόματα και, στο «Ζωγράφισε για το AI», η ζωγραφιά.", "In the AI games only what you type in the game, the names and, in «Draw for the AI», the drawing go to the provider."))
         Label(t("ΠΑΡΟΧΟΣ", "PROVIDER"))
         androidx.compose.foundation.layout.FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Provider.entries.forEach { o -> Chip(o.label, selected = o == p, onClick = { Store.settings = s.copy(aiProvider = o.name) }) }
@@ -81,7 +82,7 @@ fun AiPanel() {
                 status = t("Δοκιμή…", "Testing…")
                 scope.launch {
                     status = when (val r = Ai.testKey(p, k)) {
-                        is AiResult.Ok -> t("✓ Δουλεύει. Ο Χαβαλές είναι έτοιμος.", "✓ Works. Havales is ready.")
+                        is AiResult.Ok -> t("✓ Δουλεύει. Ο Χαβαλές και τα παιχνίδια AI είναι έτοιμα.", "✓ Works. Havales and the AI games are ready.")
                         is AiResult.Fail -> "✗ " + reasonText(r.reason)
                     }
                 }

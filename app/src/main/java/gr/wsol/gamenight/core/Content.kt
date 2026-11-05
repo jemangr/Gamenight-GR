@@ -35,6 +35,18 @@ import kotlinx.serialization.json.Json
 /** «Ο Σαμποτέρ»: a shared mission. A list mission has a [trap] (a wrong answer that sounds right); a story mission has a [word] to steer to. */
 @Serializable data class Mission(val t: String, val trap: String = "", val word: String = "", val a: Boolean = false) { val story get() = word.isNotEmpty() }
 
+/** 1.1: a card with a kind ([c]): «Ζάρι» q/d/m/n, «Μίμηση» a/r, «Ψίθυρος» t/w, «Μπουκάλι» t/d. */
+@Serializable data class Tagged(val t: String, val c: String = "", val a: Boolean = false)
+
+/** «Το κοντινότερο»: a question with a number for an answer and its unit. */
+@Serializable data class NumberQ(val q: String, val n: Double, val u: String = "", val a: Boolean = false)
+
+/** «Ο κατάσκοπος στο σπίτι»: a place and the roles in it. */
+@Serializable data class Place(val place: String, val roles: List<String>, val a: Boolean = false)
+
+/** «Κουίζ γειτονιάς», «Trivia σε ισορροπία»: a question, the right answer and three wrong ones. */
+@Serializable data class Quiz(val q: String, val ok: String, val no: List<String>, val a: Boolean = false)
+
 @Serializable
 data class Content(
     val taboo: List<TabooCard> = emptyList(),
@@ -56,12 +68,27 @@ data class Content(
     val gifts: List<Prompt> = emptyList(),
     val curses: List<Prompt> = emptyList(),
     val roasts: List<Prompt> = emptyList(),
+    val whois: List<Prompt> = emptyList(),
+    val knowme: List<Prompt> = emptyList(),
+    val tower: List<Prompt> = emptyList(),
+    val court: List<Prompt> = emptyList(),
+    val aiq: List<Prompt> = emptyList(),
+    val dice: List<Tagged> = emptyList(),
+    val mime: List<Tagged> = emptyList(),
+    val whisper: List<Tagged> = emptyList(),
+    val bottle: List<Tagged> = emptyList(),
+    val closest: List<NumberQ> = emptyList(),
+    val spy: List<Place> = emptyList(),
+    val quiz: List<Quiz> = emptyList(),
 )
 
 /** All the cards, from the JSON files in assets/content/<lang>/ (one per game). Loaded once. */
 object Cards {
     private val json = Json { ignoreUnknownKeys = true }
     @Volatile private var cache: Pair<String, Content>? = null
+
+    /** After a pack or the group's own cards change. */
+    fun reset() { cache = null }
 
     fun get(c: Context): Content {
         val lang = if (Lang.english) "en" else "el"
@@ -95,7 +122,19 @@ object Cards {
             gifts = list("gifts", Prompt.serializer()),
             curses = list("curses", Prompt.serializer()),
             roasts = list("roasts", Prompt.serializer()),
-        )
+            whois = list("whois", Prompt.serializer()),
+            knowme = list("knowme", Prompt.serializer()),
+            tower = list("tower", Prompt.serializer()),
+            court = list("court", Prompt.serializer()),
+            aiq = list("aiq", Prompt.serializer()),
+            dice = list("dice", Tagged.serializer()),
+            mime = list("mime", Tagged.serializer()),
+            whisper = list("whisper", Tagged.serializer()),
+            bottle = list("bottle", Tagged.serializer()),
+            closest = list("closest", NumberQ.serializer()),
+            spy = list("spy", Place.serializer()),
+            quiz = list("quiz", Quiz.serializer()),
+        ).withPacks(lang)
     }
 }
 

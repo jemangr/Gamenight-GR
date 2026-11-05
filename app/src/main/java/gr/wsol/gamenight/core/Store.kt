@@ -27,6 +27,8 @@ data class Settings(
     val havalesRude: Boolean = false,
     /** Which provider the key below is for (Provider.name). */
     val aiProvider: String = "GEMINI",
+    /** 1.1: 0 «Βραδιά» (dark), 1 «Καλοκαίρι», 2 «Χριστούγεννα»: colours and sounds. */
+    val look: Int = 0,
 )
 
 /**

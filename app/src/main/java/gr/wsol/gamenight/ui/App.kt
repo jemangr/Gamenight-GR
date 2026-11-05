@@ -29,6 +29,7 @@ sealed interface Screen {
     data object Score : Screen
     data object Settings : Screen
     data object Report : Screen
+    data object History : Screen
     data class Play(val id: String) : Screen
 }
 
@@ -67,6 +68,7 @@ fun AppRoot() {
             Screen.Score -> ScoreScreen()
             Screen.Settings -> SettingsScreen()
             Screen.Report -> ReportScreen()
+            Screen.History -> HistoryScreen()
             is Screen.Play -> {
                 val g = Games.byId(s.id)
                 if (g?.play == null) Nav.back() else {

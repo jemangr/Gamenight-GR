@@ -27,14 +27,29 @@ object Sfx {
     fun tick() = play("tick") { tone(0.03, sq(2000.0), dec(80.0)) }
     fun tap() = play("tap") { tone(0.05, sq(660.0), dec(50.0)) }
     fun heartbeat() = play("heart") { join(tone(0.09, { x -> sin(2 * PI * 60 * x) }, dec(30.0)), silence(0.07), tone(0.09, { x -> sin(2 * PI * 52 * x) }, dec(30.0))) }
-    fun end() = play("end") { join(tone(0.18, sq(523.0), { 1.0 }), tone(0.18, sq(659.0), { 1.0 }), tone(0.45, sq(784.0), dec(4.0))) }
-    fun win() = play("win") { join(tone(0.12, sq(523.0), { 1.0 }), tone(0.12, sq(659.0), { 1.0 }), tone(0.12, sq(784.0), { 1.0 }), tone(0.5, sq(1046.0), dec(3.0))) }
+    private val look get() = Store.settings.look
+    fun end() = when (look) {
+        2 -> play("end-x") { join(tone(0.16, bellTone(659.0), dec(5.0)), tone(0.16, bellTone(659.0), dec(5.0)), tone(0.4, bellTone(659.0), dec(3.0))) }
+        1 -> play("end-s") { join(tone(0.14, sq(587.0), { 1.0 }), tone(0.14, sq(740.0), { 1.0 }), tone(0.45, sq(880.0), dec(4.0))) }
+        else -> endNight()
+    }
+    private fun endNight() = play("end") { join(tone(0.18, sq(523.0), { 1.0 }), tone(0.18, sq(659.0), { 1.0 }), tone(0.45, sq(784.0), dec(4.0))) }
+    fun win() = when (look) {
+        // «Jingle bells» feel: three bells, a pause, three bells, then up
+        2 -> play("win-x") { join(tone(0.14, bellTone(659.0), dec(6.0)), tone(0.14, bellTone(659.0), dec(6.0)), tone(0.28, bellTone(659.0), dec(4.0)), tone(0.14, bellTone(659.0), dec(6.0)), tone(0.14, bellTone(784.0), dec(6.0)), tone(0.5, bellTone(523.0), dec(2.5))) }
+        // summer: a bright steel-drum arpeggio
+        1 -> play("win-s") { join(tone(0.1, bellTone(784.0), dec(9.0)), tone(0.1, bellTone(988.0), dec(9.0)), tone(0.1, bellTone(1175.0), dec(9.0)), tone(0.45, bellTone(1568.0), dec(4.0))) }
+        else -> winNight()
+    }
+    private fun winNight() = play("win") { join(tone(0.12, sq(523.0), { 1.0 }), tone(0.12, sq(659.0), { 1.0 }), tone(0.12, sq(784.0), { 1.0 }), tone(0.5, sq(1046.0), dec(3.0))) }
     fun boom() = play("boom") { mix(noise(1.2, 1.0, 3.0), tone(0.8, { x -> sin(2 * PI * (90 - 50 * x) * x) }, dec(4.0))) }
 
     // «Το στοιχειωμένο σπίτι»
     fun wind() = play("wind") { noise(2.2, 0.55, 0.4) }
     fun creak() = play("creak") { tone(0.7, { x -> 0.6 * sin(2 * PI * (180 + 90 * sin(2 * PI * 7 * x)) * x) }, { x -> sin(PI * x / 0.7) * 0.8 }) }
     fun bell() = play("bell") { tone(2.0, { x -> sin(2 * PI * 196 * x) + 0.5 * sin(2 * PI * 392 * x) + 0.3 * sin(2 * PI * 587 * x) }, dec(1.6)) }
+
+    private fun bellTone(f: Double): (Double) -> Double = { x -> (sin(2 * PI * f * x) + 0.4 * sin(2 * PI * 2.76 * f * x) + 0.2 * sin(2 * PI * 5.4 * f * x)) / 1.6 }
 
     private fun play(key: String, make: () -> ShortArray) {
         if (!Store.settings.sounds) return

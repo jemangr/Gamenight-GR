@@ -57,7 +57,7 @@ fun HomeScreen() {
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(Modifier.size(44.dp).clip(RoundedCornerShape(13.dp)).background(Brush.sweepGradient(listOf(C.amber, C.pink, C.ghost, C.green, C.amber))), contentAlignment = Alignment.Center) {
-                Text("🎲", fontSize = 22.sp)
+                Text(Looks.current.emoji, fontSize = 22.sp)
             }
             Spacer(Modifier.width(12.dp))
             Column {

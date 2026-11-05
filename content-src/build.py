@@ -117,3 +117,13 @@ for p, a in split_lines("missions", 2):
 dump("missions", ms)
 
 for k in ("penalties", "gifts", "curses", "roasts"): prompts(k)
+
+# ---- 1.1 ----
+for k in ("whois", "knowme", "tower", "court", "aiq"): prompts(k)
+dump("dice", [with_a({"t": p[1], "c": p[0]}, a) for p, a in split_lines("dice", 2)])
+dump("closest", [with_a({"q": p[0], "n": float(p[1]), "u": p[2] if len(p) > 2 else ""}, a) for p, a in split_lines("closest", 2)])
+dump("mime", [with_a({"t": p[1], "c": p[0]}, a) for p, a in split_lines("mime", 2)])
+dump("whisper", [with_a({"t": p[1], "c": p[0]}, a) for p, a in split_lines("whisper", 2)])
+dump("bottle", [with_a({"t": p[1], "c": p[0]}, a) for p, a in split_lines("bottle", 2)])
+dump("spy", [with_a({"place": p[0], "roles": [r.strip() for r in p[1].split(",")]}, a) for p, a in split_lines("spy", 2)])
+dump("quiz", [with_a({"q": p[0], "ok": p[1], "no": p[2:5]}, a) for p, a in split_lines("quiz", 5)])

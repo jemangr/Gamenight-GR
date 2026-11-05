@@ -9,5 +9,6 @@ class GamenightApp : Application() {
         super.onCreate()
         Crash.install(this)
         Store.init(this)
+        gr.wsol.gamenight.core.Packs.init(this)
     }
 }

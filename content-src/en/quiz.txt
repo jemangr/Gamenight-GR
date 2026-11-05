@@ -1,0 +1,88 @@
+# «Neighbourhood quiz» (and «Balance trivia»): question|right|wrong|wrong|wrong. Stable facts only.
+What is the capital of Australia?|Canberra|Sydney|Melbourne|Perth
+What is the largest Greek island?|Crete|Evia|Lesbos|Rhodes
+Who wrote the "Odyssey"?|Homer|Hesiod|Sophocles|Aeschylus
+How many years are in a century?|100|50|1,000|10
+What is the chemical symbol for gold?|Au|Ag|Go|Gd
+Which planet is called the "red planet"?|Mars|Venus|Jupiter|Saturn
+In which city is the White Tower?|Thessaloniki|Kavala|Volos|Patras
+Who painted the "Mona Lisa"?|Leonardo da Vinci|Michelangelo|Raphael|Van Gogh
+What is the largest animal on Earth?|Blue whale|African elephant|Giraffe|Sperm whale
+Which god was king of the Olympian gods?|Zeus|Poseidon|Apollo|Ares
+Which goddess is the protector of Athens?|Athena|Hera|Artemis|Aphrodite
+What is the longest river in Europe?|Volga|Danube|Rhine|Seine
+Which EU country has the largest population?|Germany|France|Italy|Spain
+What is the currency of Switzerland?|Franc|Euro|Krone|Pound
+On which continent is Egypt?|Africa|Asia|Europe|Oceania
+Which organ pumps blood around the body?|Heart|Lungs|Liver|Kidneys
+How many sides does a hexagon have?|6|5|7|8
+Which gas do we breathe to live?|Oxygen|Nitrogen|Hydrogen|Helium
+Who composed the music for "Zorba the Greek"?|Mikis Theodorakis|Manos Hadjidakis|Stavros Xarchakos|Vangelis
+Which Greek poet won the Nobel Prize in 1963?|George Seferis|Odysseas Elytis|Constantine Cavafy|Yannis Ritsos
+Who wrote the "Hymn to Liberty"?|Dionysios Solomos|Andreas Kalvos|Kostis Palamas|Ioannis Polemis
+What is the highest mountain in Greece?|Olympus|Smolikas|Psiloritis|Parnassus
+Which island had the famous Colossus?|Rhodes|Kos|Samos|Naxos
+Which city hosted the 2004 Olympic Games?|Athens|Sydney|Beijing|London
+Which team won Euro 2004?|Greece|Portugal|Czech Republic|France
+What is the fastest land animal?|Cheetah|Lion|Horse|Hare
+What is cork?|Tree bark|A mineral|A plastic|A root
+What is the capital of Spain?|Madrid|Barcelona|Seville|Valencia
+What is the capital of Canada?|Ottawa|Toronto|Vancouver|Montreal
+How many players does a volleyball team have on court?|6|5|7|9
+Which country is shaped like a boot?|Italy|Spain|Chile|Portugal
+Where is the Oracle of Delphi?|Phocis|Boeotia|Arcadia|Attica
+Which animal is the WWF symbol?|Panda|Tiger|Whale|Elephant
+Which fruit has its seeds on the outside?|Strawberry|Banana|Kiwi|Pomegranate
+What is the smallest continent?|Oceania|Europe|Antarctica|South America
+Who discovered penicillin?|Alexander Fleming|Louis Pasteur|Marie Curie|Isaac Newton
+Who formulated the theory of relativity?|Albert Einstein|Isaac Newton|Nikola Tesla|Stephen Hawking
+From which town did the marathon runner set off, in the tradition?|Marathon|Sparta|Corinth|Thebes
+What colour is the circle on the Japanese flag?|Red|Blue|Black|Yellow
+How many minutes are in an hour?|60|100|30|90
+What is the capital of Turkey?|Ankara|Istanbul|Izmir|Antalya
+In which sea are the Cyclades?|Aegean|Ionian|Cretan|Libyan
+Which island is famous for mastic?|Chios|Lesbos|Samos|Ikaria
+Where does PDO feta come from?|Greece|Italy|Cyprus|Bulgaria
+Which instrument does a bouzouki player play?|Bouzouki|Clarinet|Santouri|Lute
+Who was Alexander the Great's teacher?|Aristotle|Plato|Socrates|Pythagoras
+Who said "I know that I know nothing"?|Socrates|Plato|Aristotle|Diogenes
+What was Greece's currency before the euro?|Drachma|Lira|Franc|Mark
+How many colours are in a rainbow?|7|5|6|8
+Which metal is liquid at room temperature?|Mercury|Lead|Zinc|Tin
+What is Japan's national sport?|Sumo|Judo|Karate|Kendo
+What does a thermometer measure?|Temperature|Pressure|Humidity|Weight
+Which country sent the first person into space?|Soviet Union|USA|China|France
+Who was the first person in space?|Yuri Gagarin|Neil Armstrong|Buzz Aldrin|John Glenn
+Which animal sleeps hanging upside down?|Bat|Owl|Koala|Lemur
+How many strings does a classical guitar have?|6|4|5|12
+What is the Red Cross emblem?|A red cross on white|A white cross on red|A red crescent|A green cross
+Who wrote the "Harry Potter" books?|J. K. Rowling|Tolkien|Roald Dahl|Stephen King
+In which country are the Pyramids of Giza?|Egypt|Mexico|Peru|Sudan
+Which part of a plant does most of the photosynthesis?|Leaves|Roots|Flowers|Seeds
+How many hours are in a week?|168|144|120|172
+Who is the god of the sea in Greek myth?|Poseidon|Hermes|Hephaestus|Dionysus
+Which hero killed the Minotaur?|Theseus|Perseus|Heracles|Jason
+Which city is called the "Big Apple"?|New York|Los Angeles|Chicago|London
+What is the capital of Portugal?|Lisbon|Porto|Madrid|Braga
+Which language is spoken in Brazil?|Portuguese|Spanish|Brazilian|French
+How many players does a basketball team have on court?|5|6|7|4
+What is the closest star to the Earth?|The Sun|Sirius|Polaris|Alpha Centauri
+What is the most common gas in Earth's atmosphere?|Nitrogen|Oxygen|Carbon dioxide|Argon
+What do bees make?|Honey|Milk|Silk|Butter
+Which animal "never forgets", as the saying goes?|Elephant|Dolphin|Dog|Goldfish
+What is the largest organ of the human body?|Skin|Liver|Lungs|Intestine
+What is the largest natural lake in Greece?|Trichonida|Vegoritida|Koroneia|Pamvotida
+In which city is Lake Pamvotida?|Ioannina|Kastoria|Florina|Kozani
+In which city is the Acropolis Museum?|Athens|Thessaloniki|Heraklion|Nafplio
+What was the first capital of modern Greece?|Aegina|Nafplio|Athens|Tripoli
+Who was the first governor of Greece?|Ioannis Kapodistrias|King Otto|Theodoros Kolokotronis|Eleftherios Venizelos
+What is the largest member of the cat family?|Tiger|Lion|Jaguar|Leopard
+How many seconds are in a minute?|60|100|30|120
+Which country has the largest area in the world?|Russia|Canada|China|USA
+Which ocean is the largest?|Pacific|Atlantic|Indian|Arctic
+How many balls are racked at the start of pool?|15|10|16|12
+Which colour do blue and yellow make?|Green|Purple|Orange|Brown
+Which instrument has 88 keys?|Piano|Accordion|Church organ|Xylophone
+On which island is Oia?|Santorini|Mykonos|Paros|Naxos
+Where is the Samaria Gorge?|Crete|Epirus|Peloponnese|Macedonia
+Where are the Meteora monasteries?|Thessaly|Epirus|Macedonia|Central Greece

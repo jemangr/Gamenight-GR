@@ -1,0 +1,56 @@
+# «Spin the bottle»: t|truth or d|dare. Mild only. '!' = 18+ (never sexual).
+t|What's the most embarrassing song you listen to in secret?
+t|What's your biggest fear?
+t|What would you do if you were invisible for a day?
+t|What's the strangest thing in your room?
+t|What was your silliest purchase?
+t|Who here would you call if you were robbed abroad?
+t|Your most awkward moment with a teacher?
+t|What always makes you laugh?
+t|Which series have you watched more than once?
+t|What lie have you told to get out of work?
+t|Your worst blunder with someone's name?
+t|What would you say to someone who annoyed you today?
+t|The nicest compliment you've ever had?
+t|What do you eat when nobody's watching?
+t|Your biggest achievement?
+t|Your strangest habit?
+t|What do you do first when you're home alone?
+t|Who here has made you laugh the most?
+t|The furthest you've travelled for food?
+t|The silliest argument you've won?
+t|If you changed your name, what would it be?
+t|Your funniest childhood photo?
+t|Which celebrity would you like as a best friend?
+t|Your worst ever test mark?
+t|The funniest thing you've done for love of someone?
+d|Commentate on what the person next to you does for 20″.
+d|Recite a poem you know by heart.
+d|Do 5 push-ups or 10 squats.
+d|Talk like your favourite cartoon hero until the next round.
+d|Whistle a song and the others guess it.
+d|Be a magician and "vanish" an object.
+d|Pay everyone a one-word compliment.
+d|Do your best cat voice.
+d|Walk like a catwalk model to the door and back.
+d|Say your favourite film line.
+d|Draw something with your other hand and show it.
+d|Sing the first chorus that comes to mind.
+d|Balance on one leg for 20″.
+d|Say three things about yourself the others don't know.
+d|Play the guru and give everyone a piece of advice.
+d|Laugh like a film villain.
+d|Impersonate a famous person. The others guess.
+d|Tell your day like a sports commentator.
+d|Act out an animal without a sound. The others guess.
+d|Say every player's name backwards.
+d|Bow to each player like a knight.
+d|Applaud yourself for 10″ and say why.
+d|Tell a joke with your eyes closed.
+d|Be the butler and bring water to anyone who wants it.
+d|Tell a 20″ story that starts "Once upon a time in a small town".
+!t|Your most embarrassing night out?
+!t|Which ex would you like to see again to tell them something?
+!t|The worst excuse you've used to leave a date?
+!d|Send "Thinking of you" to a friend the group picks.
+!d|Show the last emoji you sent and in which chat (no names).

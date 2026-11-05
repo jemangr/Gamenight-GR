@@ -116,6 +116,35 @@ object Ai {
         } catch (e: IOException) { AiResult.Fail(Reason.NETWORK, e.message.orEmpty()) }
     }
 
+    /** Gemini body with a picture (PNG) next to the question. */
+    fun geminiImageBody(system: String, prompt: String, png: String): JsonObject = buildJsonObject {
+        put("systemInstruction", buildJsonObject { put("parts", buildJsonArray { add(buildJsonObject { put("text", system) }) }) })
+        put("contents", buildJsonArray { add(buildJsonObject { put("role", "user"); put("parts", buildJsonArray {
+            add(buildJsonObject { put("inline_data", buildJsonObject { put("mime_type", "image/png"); put("data", png) }) })
+            add(buildJsonObject { put("text", prompt) })
+        }) }) })
+        put("generationConfig", buildJsonObject { put("temperature", 0.4); put("maxOutputTokens", 256); put("thinkingConfig", buildJsonObject { put("thinkingLevel", "low") }) })
+    }
+
+    /**
+     * 1.1, «Ζωγράφισε για το AI»: what is in [png] (base64). Only Gemini sees pictures here; the
+     * other providers give [Reason.MODEL].
+     */
+    suspend fun askImage(provider: Provider, key: String, system: String, prompt: String, png: String): AiResult = withContext(Dispatchers.IO) {
+        if (provider != Provider.GEMINI) return@withContext AiResult.Fail(Reason.MODEL, "image")
+        try {
+            val c = URL("https://generativelanguage.googleapis.com/v1beta/models/$GEMINI_MODEL:generateContent").openConnection() as HttpURLConnection
+            c.connectTimeout = 15_000; c.readTimeout = 40_000; c.requestMethod = "POST"; c.doOutput = true
+            c.setRequestProperty("Content-Type", "application/json; charset=utf-8")
+            c.setRequestProperty("x-goog-api-key", key)
+            c.outputStream.use { it.write(geminiImageBody(system, prompt, png).toString().toByteArray()) }
+            val code = c.responseCode
+            if (code !in 200..299) { c.disconnect(); return@withContext AiResult.Fail(reasonFor(code), "HTTP $code") }
+            val text = c.inputStream.bufferedReader().use { it.readText() }; c.disconnect()
+            geminiText(text)
+        } catch (e: IOException) { AiResult.Fail(Reason.NETWORK, e.message.orEmpty()) }
+    }
+
     suspend fun testKey(provider: Provider, key: String): AiResult = withContext(Dispatchers.IO) {
         try {
             val c = URL(provider.testUrl).openConnection() as HttpURLConnection

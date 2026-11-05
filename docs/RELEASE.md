@@ -1,4 +1,18 @@
-**Gamenight GR**: 28 παιχνίδια παρέας σε ένα κινητό.
+**Gamenight GR 1.1**: 54 παιχνίδια παρέας σε ένα κινητό.
+
+### Τι νέο έχει η 1.1
+- **26 νέα παιχνίδια:**
+  - 🎉 Παρέα: Ποιος από εμάς;, Πόσο με ξέρεις;, Ζάρι της ντροπής, Ρουλέτα μπουκαλιού.
+  - 🕵️ Κρυφοί ρόλοι: Ψίθυρος στο σκοτάδι, Ο κατάσκοπος στο σπίτι, Πύργος από ψέματα.
+  - 🤥 Μπλόφα και γνώσεις: Το κοντινότερο (με στοίχημα), Κουίζ γειτονιάς (buzzer στις γωνίες).
+  - 🎭 Θέατρο: Αλυσίδα ήχων, Μίμηση με κανόνα.
+  - 🎲 Τάβλι: Πόρτες, Πλακωτό και Φεύγα για δύο.
+  - 📱 Με κίνηση: Το ανθρώπινο drone, Αφόπλισε τη βόμβα, Trivia σε ισορροπία, Χρηματοκιβώτιο.
+  - 🎮 Arcade: Διπλή αποφυγή, Αναπήδηση σε δακτύλιο, Πλέγμα λέιζερ, Σπείρα.
+  - 🤖 Με AI (δικό σου κλειδί): Ο Ανακριτής, Ζωγράφισε για το AI, Ατελείωτες κάρτες, Δικαστήριο, Ποιος είναι το AI;, Ο Μάντης.
+- **📦 Πακέτα καρτών** από το GitHub και **δικές σας λέξεις** (Ρυθμίσεις → 📦).
+- **📜 Ιστορικό βραδιών** με νίκες και σερί (από τον πίνακα της βραδιάς).
+- **Εμφάνιση:** ☀️ Καλοκαίρι και 🎄 Χριστούγεννα, με δικά τους χρώματα και ήχους νίκης.
 
 ### Εγκατάσταση
 1. Κατέβασε το `GamenightGR.apk` που ακολουθεί (στο κινητό, από τον browser).
@@ -11,4 +25,4 @@
 
 ---
 
-**Gamenight GR**: 28 party games on one phone. Install `GamenightGR.apk` below (allow “unknown sources”), add the players and pick a game. Later versions show up on the home screen and install with one tap.
+**Gamenight GR 1.1**: 54 party games on one phone. New: 26 games (party, hidden roles, quiz with a buzzer, sound chain, backgammon, motion games, 4 arcade, 6 AI games with your own key), card packs from GitHub and your own words, a history of past nights with streaks, and Summer and Christmas looks. Install `GamenightGR.apk` below (allow “unknown sources”), add the players and pick a game. Later versions show up on the home screen and install with one tap.

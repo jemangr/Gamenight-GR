@@ -1,0 +1,72 @@
+# «Dice of shame»: face|text. q = question, d = mild dare, m = mime, n = nice words. '!' = 18+ (never sexual).
+q|What's your most embarrassing video out there?
+q|What's the last thing you searched for online?
+q|Who here would you take to a desert island?
+q|Your funniest memory with someone in this room?
+q|The worst present you've ever had?
+q|What would you do with €100 in one hour?
+q|The strangest dream you remember?
+q|Which celebrity do people say you look like?
+q|The silliest thing you've ever believed?
+q|The biggest lie you told your parents?
+q|What did you secretly eat from someone else's fridge?
+q|What do you do when you're home alone?
+q|Your most awkward moment in a lift?
+q|Your silliest injury?
+q|The funniest message you sent to the wrong person?
+q|Who here would you share a flat with, and who not?
+q|What would you tell yourself at 15?
+q|Your childhood nickname?
+q|Which song do you sing in the shower?
+q|Your biggest blunder at a wedding or christening?
+d|Talk for 30″ in an accent from another region.
+d|Do 10 squats while naming everyone at the table.
+d|Tell a joke. If nobody laughs, roll again.
+d|Be a newsreader for what happened tonight.
+d|Speak only in questions until the next round.
+d|Dance for 15″ without music.
+d|Pay each player a different compliment.
+d|Say "red lorry, yellow lorry" three times fast.
+d|Play the waiter and take everyone's order.
+d|Talk like a robot until your next turn.
+d|Impersonate someone in the group. The others guess who.
+d|Say the alphabet backwards down to M.
+d|Do a 20″ advert for the nearest object.
+d|Hold a spoon in your mouth and say your name.
+d|Sing "Happy Birthday" like an opera.
+d|Give the weather forecast for the living room.
+d|Write your name in the air with your nose.
+d|Stay still like a statue until someone touches you.
+d|Say three things you like about the person next to you.
+d|Give a guided tour of the room as if it were a museum.
+m|Mime a dog seeing a vacuum cleaner.
+m|Mime a grandad learning to send a text.
+m|Mime someone just missing the bus.
+m|Mime a cat falling off the sofa and pretending nothing happened.
+m|Mime a taxi driver in traffic.
+m|Mime someone stepping on Lego barefoot.
+m|Mime a referee who missed the penalty.
+m|Mime a tourist's first swim in the sea in June.
+m|Mime someone opening a present they don't like.
+m|Mime an actor winning an Oscar.
+m|Mime someone looking for signal on a mountain.
+m|Mime a cook in a contest burning the food.
+m|Mime a baby tasting lemon.
+m|Mime someone on a roller coaster.
+m|Mime a monkey that found a phone.
+n|Tell a story that made you proud of someone here.
+n|Say what made you friends with the player on your right.
+n|Give each player an award for tonight.
+n|Say something nice about the player with the fewest points.
+n|Thank someone here for something you've never told them.
+n|Say who here you'd call first in a hard moment.
+n|Say who here has the best laugh.
+n|Say what you learn from the player on your left.
+n|Pick a player and tell the funniest thing they've ever said to you.
+n|Say which night with the group you'd live again.
+!d|Call a friend and sing them a song for 10″.
+!d|Show the group the last photo you took.
+!q|The most embarrassing message you've ever sent?
+!q|Your worst date?
+!q|Who here would you send to replace you at a family dinner?
+!d|Read out the last message you sent (no names).

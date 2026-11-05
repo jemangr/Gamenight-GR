@@ -1,0 +1,91 @@
+# «Mime with a rule»: a|action (what you act) or r|rule (how you act it). '!' = 18+ (never sexual).
+a|Washing the car
+a|Fishing and catching a shoe
+a|Painting a ceiling
+a|Making pizza and throwing the dough up high
+a|Skiing for the first time
+a|Clipping a dog that doesn't want it
+a|Climbing stairs with heavy suitcases
+a|Playing guitar at a concert
+a|Parking in a very tight space
+a|Grilling skewers on charcoal
+a|Dancing the sirtaki
+a|Doing yoga
+a|Changing a baby's nappy
+a|Eating spaghetti without a fork
+a|Playing tennis
+a|Swimming in a cold sea
+a|Opening a jar that won't open
+a|Feeding pigeons
+a|Cold-calling a customer
+a|Walking on ice
+a|Sewing on a button
+a|Picking olives
+a|Refereeing a football match
+a|Blowing up balloons for a party
+a|Catching a mosquito in the dark
+a|Tying a tie
+a|Getting on a horse
+a|Having a barbecue in the rain
+a|Making the bed
+a|Directing a film shoot
+a|Bowling
+a|Surfing
+a|Vacuuming
+a|Taking a selfie with a celebrity
+a|Kneading bread
+a|Going through airport security
+a|Lifting dumbbells
+a|Getting out of a pool without a ladder
+a|Trying to wake someone up
+a|Eating very spicy food
+a|Opening an umbrella in the wind
+a|Knitting a scarf
+a|Playing the violin
+a|Being the goalkeeper at a penalty
+a|Carrying a piano
+a|Spoon-feeding a baby
+a|Ice skating
+a|Chopping onions
+a|Putting on tight jeans
+a|Rock climbing
+a|Frying eggs
+a|Playing piano at a concert
+a|Waiting tables with lots of plates
+a|Flying a kite
+a|Missing the bus
+a|Looking for your glasses
+a|Bathing a dog
+a|Putting in contact lenses
+a|Going to bed and hearing a noise
+a|Riding a scooter
+r|With one hand only
+r|As if you were 90
+r|In slow motion
+r|Very fast, like a video at ×3
+r|As if you were very angry
+r|As if you were madly in love
+r|Without moving your feet
+r|With your eyes closed
+r|Like a robot
+r|As if you were on the Moon
+r|As if you were under water
+r|As if you were in a big hurry
+r|As if you were bored to death
+r|As if thousands were watching
+r|Sitting on a chair the whole time
+r|As if you were a small child
+r|As if you were exhausted
+r|As if you were terrified
+r|As if your hands were magnets
+r|As if it were freezing
+r|As if it were boiling hot
+r|Like an action-film hero
+r|As if you were at the opera
+r|With your non-dominant hand
+r|Like a very dizzy hedgehog
+r|Without smiling at all
+r|As if a bee were chasing you
+r|Like a cat
+r|As if you wore heavy armour
+r|As if you were in a boat on big waves

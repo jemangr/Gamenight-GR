@@ -100,6 +100,7 @@ fun ScoreScreen() {
         gr.wsol.gamenight.chaos.Moments.last?.let { (title, lines) ->
             GhostButton(t("📸 Στιγμή της βραδιάς: $title", "📸 Moment of the night: $title"), { gr.wsol.gamenight.ui.Drawing.share(ctx, lines, "Gamenight GR · $title") }, Modifier.fillMaxWidth())
         }
+        GhostButton(t("📜 Ιστορικό βραδιών", "📜 Past nights"), { Nav.go(Screen.History) }, Modifier.fillMaxWidth())
         if (n.log.isNotEmpty()) {
             Label(t("ΤΙ ΕΓΙΝΕ ΑΠΟΨΕ", "WHAT HAPPENED TONIGHT"))
             n.log.asReversed().take(30).forEach { e ->
@@ -111,8 +112,8 @@ fun ScoreScreen() {
     if (confirm) androidx.compose.material3.AlertDialog(
         onDismissRequest = { confirm = false },
         title = { Text(t("Νέα βραδιά;", "New night?"), color = C.text) },
-        text = { Text(t("Οι πόντοι μηδενίζονται. Οι παίκτες και οι ομάδες μένουν.", "Points go back to zero. Players and teams stay."), color = C.muted) },
-        confirmButton = { TextButton(onClick = { Store.night = n.copy(points = emptyMap(), log = emptyList(), started = System.currentTimeMillis()); confirm = false }) { Text(t("Μηδενισμός", "Reset"), color = C.amber) } },
+        text = { Text(t("Οι πόντοι μηδενίζονται και η βραδιά μπαίνει στο ιστορικό. Οι παίκτες και οι ομάδες μένουν.", "Points go back to zero and the night goes into the history. Players and teams stay."), color = C.muted) },
+        confirmButton = { TextButton(onClick = { gr.wsol.gamenight.core.History.add(n); Store.night = n.copy(points = emptyMap(), log = emptyList(), started = System.currentTimeMillis()); confirm = false }) { Text(t("Μηδενισμός", "Reset"), color = C.amber) } },
         dismissButton = { TextButton(onClick = { confirm = false }) { Text(t("Άκυρο", "Cancel"), color = C.muted) } },
         containerColor = C.panel,
     )

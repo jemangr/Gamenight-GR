@@ -45,6 +45,12 @@ fun SettingsScreen() {
             Text(t("Οι κάρτες αλλάζουν και αυτές· οι ελληνικές είναι περισσότερες.", "The cards change too; there are more in Greek."), style = Type.small, color = C.muted)
         }
         Panel {
+            Label(t("ΕΜΦΑΝΙΣΗ", "LOOK"))
+            Seg(listOf(0 to t("🎲 Βραδιά", "🎲 Night"), 1 to t("☀️ Καλοκαίρι", "☀️ Summer"), 2 to t("🎄 Χριστούγεννα", "🎄 Christmas")), s.look, { Store.settings = s.copy(look = it); gr.wsol.gamenight.extras.Sfx.win() })
+            Text(t("Αλλάζουν τα χρώματα και οι ήχοι της νίκης.", "The colours and the winning sounds change."), style = Type.small, color = C.muted)
+        }
+        PacksPanel()
+        Panel {
             Toggle(t("Παρέα 18+", "18+ group"), t("Πιο τολμηρές λέξεις και ερωτήσεις (αργκό, πειράγματα). Ποτέ σεξουαλικό περιεχόμενο.", "Bolder words and questions (slang, teasing). Never sexual content."), s.adult) { Store.settings = s.copy(adult = it) }
             Toggle(t("Ήχοι", "Sounds"), null, s.sounds) { Store.settings = s.copy(sounds = it) }
             Toggle(t("Δόνηση", "Vibration"), null, s.haptics) { Store.settings = s.copy(haptics = it) }
@@ -79,7 +85,7 @@ fun SettingsScreen() {
         Panel {
             Label(t("ΙΔΙΩΤΙΚΟΤΗΤΑ", "PRIVACY"))
             Body(t(
-                "Όλα τα παιχνίδια δουλεύουν χωρίς internet. Στο κινητό μένουν μόνο τα ονόματα των παικτών, οι πόντοι και τα ρεκόρ. Δεν υπάρχει λογαριασμός, server, διαφημίσεις ή analytics. Το internet χρησιμοποιείται μόνο για τον έλεγχο νέας έκδοσης, αν είναι ανοιχτός, και για τον Χαβαλέ (AI), αν τον ανοίξεις με δικό σου κλειδί.",
+                "Όλα τα παιχνίδια δουλεύουν χωρίς internet. Στο κινητό μένουν μόνο τα ονόματα των παικτών, οι πόντοι και τα ρεκόρ. Δεν υπάρχει λογαριασμός, server, διαφημίσεις ή analytics. Το internet χρησιμοποιείται μόνο για τον έλεγχο νέας έκδοσης, αν είναι ανοιχτός, για τα πακέτα καρτών, αν τα κατεβάσεις, και για τον Χαβαλέ και τα παιχνίδια AI, αν βάλεις δικό σου κλειδί.",
                 "Every game works offline. Only the players' names, the points and the records stay on the phone. No account, server, ads or analytics. The internet is used only for the update check, if it's on, and for Havales (AI), if you turn it on with your own key.",
             ))
         }
