@@ -79,6 +79,12 @@ class TavliTest {
         assertEquals(listOf(TMove(20, 14, 6)), legal)
     }
 
+    @Test fun aWinningMoveIsAlwaysAllowed() {
+        // the last checker on 6 with 6+1: bearing off with the 6 wins at once, though «1 then 6» uses both dice
+        val b = empty(TavliKind.Portes).put(0, 6, 1).copy(off = listOf(14, 0)).put(1, 20, 15)
+        assertTrue(b.legal(0, listOf(6, 1)).contains(TMove(6, 0, 6)))
+    }
+
     @Test fun randomGamesAlwaysFinish() {
         for (k in TavliKind.entries) repeat(15) { g ->
             val rnd = Random(g * 7 + k.ordinal)

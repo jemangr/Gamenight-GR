@@ -53,11 +53,13 @@ import kotlin.random.Random
 object BombRules {
     /** Letters that start enough Greek words for any category. */
     const val LETTERS = "ΑΒΓΔΕΚΛΜΝΠΣΤΦΧ"
+    /** The same for English (no Q, X, Z, …). */
+    const val LETTERS_EN = "ABCDEFGHLMNPRST"
     const val MIN_S = 10
     const val MAX_S = 45
 
     fun fuseMs(rnd: Random = Random) = rnd.nextLong(MIN_S * 1000L, MAX_S * 1000L + 1)
-    fun letter(rnd: Random = Random, not: Char? = null): Char = LETTERS.filter { it != not }.random(rnd)
+    fun letter(rnd: Random = Random, not: Char? = null): Char = (if (gr.wsol.gamenight.core.Lang.english) LETTERS_EN else LETTERS).filter { it != not }.random(rnd)
 
     /** The heartbeat gets faster as the fuse burns: from 1″ to a quarter of a second. */
     fun beatMs(elapsed: Long, fuse: Long): Long = (1000 - 750 * (elapsed.toDouble() / fuse).coerceIn(0.0, 1.0)).toLong()
@@ -134,10 +136,11 @@ fun BombGame(host: GameHost) {
             QuitGuard(host)
             var elapsed by remember(round) { mutableStateOf(0L) }
             LaunchedEffect(round) {
-                val start = System.currentTimeMillis()
+                // Compose's frame clock (real time on the phone; the tests can move it on)
+                val start = androidx.compose.runtime.withFrameMillis { it }
                 var nextBeat = 0L
                 while (true) {
-                    elapsed = System.currentTimeMillis() - start
+                    elapsed = androidx.compose.runtime.withFrameMillis { it } - start
                     if (elapsed >= fuse) break
                     if (elapsed >= nextBeat) { Sfx.heartbeat(); Sfx.buzz(35); nextBeat = elapsed + BombRules.beatMs(elapsed, fuse) }
                     delay(30)

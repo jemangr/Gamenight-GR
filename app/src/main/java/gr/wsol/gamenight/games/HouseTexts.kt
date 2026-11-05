@@ -52,7 +52,12 @@ object HouseTexts {
         "Η καρέκλα του $p είναι άδεια. Έγινε φάντασμα." to "$p's chair is empty. They became a ghost.",
     )
 
-    fun nobody() = pick(
+    /** [ghosts]: someone already left, so not «everyone's alive». */
+    fun nobody(ghosts: Boolean = false) = if (ghosts) pick(
+        "Απόψε δεν πείραξαν κανέναν. Κάποιος μας φύλαξε…" to "Tonight nobody was touched. Someone watched over us…",
+        "Κανείς δεν έφυγε απόψε. Τα φαντάσματα έφυγαν με άδεια χέρια." to "Nobody left tonight. The ghosts left empty-handed.",
+        "Ήσυχη νύχτα. Πολύ ήσυχη…" to "A quiet night. Too quiet…",
+    ) else pick(
         "Απόψε δεν πείραξαν κανέναν. Κάποιος μας φύλαξε…" to "Tonight nobody was touched. Someone watched over us…",
         "Όλοι ζωντανοί! Τα φαντάσματα έφυγαν με άδεια χέρια." to "Everyone's alive! The ghosts left empty-handed.",
         "Ήσυχη νύχτα. Πολύ ήσυχη…" to "A quiet night. Too quiet…",

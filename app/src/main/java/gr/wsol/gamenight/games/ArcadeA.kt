@@ -143,6 +143,8 @@ class TowerGame {
 fun TowerRun(key: Int, onOver: (Int) -> Unit) {
     val g = remember(key) { TowerGame() }
     var frame by remember(key) { mutableIntStateOf(0) }
+    // a quick double tap after the end must not report the run twice (in versus: a fake score for the next one)
+    var reported by remember(key) { mutableStateOf(false) }
     var pop by remember(key) { mutableStateOf<String?>(null) }
     LaunchedEffect(key) { val clock = FrameClock(); while (!g.over) { g.step(clock.tick(withFrameNanos { it })); frame++ } }
     ArcadeBody {
@@ -151,7 +153,7 @@ fun TowerRun(key: Int, onOver: (Int) -> Unit) {
                 when (g.drop()) {
                     "perfect" -> { Sfx.correct(); Sfx.buzz(30); pop = if (g.streak % 3 == 0) t("ΤΕΛΕΙΟ! +πλάτος", "PERFECT! +width") else t("ΤΕΛΕΙΟ ×${g.streak}", "PERFECT ×${g.streak}") }
                     "ok" -> { Sfx.tap(); pop = null }
-                    else -> { Sfx.boom(); Sfx.buzz(300, true); onOver(g.score) }
+                    else -> if (!reported) { reported = true; Sfx.boom(); Sfx.buzz(300, true); onOver(g.score) }
                 }
             }
         }) {
@@ -252,10 +254,12 @@ class SliceGame(private val rnd: Random = Random) {
     val speed get() = 0.22f + 0.012f * streak.coerceAtMost(30) + 0.004f * score.coerceAtMost(200) / 10
     val mult get() = 1 + streak / 4
 
-    fun target() = shapes.filter { !it.done }.maxByOrNull { it.y }
+    /** The shape closest to the line: shapes rise (y goes down to 0.45), so the one with the smallest y. */
+    fun target() = shapes.filter { !it.done }.minByOrNull { it.y }
 
     /** A swipe in [dir]. True if right. */
     fun swipe(dir: Int): Boolean {
+        if (over) return true
         val s = target() ?: return true
         s.done = true
         val right = if (s.red) dir == s.dir else dir == (s.dir + 2) % 4
@@ -263,13 +267,13 @@ class SliceGame(private val rnd: Random = Random) {
         return right
     }
 
-    private fun miss() { streak = 0; mistakes++; if (mistakes >= 3) over = true }
+    private fun miss() { if (over) return; streak = 0; mistakes++; if (mistakes >= 3) over = true }
 
     fun step(dt: Float) {
         if (over) return
         spawn -= dt
         if (spawn <= 0f) { shapes += Shape(rnd.nextFloat() * 0.6f + 0.2f, 1.1f, rnd.nextInt(4), rnd.nextBoolean()); spawn = (1.4f - 0.02f * streak).coerceAtLeast(0.55f) }
-        shapes.forEach { it.y -= speed * dt; if (!it.done && it.y < 0.45f) { it.done = true; miss() } }
+        shapes.forEach { it.y -= speed * dt; if (!it.done && it.y < 0.45f && !over) { it.done = true; miss() } }
         shapes.removeAll { it.y < -0.1f || (it.done && it.y < 0.45f) }
     }
 }
@@ -301,6 +305,6 @@ fun SliceRun(key: Int, onOver: (Int) -> Unit) {
                 }
             }
         }
-        Column { Hud(g.score, g.mult, "❤️".repeat(3 - g.mistakes)); ArcadeNote(t("Κόκκινο: σύρε προς το βέλος. Μπλε: ανάποδα. Πριν τη γραμμή!", "Red: swipe with the arrow. Blue: against it. Before the line!")) }
+        Column { Hud(g.score, g.mult, "❤️".repeat((3 - g.mistakes).coerceAtLeast(0))); ArcadeNote(t("Κόκκινο: σύρε προς το βέλος. Μπλε: ανάποδα. Πριν τη γραμμή!", "Red: swipe with the arrow. Blue: against it. Before the line!")) }
     }
 }

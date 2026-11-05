@@ -91,7 +91,11 @@ fun NumberGame(host: GameHost) {
     val director = players[round % players.size]
     val actors = players.filter { it != director }
 
-    fun start() { numbers = NumberRules.deal(actors); scene = deck.next(); guess.clear(); actors.forEach { guess[it] = 5 }; phase = N.Deal }
+    // the actors of the round being started (not of the one just finished: `actors` above is from the last composition)
+    fun start(r: Int) {
+        val d = players[r % players.size]; val acts = players.filter { it != d }
+        numbers = NumberRules.deal(acts); scene = deck.next(); guess.clear(); acts.forEach { guess[it] = 5 }; phase = N.Deal
+    }
 
     when (phase) {
         N.Intro -> Intro(game, host, listOf(
@@ -99,7 +103,7 @@ fun NumberGame(host: GameHost) {
             t("Ο σκηνοθέτης διαβάζει ένα σενάριο με κλίμακα, π.χ. «πόσο χαίρεσαι που έρχεται η πεθερά;».", "The director reads a scene with a scale, e.g. «how happy are you that your mother-in-law is coming?»."),
             t("Ο καθένας παίζει το σενάριο όπως το νούμερό του, 20″ ο καθένας. Ο σκηνοθέτης μαντεύει τα νούμερα.", "Each one acts it like their number, 20″ each. The director guesses the numbers."),
             t("Σκηνοθέτης: +1 για κάθε σωστή θέση στη σειρά, +1 για κάθε ακριβές νούμερο. Ηθοποιός: +1 αν ο σκηνοθέτης έπεσε μέσα κατά ±1.", "Director: +1 for each right place in the order, +1 for each exact number. Actor: +1 if the director was within ±1."),
-        ), deck.size > 0 && players.size >= 3) { round = 0; start() }
+        ), deck.size > 0 && players.size >= 3) { round = 0; start(0) }
 
         N.Deal -> { QuitGuard(host); RevealRound(actors, key = round, title = t("Το νούμερό σου", "Your number"), secret = { a ->
             Text("${numbers[a]}", style = Type.huge, color = C.amber, fontSize = 110.sp)
@@ -149,11 +153,11 @@ fun NumberGame(host: GameHost) {
 
         N.Reveal -> {
             QuitGuard(host)
-            val pts = remember(round) { NumberRules.points(director, numbers, guess.toMap()).also { m -> m.forEach { (p, v) -> tally.add(host, listOf(p), v) }; Sfx.win() } }
+            val pts = remember(round) { NumberRules.points(director, numbers, guess.toMap()).also { m -> tally.addAll(host, m); Sfx.win() } }
             Page(t("Αποκάλυψη", "Reveal"), onBack = null, bottom = {
                 BigButton(if (round + 1 < players.size) t("Επόμενος σκηνοθέτης", "Next director") else t("Αποτελέσματα", "Results"), {
                     host.log(t("Το νούμερό σου: σκηνοθέτης $director, +${pts[director] ?: 0}", "Your number: director $director, +${pts[director] ?: 0}"))
-                    if (round + 1 < players.size) { round++; start() } else phase = N.Over
+                    if (round + 1 < players.size) { round++; start(round) } else phase = N.Over
                 }, color = game.color)
             }) {
                 actors.sortedBy { numbers[it] }.forEach { a ->

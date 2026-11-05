@@ -36,14 +36,20 @@ data class Night(
 
     fun sides(): List<String> = if (teams) (0 until teamCount).map { "#$it" } else names
 
+    /** The sides that have someone in them (a team can be left empty on the Players screen). */
+    fun playingSides(): List<String> = sides().filter { membersOf(it).isNotEmpty() }
+
+    /** «#2» → 2 in team mode; anything else is a player's name. */
+    private fun teamNo(side: String): Int? = if (teams && side.startsWith("#")) side.drop(1).toIntOrNull() else null
+
     fun membersOf(side: String): List<String> =
-        if (side.startsWith("#")) names.filter { teamOf[it] == side.drop(1).toInt() } else listOf(side)
+        teamNo(side)?.let { k -> names.filter { teamOf[it] == k } } ?: listOf(side)
 
     fun label(side: String): String =
-        if (side.startsWith("#")) teamName(side.drop(1).toInt()) else side
+        teamNo(side)?.let { teamName(it) } ?: side
 
     fun colorOf(side: String): Int =
-        if (side.startsWith("#")) Palette.teamColor(side.drop(1).toInt()) else players.firstOrNull { it.name == side }?.color ?: 0
+        teamNo(side)?.let { Palette.teamColor(it) } ?: players.firstOrNull { it.name == side }?.color ?: 0
 
     /**
      * [pts] to each of [who]. In team mode a team gets the points once, however many of its

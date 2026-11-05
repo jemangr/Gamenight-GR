@@ -152,7 +152,7 @@ fun BlufferGame(host: GameHost) {
         B.Reveal -> {
             QuitGuard(host)
             val f = fact!!
-            val pts = remember(q) { BluffRules.points(f.ans, options, votes).also { m -> m.forEach { (p, v) -> tally.add(host, listOf(p), v) }; Sfx.win() } }
+            val pts = remember(q) { BluffRules.points(f.ans, options, votes).also { m -> tally.addAll(host, m); Sfx.win() } }
             Page(t("Η αλήθεια", "The truth"), onBack = null, bottom = {
                 BigButton(if (q + 1 < count) t("Επόμενη ερώτηση", "Next question") else t("Αποτελέσματα", "Results"), {
                     host.log(t("Μπλοφατζής: «${f.ans}»", "Bluffer: «${f.ans}»"))
@@ -220,7 +220,7 @@ fun LieGame(host: GameHost) {
 
         L.Choose -> { QuitGuard(host); Page(speaker, onBack = null, bottom = {
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                BigButton(t("Πες την αλήθεια", "Tell the truth"), { lied = false; phase = L.PassJudge }, Modifier.weight(1f), color = C.green)
+                BigButton(t("Πες την αλήθεια", "Tell the truth"), { lied = false; phase = L.Think }, Modifier.weight(1f), color = C.green)
                 BigButton(t("Πες ψέμα", "Tell a lie"), { lied = true; phase = L.Think }, Modifier.weight(1f), color = C.pink)
             }
         }) {
@@ -231,9 +231,11 @@ fun LieGame(host: GameHost) {
         L.Think -> {
             QuitGuard(host)
             val left = rememberCountdown(10, running = true, key = turn) { phase = L.PassJudge }
-            Page(t("Σκαρώσε το ψέμα σου", "Make up your lie"), onBack = null, bottom = { BigButton(t("Έτοιμος", "Ready"), { phase = L.PassJudge }, color = C.pink) }) {
+            // the same screen and the same 10″ for truth and lie, so the judge can't tell from the pause or the title
+            Page(t("Σκέψου την απάντησή σου", "Think of your answer"), onBack = null) {
                 Text(fact!!.q, style = Type.title, color = C.text)
                 TimerText(left, color = C.pink)
+                Body(t("Ψέμα ή αλήθεια, όλοι περιμένουν το ίδιο.", "Lie or truth, everyone waits the same."), color = C.muted)
             }
         }
 

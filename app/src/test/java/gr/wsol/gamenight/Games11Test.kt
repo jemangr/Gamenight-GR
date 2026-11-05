@@ -91,6 +91,11 @@ class Games11Test {
         assertEquals(mapOf("Α" to 1, "Β" to 1, "Δ" to 1), caught)
         val away = WhisperRules.points(mapOf("Α" to "Β", "Β" to "Α", "Γ" to "Β", "Δ" to "Β"), listOf("Γ"), setOf("Γ"))
         assertEquals(mapOf("Γ" to 3), away)
+        // one vote for the suspect who got away: that voter still spotted them (+1)
+        assertEquals(mapOf("Β" to 1, "Γ" to 3), WhisperRules.points(mapOf("Α" to "Β", "Β" to "Γ", "Γ" to "Α", "Δ" to "Α"), listOf("Γ"), setOf("Γ")))
+        // two suspects: caught with 2+ votes; the other one got away
+        val two = WhisperRules.points(mapOf("Α" to "Ε", "Β" to "Ε", "Γ" to "Ζ", "Δ" to "Α", "Ε" to "Α", "Ζ" to "Β"), listOf("Ε", "Ζ"), setOf("Ε", "Ζ"))
+        assertEquals(mapOf("Α" to 1, "Β" to 1, "Γ" to 1, "Ζ" to 3), two)
         assertEquals(1, WhisperRules.suspects(listOf("Α", "Β", "Γ", "Δ", "Ε"), two = true).size)
         assertEquals(2, WhisperRules.suspects(listOf("Α", "Β", "Γ", "Δ", "Ε", "Ζ"), two = true).size)
     }
@@ -253,6 +258,27 @@ class Games11Test {
         val m = DroneMaze(rnd = Random(1))
         repeat(120) { m.step(0f, 0f, 1 / 60f) }
         assertEquals(1.5f, m.x, 0.01f)
+    }
+
+    /** Λάθος 18: a pilot who follows the way can always finish: no hole sweeps the way to the goal. */
+    @Test fun droneCanAlwaysBeFinished() {
+        repeat(100) { seed ->
+            val m = DroneMaze(rnd = Random(seed))
+            val way = m.shortestPath()
+            assertTrue("seed $seed: no way", m.goal in way && (1 to 1) in way)
+            m.holes.forEach { h -> val row = h.y.toInt(); for (x in h.from.toInt()..h.to.toInt()) assertFalse("seed $seed: hole on the way", (x to row) in way) }
+            // fly it: steer to the next cell of the way, 60 frames a second, within the 45″
+            val order = mutableListOf(1 to 1)
+            while (order.last() != m.goal) order += listOf(1 to 0, -1 to 0, 0 to 1, 0 to -1).map { (dx, dy) -> order.last().first + dx to order.last().second + dy }.first { it in way && it !in order }
+            var i = 0; var frames = 0
+            while (!m.done && frames < 45 * 60) {
+                val (cx, cy) = order[minOf(i + 1, order.size - 1)]
+                if (kotlin.math.hypot(cx + 0.5f - m.x, cy + 0.5f - m.y) < 0.25f && i + 1 < order.size) i++
+                m.step((cx + 0.5f - m.x) * 14f, (cy + 0.5f - m.y) * 14f, 1 / 60f); frames++
+            }
+            assertTrue("seed $seed: not finished in 45″ (falls ${m.falls})", m.done)
+            assertEquals("seed $seed", 0, m.falls)
+        }
     }
 
     @Test fun defuseBlowsOnTiltOrJolt() {

@@ -103,7 +103,7 @@ fun WhoGame(host: GameHost) {
             val counts = Tally11.counts(votes)
             val tops = Tally11.tops(votes)
             remember(round) {
-                WhoRules.points(votes).forEach { (p, v) -> tally.add(host, listOf(p), v) }
+                tally.addAll(host, WhoRules.points(votes))
                 tops.forEach { host.stat(it, "whois") }
                 host.log(t("Ποιος από εμάς: ${tops.joinToString()}", "Who of us: ${tops.joinToString()}"))
             }
@@ -163,7 +163,7 @@ fun KnowMeGame(host: GameHost) {
             QuitGuard(host)
             Page(card?.t ?: "", onBack = null, bottom = {
                 BigButton(t("Αυτοί το βρήκαν", "These got it"), {
-                    right.forEach { tally.add(host, listOf(it), 1) }
+                    tally.add(host, right, 1)
                     if (right.isNotEmpty()) tally.add(host, listOf(who), 1)
                     host.log(t("Πόσο με ξέρεις: $who, το βρήκαν ${right.size}", "How well: $who, ${right.size} got it"))
                     if (turn + 1 < total) { turn++; phase = Know11.Pass } else phase = Know11.Over

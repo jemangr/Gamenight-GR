@@ -19,6 +19,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
@@ -93,16 +94,39 @@ class DroneMaze(val cols: Int = 9, val rows: Int = 13, private val rnd: Random =
         }
         // a few extra openings so there's more than one way
         repeat(cols * rows / 18) { val wx = 1 + rnd.nextInt(cols - 2); val wy = 1 + rnd.nextInt(rows - 2); if ((wx + wy) % 2 == 1) wall[wy][wx] = false }
-        // moving holes in long horizontal corridors
+        // moving holes in long horizontal corridors, but never on the way to the goal: in corridors one
+        // cell wide a hole sweeping the only way through can't be avoided, and the maze couldn't be finished
+        val way = shortestPath()
         for (yy in 3 until rows - 2 step 2) {
             var run = 0
             for (xx in 1 until cols) {
                 if (xx < cols - 1 && !wall[yy][xx]) run++ else {
-                    if (run >= 3 && holes.size < 3 && rnd.nextFloat() < 0.6f) { val a = (xx - run).toFloat(); holes += Hole(a + 0.5f, yy + 0.5f, a + 0.5f, xx - 0.5f, 0.9f) }
+                    val a = xx - run
+                    val onWay = (a until xx).any { (it to yy) in way }
+                    if (run >= 3 && !onWay && holes.size < 3 && rnd.nextFloat() < 0.6f) holes += Hole(a + 0.5f, yy + 0.5f, a + 0.5f, xx - 0.5f, 0.9f)
                     run = 0
                 }
             }
         }
+    }
+
+    /** The cells of the shortest way from the start to the goal (breadth-first search). */
+    fun shortestPath(): Set<Pair<Int, Int>> {
+        val from = HashMap<Pair<Int, Int>, Pair<Int, Int>?>()
+        val q = ArrayDeque<Pair<Int, Int>>()
+        from[1 to 1] = null; q.addLast(1 to 1)
+        while (q.isNotEmpty()) {
+            val c = q.removeFirst()
+            if (c == goal) break
+            for ((dx, dy) in listOf(1 to 0, -1 to 0, 0 to 1, 0 to -1)) {
+                val nx = c.first + dx; val ny = c.second + dy
+                if (ny in 0 until rows && nx in 0 until cols && !wall[ny][nx] && (nx to ny) !in from) { from[nx to ny] = c; q.addLast(nx to ny) }
+            }
+        }
+        val out = mutableSetOf<Pair<Int, Int>>()
+        var c: Pair<Int, Int>? = goal.takeIf { it in from }
+        while (c != null) { out += c; c = from[c] }
+        return out
     }
 
     fun isWall(cx: Float, cy: Float) = cy.toInt() !in 0 until rows || cx.toInt() !in 0 until cols || wall[cy.toInt()][cx.toInt()]
@@ -154,12 +178,14 @@ fun DroneGame(host: GameHost) {
             val motion by rememberMotion()
             var frame by remember(turn) { mutableIntStateOf(0) }
             val ms = rememberCountdown(45, running = !m.done, key = turn) { ok = false; left = 0; Sfx.boom(); phase = Drone11.Result }
+            // the time left now (the loop below was started with the first value, 45″)
+            val msNow by rememberUpdatedState(ms)
             LaunchedEffect(turn) {
                 val clock = FrameClock()
                 while (!m.done) {
                     val dt = clock.tick(withFrameNanos { it })
                     // upright phone: left-right from x, forward-back from z
-                    if (m.step(-motion.gx * 0.6f, -motion.gz * 0.6f, dt)) { ok = true; left = (ms / 1000).toInt(); Sfx.win(); phase = Drone11.Result }
+                    if (m.step(-motion.gx * 0.6f, -motion.gz * 0.6f, dt)) { ok = true; left = (msNow / 1000).toInt(); Sfx.win(); phase = Drone11.Result }
                     frame++
                 }
             }
@@ -454,7 +480,7 @@ fun SafeGame(host: GameHost) {
     var opened by remember { mutableStateOf(false) }
     var left by remember { mutableIntStateOf(0) }
     val tally = remember { Tally() }
-    val sides = n.sides()
+    val sides = n.playingSides()
     val side = sides.getOrElse(round % maxOf(1, sides.size)) { "" }
     val crew = n.membersOf(side).ifEmpty { n.names }
     val rounds = sides.size

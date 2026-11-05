@@ -76,6 +76,13 @@ class Tally {
         host.award(who, pts)
         who.map { Store.night.sideOf(it) }.toSet().forEach { bySide[it] = (bySide[it] ?: 0) + pts }
     }
+
+    /**
+     * Points of a round, player → points: one award per value, so that in team mode a team gets
+     * each value once and not once for every member of it.
+     */
+    fun addAll(host: GameHost, pts: Map<String, Int>) =
+        pts.entries.groupBy({ it.value }, { it.key }).forEach { (v, who) -> add(host, who, v) }
 }
 
 /** The end of a game: who got what, then «Ξανά» or back to the menu. */
