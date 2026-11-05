@@ -110,6 +110,7 @@ fun SaboteurGame(host: GameHost) {
             Page(if (caught) t("Τον πιάσατε! 🎉", "Caught! 🎉") else t("Σας ξέφυγε! 🧨", "Got away! 🧨"), onBack = null, bottom = {
                 BigButton(t("Αποτελέσματα", "Results"), {
                     SaboteurRules.points(players, saboteur, caught, said == true).forEach { (p, v) -> tally.add(host, listOf(p), v) }
+                    if (!caught) host.stat(saboteur, "sneaky")
                     host.log(t("Σαμποτέρ: $saboteur ${if (caught) "πιάστηκε" else "ξέφυγε"}", "Saboteur: $saboteur ${if (caught) "caught" else "got away"}"))
                     Sfx.win(); phase = S.Over
                 }, color = C.red, enabled = said != null)

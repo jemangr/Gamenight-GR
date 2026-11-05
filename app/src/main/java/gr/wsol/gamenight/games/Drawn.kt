@@ -152,16 +152,20 @@ fun FakeArtistGame(host: GameHost) {
             }
         } }
 
-        FK.Over -> GameOver(game, host, tally, headline = if (fakerWon) t("Κέρδισε ο απατεώνας!", "The faker wins!") else t("Τον πιάσατε!", "You caught them!"), extra = {
+        FK.Over -> {
+            remember(gameNo) { gr.wsol.gamenight.chaos.Moments.last = "«${word!!.w}»" to lines.toList(); 0 }
+            GameOver(game, host, tally, headline = if (fakerWon) t("Κέρδισε ο απατεώνας!", "The faker wins!") else t("Τον πιάσατε!", "You caught them!"), extra = {
             Text(t("Ήταν: «${word!!.w}» · απατεώνας: $faker", "It was: «${word!!.w}» · faker: $faker"), style = Type.body, color = C.text)
             DrawPad(lines, 0, enabled = false)
             GhostButton(t("Κοινοποίηση του σχεδίου", "Share the drawing"), { Drawing.share(ctx, lines.toList(), "Gamenight GR · ${word!!.w}") }, Modifier.fillMaxWidth())
         }) { tally.bySide.clear(); phase = FK.Intro }
+        }
     }
 }
 
 private fun finishFake(host: GameHost, tally: Tally, players: List<String>, faker: String, caught: Boolean, guessed: Boolean, word: Word) {
     FakeRules.points(players, faker, caught, guessed).forEach { (p, v) -> tally.add(host, listOf(p), v) }
+    if (!caught || guessed) host.stat(faker, "sneaky")
     host.log(t("Ένας λείπει: «${word.w}», απατεώνας $faker", "One is missing: «${word.w}», faker $faker"))
     Sfx.win()
 }
@@ -242,6 +246,7 @@ fun TelephoneGame(host: GameHost) {
                 if (i + 1 < pages.size) BigButton(t("Επόμενο (${i + 2}/${pages.size})", "Next (${i + 2}/${pages.size})"), { i++; Sfx.tap() }, color = C.lime)
                 else BigButton(t("Τέλος", "Finish"), {
                     best?.let { tally.add(host, listOf(it), 1) }
+                    pages.filterIsInstance<Page2.Pic>().firstOrNull()?.let { gr.wsol.gamenight.chaos.Moments.last = "«${(pages.first() as Page2.Text).s}»" to it.lines }
                     host.log(t("Χαλασμένο τηλέφωνο: «${(pages.first() as Page2.Text).s}» → «${(pages.lastOrNull { it is Page2.Text } as? Page2.Text)?.s}»", "Broken telephone"))
                     phase = TP.Over
                 }, color = C.lime)

@@ -34,6 +34,7 @@ import gr.wsol.gamenight.ui.Type
 /** The first screen of every game: what it is, how it's played, its options, and «Ξεκινάμε». */
 @Composable
 fun Intro(game: Game, host: GameHost, rules: List<String>, startEnabled: Boolean = true, options: (@Composable ColumnScope.() -> Unit)? = null, onStart: () -> Unit) {
+    gr.wsol.gamenight.chaos.CalmScreen()
     Page("${game.emoji} ${game.title}", onBack = { host.exit() }, bottom = {
         BigButton(t("Ξεκινάμε", "Let's go"), onStart, color = game.color, enabled = startEnabled)
     }) {
@@ -80,6 +81,7 @@ class Tally {
 /** The end of a game: who got what, then «Ξανά» or back to the menu. */
 @Composable
 fun GameOver(game: Game, host: GameHost, tally: Tally, headline: String? = null, extra: (@Composable ColumnScope.() -> Unit)? = null, onAgain: () -> Unit) {
+    gr.wsol.gamenight.chaos.CalmScreen()
     val n = Store.night
     val lines = tally.bySide.entries.sortedByDescending { it.value }
     Page("${game.emoji} ${game.title}", onBack = { host.exit() }, bottom = {

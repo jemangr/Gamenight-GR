@@ -102,4 +102,8 @@ class ScreenshotsTest {
     @Test fun s31_orbit() = shot("31-orbit", "Ξεκινάμε", "Πάμε", wait = 1500) { game("orbit")(host) }
     @Test fun s32_path() = shot("32-path", "Ξεκινάμε", "Πάμε", wait = 1500) { game("path")(host) }
     @Test fun s33_sling() = shot("33-sling", "Ξεκινάμε", "Πάμε", wait = 1500) { game("sling")(host) }
+
+    @Test fun s34_core_levels() = shot("34-core-levels") { game("core")(host) }
+    @Test fun s35_core_board() { (1..10).forEach { Store.forceBest("core.$it.solved", 1) }; shot("35-core-board", "11") { game("core")(host) } }
+    @Test fun s36_chaos() = shot("36-chaos") { gr.wsol.gamenight.chaos.ChaosOverlay(gr.wsol.gamenight.chaos.Chaos.Event(gr.wsol.gamenight.chaos.Chaos.Kind.Penalty, "🚨", "Ποινή!", "Νίκος: −1, γιατί δεν πότισε το καναρίνι.", "Νίκος", -1)) {} }
 }

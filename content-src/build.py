@@ -115,3 +115,5 @@ for p, a in split_lines("missions", 2):
     kind, text, extra = p[0], p[1], p[2] if len(p) > 2 else ""
     ms.append(with_a({"t": text, "trap": extra} if kind == "L" else {"t": text, "word": extra}, a))
 dump("missions", ms)
+
+for k in ("penalties", "gifts", "curses", "roasts"): prompts(k)

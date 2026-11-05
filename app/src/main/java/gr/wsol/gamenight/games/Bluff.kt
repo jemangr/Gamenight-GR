@@ -256,7 +256,7 @@ fun LieGame(host: GameHost) {
 
         L.Result -> {
             QuitGuard(host)
-            val (who, pts) = remember(turn) { LieRules.points(speaker, judge, lied, judgedLie).also { tally.add(host, listOf(it.first), it.second); if (lied == judgedLie) Sfx.correct() else Sfx.wrong() } }
+            val (who, pts) = remember(turn) { if (lied && !judgedLie) host.stat(speaker, "liar"); LieRules.points(speaker, judge, lied, judgedLie).also { tally.add(host, listOf(it.first), it.second); if (lied == judgedLie) Sfx.correct() else Sfx.wrong() } }
             Announce(if (lied == judgedLie) "🎯" else "🤥", if (lied) t("Ήταν ψέμα!", "It was a lie!") else t("Ήταν αλήθεια!", "It was true!"),
                 t("Η αληθινή απάντηση: ${fact!!.ans}\n\n+$pts $who", "The true answer: ${fact!!.ans}\n\n+$pts $who"),
                 if (turn + 1 < total) t("Επόμενος", "Next") else t("Αποτελέσματα", "Results"), C.pink) {

@@ -19,7 +19,14 @@ data class Night(
     /** Which games were played tonight and how many points they gave, newest last. */
     val log: List<Entry> = emptyList(),
     val started: Long = System.currentTimeMillis(),
+    /** Small counters for the end-of-night awards: player → (what → how many). */
+    val stats: Map<String, Map<String, Int>> = emptyMap(),
 ) {
+    fun stat(name: String, key: String): Night {
+        val m = stats[name].orEmpty()
+        return copy(stats = stats + (name to (m + (key to (m[key] ?: 0) + 1))))
+    }
+
     @Serializable
     data class Entry(val game: String, val note: String, val time: Long = System.currentTimeMillis())
 
@@ -44,7 +51,7 @@ data class Night(
      */
     fun award(who: Collection<String>, pts: Int): Night {
         if (pts == 0 || who.isEmpty()) return this
-        val keys = who.map { sideOf(it) }.toSet()
+        val keys = who.map { sideOf(it) }.filter { it in sides() }.toSet()
         val p = points.toMutableMap()
         keys.forEach { p[it] = (p[it] ?: 0) + pts }
         return copy(points = p)

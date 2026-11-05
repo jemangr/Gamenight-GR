@@ -1,0 +1,84 @@
+0|Colours|Red,Blue,Green,Yellow
+1|Fruit|Apple,Pear,Peach,Cherry
+2|Planets|Mars,Venus,Saturn,Mercury
+3|Greek gods|Hephaestus,Apollo,Athena,Hera
+
+0|Body parts|Hand,Foot,Ear,Nose
+1|Furniture|Table,Chair,Wardrobe,Sofa
+2|Tools|Hammer,Screwdriver,Pliers,Drill
+3|Parts of a fish|Scale,Gill,Fin,Tail
+
+0|Farm animals|Cow,Sheep,Hen,Pig
+1|Birds|Swallow,Sparrow,Eagle,Seagull
+2|Insects|Ant,Cicada,Mosquito,Grasshopper
+3|Seafood|Prawn,Squid,Mussel,Lobster
+
+0|Months|March,May,July,October
+1|Days|Monday,Wednesday,Friday,Sunday
+2|Times of day|Dawn,Noon,Dusk,Midnight
+3|Holidays|Easter,Christmas,Halloween,Carnival
+
+0|Ball sports|Football,Basketball,Volleyball,Handball
+1|In the water|Swimming,Water polo,Canoeing,Sailing
+2|Martial arts|Karate,Judo,Taekwondo,Kung fu
+3|Athletics|Shot put,Javelin,Pole vault,Marathon
+
+0|European capitals|Rome,Madrid,Vienna,Lisbon
+1|Greek cities|Larissa,Patras,Volos,Ioannina
+2|Greek mountains|Olympus,Parnassus,Taygetus,Pelion
+3|Rivers|Danube,Thames,Seine,Rhine
+
+0|Dairy|Milk,Yoghurt,Butter,Cream
+1|Cheeses|Feta,Cheddar,Brie,Gouda
+2|Breads|Bagel,Baguette,Croissant,Pitta
+3|Pulses|Lentils,Chickpeas,Beans,Peas
+
+0|In the kitchen|Pan,Pot,Spatula,Grater
+1|In the bathroom|Towel,Soap,Sponge,Shampoo
+2|At the beach|Parasol,Sunbed,Bucket,Sunscreen
+3|At school|Chalk,Notebook,Eraser,Pencil case
+
+0|Vehicles|Car,Bus,Motorbike,Lorry
+1|They fly|Plane,Helicopter,Balloon,Kite
+2|They float|Raft,Ferry,Yacht,Canoe
+3|Wheels but not vehicles|Trolley,Suitcase,Skates,Pram
+
+0|Feelings|Joy,Sadness,Anger,Fear
+1|Weather|Rain,Snow,Fog,Hail
+2|Winds|Breeze,Gale,Gust,Tornado
+3|At sea|Wave,Foam,Tide,Current
+
+0|Vegetables|Tomato,Cucumber,Carrot,Onion
+1|Herbs|Basil,Mint,Oregano,Parsley
+2|Nuts|Walnut,Almond,Pistachio,Hazelnut
+3|Fruit and colour too|Orange,Lime,Plum,Lemon
+
+0|Clothes|Shirt,Trousers,Skirt,Blouse
+1|Footwear|Flip-flops,Boots,Heels,Trainers
+2|Accessories|Belt,Tie,Scarf,Gloves
+3|Jewellery|Ring,Bracelet,Earrings,Necklace
+
+0|Shapes|Circle,Square,Triangle,Rectangle
+1|Units|Metre,Kilo,Litre,Second
+2|Maths|Addition,Subtraction,Fraction,Root
+3|Words that are also numbers|One,Three,Eight,Nine
+
+0|Playground|Slide,Swing,Seesaw,Roundabout
+1|Board games|Chess,Backgammon,Draughts,Monopoly
+2|Children's games|Hide and seek,Tag,Hopscotch,Marbles
+3|Card games|Poker,Snap,Rummy,Bridge
+
+0|Make a bang|Bomb,Balloon,Firework,Thunder
+1|They shine|Star,Moon,Lamp,Firefly
+2|They stick|Gum,Tape,Glue,Honey
+3|They spin|Windmill,Top,Wheel,Earth
+
+0|Have teeth|Comb,Saw,Zip,Gear
+1|Have legs|Table,Chair,Bed,Tripod
+2|Have a neck|Bottle,Guitar,Vase,Shirt
+3|Have an eye|Needle,Storm,Potato,Camera
+
+0|White things|Snow,Milk,Salt,Cloud
+1|Black things|Coal,Tar,Crow,Ink
+2|Red things|Tomato,Strawberry,Ruby,Fire engine
+3|Green things|Grass,Frog,Emerald,Cucumber

@@ -183,6 +183,7 @@ fun SideName(night: Night, side: String, style: androidx.compose.ui.text.TextSty
  */
 @Composable
 fun PassTo(name: String, color: Color, note: String? = null, button: String = t("Είμαι εγώ, πάμε", "It's me, go"), onReady: () -> Unit) {
+    gr.wsol.gamenight.chaos.CalmScreen()
     Column(Modifier.fillMaxSize().padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
         Text("📱", fontSize = 56.sp)
         Spacer(Modifier.height(14.dp))
@@ -190,7 +191,7 @@ fun PassTo(name: String, color: Color, note: String? = null, button: String = t(
         Text(name, style = Type.big, color = color, textAlign = TextAlign.Center)
         if (note != null) { Spacer(Modifier.height(10.dp)); Body(note, align = TextAlign.Center) }
         Spacer(Modifier.height(28.dp))
-        BigButton(button, onReady, color = color)
+        BigButton(button, { gr.wsol.gamenight.chaos.Chaos.holder = name; onReady() }, color = color)
     }
 }
 
@@ -223,6 +224,7 @@ fun HoldToReveal(modifier: Modifier = Modifier, hint: String = t("Κράτα π�
 fun rememberCountdown(seconds: Int, running: Boolean, key: Any? = Unit, tickLast: Int = 5, onEnd: () -> Unit): Long {
     var left by remember(key) { mutableLongStateOf(seconds * 1000L) }
     val end = rememberUpdatedState(onEnd)
+    gr.wsol.gamenight.chaos.TimedScreen(running && left > 0)
     LaunchedEffect(key, running) {
         if (!running) return@LaunchedEffect
         var last = System.nanoTime()

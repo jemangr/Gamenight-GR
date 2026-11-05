@@ -17,6 +17,10 @@ data class Settings(
     val updateCheck: Boolean = true,
     val skipVersion: String = "",
     val english: Boolean = false,
+    /** «🌀 Χάος»: surprises between rounds and the «Κράξε» button. */
+    val chaos: Boolean = true,
+    /** 0 rarely, 1 normally, 2 often. */
+    val chaosFreq: Int = 1,
 )
 
 /**
@@ -78,6 +82,13 @@ object Store {
     }
 
     private val memBest = mutableMapOf<String, Int>()
+
+    /** Sets a number even if it is lower (the logic core keeps «fewest nodes»). */
+    fun forceBest(key: String, v: Int) { if (::prefs.isInitialized) prefs.edit().putInt("best.$key", v).apply() else memBest[key] = v }
+
+    fun text(key: String): String? = if (::prefs.isInitialized) prefs.getString("txt.$key", null) else memText[key]
+    fun putText(key: String, v: String) { if (::prefs.isInitialized) prefs.edit().putString("txt.$key", v).apply() else memText[key] = v }
+    private val memText = mutableMapOf<String, String>()
 
     /** Arcade records: all time, today and this week. Returns which of them [score] beat. */
     fun arcadeRecord(game: String, score: Int, now: java.util.Calendar = java.util.Calendar.getInstance()): Set<String> {

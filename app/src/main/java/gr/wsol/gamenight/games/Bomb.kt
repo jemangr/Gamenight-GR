@@ -168,6 +168,7 @@ fun BombGame(host: GameHost) {
             val loser = holder
             val alive = order.filter { it !in out && it != loser }
             remember(round) {
+                host.stat(loser, "bomb"); gr.wsol.gamenight.chaos.Chaos.tease("bomb", loser)
                 if (sudden) out.add(loser) else tally.add(host, listOf(loser), -1)
                 host.log(t("Βόμβα: έσκασε στα χέρια του/της $loser", "Bomb: blew up in $loser's hands"))
             }

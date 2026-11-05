@@ -44,6 +44,10 @@ fun SettingsScreen() {
             Toggle(t("Ήχοι", "Sounds"), null, s.sounds) { Store.settings = s.copy(sounds = it) }
             Toggle(t("Δόνηση", "Vibration"), null, s.haptics) { Store.settings = s.copy(haptics = it) }
         }
+        Panel {
+            Toggle(t("🌀 Χάος", "🌀 Chaos"), t("Μικρές αστείες εκπλήξεις ανάμεσα στους γύρους: ποινές, δώρα, κατάρες, σερίφης, μονομαχίες. Και το κουμπί «🎯 Κράξε». Ποτέ μέσα σε χρονόμετρο ή σε κρυφή οθόνη.", "Small funny surprises between rounds: penalties, gifts, curses, a sheriff, duels. And the «🎯 Roast» button. Never during a timer or a secret screen."), s.chaos) { Store.settings = s.copy(chaos = it) }
+            if (s.chaos) Seg(listOf(0 to t("Σπάνια", "Rarely"), 1 to t("Κανονικά", "Normal"), 2 to t("Συχνά", "Often")), s.chaosFreq, { Store.settings = s.copy(chaosFreq = it); gr.wsol.gamenight.chaos.Chaos.schedule() })
+        }
         if (BuildConfig.UPDATE_CHECK) Panel {
             Toggle(t("Έλεγχος για νέα έκδοση", "Check for new versions"), t("Μία ερώτηση στο GitHub το πολύ κάθε 6 ώρες. Δεν στέλνεται τίποτα δικό σας.", "One request to GitHub at most every 6 hours. Nothing of yours is sent."), s.updateCheck) { Store.settings = s.copy(updateCheck = it) }
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {

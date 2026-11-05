@@ -52,6 +52,10 @@ data class Content(
     val draw: List<Word> = emptyList(),
     val phrases: List<Prompt> = emptyList(),
     val missions: List<Mission> = emptyList(),
+    val penalties: List<Prompt> = emptyList(),
+    val gifts: List<Prompt> = emptyList(),
+    val curses: List<Prompt> = emptyList(),
+    val roasts: List<Prompt> = emptyList(),
 )
 
 /** All the cards, from the JSON files in assets/content/<lang>/ (one per game). Loaded once. */
@@ -87,6 +91,10 @@ object Cards {
             draw = list("draw", Word.serializer()),
             phrases = list("phrases", Prompt.serializer()),
             missions = list("missions", Mission.serializer()),
+            penalties = list("penalties", Prompt.serializer()),
+            gifts = list("gifts", Prompt.serializer()),
+            curses = list("curses", Prompt.serializer()),
+            roasts = list("roasts", Prompt.serializer()),
         )
     }
 }

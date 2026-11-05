@@ -2,6 +2,7 @@ package gr.wsol.gamenight.games
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import gr.wsol.gamenight.core.Store
 import gr.wsol.gamenight.core.t
 import gr.wsol.gamenight.ui.C
 
@@ -24,6 +25,8 @@ interface GameHost {
     fun award(who: Collection<String>, pts: Int)
     fun log(note: String)
     fun exit()
+    /** One more of [key] for [who] (for the awards at the end of the night). */
+    fun stat(who: String, key: String) { Store.night = Store.night.stat(who, key) }
 }
 
 class Game(
@@ -90,7 +93,7 @@ object Games {
         Game("path", "✨", "Φωτεινή διαδρομή", "Light path", Category.Arcade, 1, 7, "Θυμήσου τη διαδρομή και σύρε το δάχτυλο.", "Remember the path and trace it.", C.green, { ArcadeShell(Games.byId("path")!!, it, listOf(t("Σε πλέγμα 5×5 ανάβει για λίγο μια διαδρομή. Σύρε το δάχτυλο πάνω της, από την αρχή ως το τέλος.", "A path lights up on a 5×5 grid for a moment. Trace it with your finger, start to end."), t("Κάθε φορά μακραίνει και φαίνεται λιγότερο. 3 ζωές.", "Each time it gets longer and shows for less. 3 lives."))) { k, done -> PathRun(k, done) } }),
         Game("sling", "🎯", "Σφεντόνα", "Slingshot", Category.Arcade, 1, 7, "Τράβα, ρίξε, αναπήδησε για combo.", "Pull, shoot, bounce for a combo.", C.amber, { ArcadeShell(Games.byId("sling")!!, it, listOf(t("Τράβα πίσω και ρίξε τη σφαίρα. Αναπηδά στους τοίχους.", "Pull back and shoot the ball. It bounces off the walls."), t("Κάθε αναπήδηση πριν το χτύπημα διπλασιάζει την αξία του. 60″, και κάθε καθαρό ταμπλό δίνει +5″.", "Each bounce before a hit doubles its value. 60″, and each clear board gives +5″."))) { k, done -> SlingRun(k, done) } }),
         // 🧠 Logic
-        Game("core", "⚛️", "Ο Πυρήνας", "The Core", Category.Logic, 1, 7, "Κόμβοι, σήματα, κύκλοι. Χωρίς τύχη.", "Nodes, signals, cycles. No luck.", C.cyan),
+        Game("core", "⚛️", "Ο Πυρήνας", "The Core", Category.Logic, 1, 7, "Κόμβοι, σήματα, κύκλοι. Χωρίς τύχη.", "Nodes, signals, cycles. No luck.", C.cyan, { CoreGame(it) }),
     )
 
     fun byId(id: String) = all.firstOrNull { it.id == id }

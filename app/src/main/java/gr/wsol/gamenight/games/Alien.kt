@@ -214,6 +214,7 @@ fun AlienGameScreen(host: GameHost) {
             val gg = g!!
             remember(gameNo) {
                 gg.points().forEach { (p, pts) -> tally.add(host, listOf(p), pts) }
+                if (gg.winner == AlienGame.Winner.Alien) host.stat(gg.alien, "sneaky")
                 host.log(t("Εξωγήινος: ${gg.alien} («${gg.pair.x}» αντί για «${gg.pair.h}»)", "Alien: ${gg.alien} («${gg.pair.x}» instead of «${gg.pair.h}»)"))
                 Sfx.win()
             }

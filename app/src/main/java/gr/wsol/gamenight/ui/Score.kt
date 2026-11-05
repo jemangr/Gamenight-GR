@@ -84,6 +84,20 @@ fun ScoreScreen() {
                 Text("$p", style = Type.title, color = C.text)
             }
         }
+        if (n.players.size >= 2 && r.any { it.second != 0 }) {
+            var show by remember { mutableStateOf(false) }
+            GhostButton(t("🏆 Απονομή βραβείων", "🏆 Awards"), { show = !show; gr.wsol.gamenight.extras.Sfx.win() }, Modifier.fillMaxWidth())
+            if (show) Panel {
+                gr.wsol.gamenight.chaos.Awards.of(n).forEach { a -> Text("${a.emoji} ${a.title}", style = Type.h, color = C.amber); Text("${a.who} · ${a.why}", style = Type.body, color = C.text) }
+                GhostButton(t("Κοινοποίηση βραβείων", "Share the awards"), {
+                    val i = Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, gr.wsol.gamenight.chaos.Awards.text(n))
+                    runCatching { ctx.startActivity(Intent.createChooser(i, null)) }
+                }, Modifier.fillMaxWidth())
+            }
+        }
+        gr.wsol.gamenight.chaos.Moments.last?.let { (title, lines) ->
+            GhostButton(t("📸 Στιγμή της βραδιάς: $title", "📸 Moment of the night: $title"), { gr.wsol.gamenight.ui.Drawing.share(ctx, lines, "Gamenight GR · $title") }, Modifier.fillMaxWidth())
+        }
         if (n.log.isNotEmpty()) {
             Label(t("ΤΙ ΕΓΙΝΕ ΑΠΟΨΕ", "WHAT HAPPENED TONIGHT"))
             n.log.asReversed().take(30).forEach { e ->

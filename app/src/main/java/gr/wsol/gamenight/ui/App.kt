@@ -14,6 +14,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import gr.wsol.gamenight.BuildConfig
+import gr.wsol.gamenight.chaos.Chaos
+import gr.wsol.gamenight.chaos.ChaosOverlay
 import gr.wsol.gamenight.core.Store
 import gr.wsol.gamenight.extras.Crash
 import gr.wsol.gamenight.extras.Report
@@ -72,13 +74,17 @@ fun AppRoot() {
                     val host = remember(s.id) {
                         object : GameHost {
                             override fun award(who: Collection<String>, pts: Int) { Store.night = Store.night.award(who, pts) }
-                            override fun log(note: String) { Store.night = Store.night.note(s.id, note) }
+                            override fun log(note: String) { Store.night = Store.night.note(s.id, note); Chaos.maybe(ctx) }
                             override fun exit() { Report.game = null; Nav.back() }
                         }
                     }
                     g.play.invoke(host)
                 }
             }
+        }
+        Chaos.pending?.let { e ->
+            val home = Nav.top !is Screen.Play
+            if (home || Chaos.canShow) ChaosOverlay(e, fromHome = home) { Chaos.pending = null }
         }
         crash?.let { CrashDialog(it) { Crash.clear(ctx); crash = null } }
     }

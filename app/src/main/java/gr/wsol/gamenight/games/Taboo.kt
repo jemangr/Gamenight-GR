@@ -164,7 +164,7 @@ fun TabooGame(host: GameHost) {
                             passes++; Sfx.pass(); done.add(c to "pass"); next()
                         }, Modifier.weight(1f), enabled = passes < TabooRules.MAX_PASSES)
                         GhostButton(t("✗ Απαγορευμένη", "✗ Banned"), {
-                            TabooRules.banned(n.players.size, n.teams, describer).forEach { (who, p) -> tally.add(host, listOf(who), p) }
+                            host.stat(describer, "banned"); TabooRules.banned(n.players.size, n.teams, describer).forEach { (who, p) -> tally.add(host, listOf(who), p) }
                             Sfx.wrong(); Sfx.buzz(200, true); done.add(c to "no"); next()
                         }, Modifier.weight(1f), color = C.red)
                     }

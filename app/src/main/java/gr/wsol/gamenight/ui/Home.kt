@@ -66,6 +66,7 @@ fun HomeScreen() {
             }
         }
         UpdateBar()
+        gr.wsol.gamenight.chaos.ChaosHomeBar()
 
         // Tonight's players
         Panel(onClick = { Nav.go(Screen.Players) }) {

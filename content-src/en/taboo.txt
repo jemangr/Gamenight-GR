@@ -1,0 +1,171 @@
+Coffee|cup|morning|caffeine|bean|espresso|food
+Pizza|cheese|Italy|slice|dough|delivery|food
+Hamburger|bun|beef|fast food|patty|ketchup|food
+Chocolate|sweet|cocoa|bar|milk|dark|food
+Ice cream|cold|cone|scoop|summer|vanilla|food
+Popcorn|cinema|corn|butter|pop|movie|food
+Pancake|flat|syrup|breakfast|flip|batter|food
+Sandwich|bread|slices|lunch|ham|filling|food
+Spaghetti|pasta|Italy|noodles|tomato|meatballs|food
+Banana|yellow|peel|monkey|fruit|split|food
+Watermelon|green|red|seeds|summer|fruit|food
+Lemon|sour|yellow|juice|citrus|lime|food
+Honey|bee|sweet|sticky|jar|gold|food
+Egg|chicken|yolk|shell|omelette|boil|food
+Cheese|milk|mouse|cheddar|slice|pizza|food
+Bread|loaf|bakery|toast|flour|slice|food
+Salad|lettuce|green|bowl|dressing|healthy|food
+Soup|bowl|spoon|hot|broth|tomato|food
+Cake|birthday|candles|slice|bake|frosting|food
+Olive|oil|green|black|tree|Greece|food
+Doctor|hospital|sick|nurse|medicine|patient|jobs
+Teacher|school|class|students|lesson|board|jobs
+Firefighter|fire|truck|hose|ladder|smoke|jobs
+Police officer|crime|arrest|badge|siren|uniform|jobs
+Pilot|plane|fly|airport|cockpit|captain|jobs
+Chef|cook|kitchen|restaurant|hat|recipe|jobs
+Dentist|teeth|drill|chair|toothbrush|cavity|jobs
+Waiter|restaurant|tray|order|tip|table|jobs
+Farmer|farm|tractor|crops|cows|field|jobs
+Plumber|pipes|water|leak|sink|toilet|jobs
+Electrician|wires|power|lights|socket|fuse|jobs
+Hairdresser|hair|scissors|cut|salon|dryer|jobs
+Postman|letters|mail|deliver|stamp|parcel|jobs
+Lawyer|court|judge|law|client|case|jobs
+Astronaut|space|moon|rocket|NASA|suit|jobs
+Magician|tricks|rabbit|hat|wand|cards|jobs
+Cat|meow|pet|kitten|whiskers|mouse|animals
+Dog|bark|pet|puppy|bone|walk|animals
+Elephant|trunk|big|grey|Africa|tusks|animals
+Giraffe|neck|tall|spots|Africa|leaves|animals
+Penguin|ice|bird|black|white|Antarctica|animals
+Turtle|shell|slow|sea|reptile|green|animals
+Dolphin|sea|smart|jump|swim|mammal|animals
+Lion|king|mane|roar|jungle|cat|animals
+Owl|night|bird|wise|hoot|eyes|animals
+Bee|honey|sting|hive|buzz|flower|animals
+Spider|web|legs|eight|scary|insect|animals
+Shark|teeth|sea|fin|jaws|fish|animals
+Monkey|banana|jungle|climb|ape|tail|animals
+Snake|hiss|long|venom|reptile|slither|animals
+Kangaroo|jump|Australia|pouch|hop|baby|animals
+Octopus|tentacles|eight|ink|sea|arms|animals
+Butterfly|wings|caterpillar|colourful|fly|flower|animals
+Frog|green|jump|pond|croak|prince|animals
+Rabbit|ears|carrot|hop|bunny|Easter|animals
+Horse|ride|gallop|saddle|pony|neigh|animals
+Fridge|cold|kitchen|food|freezer|door|home
+Sofa|sit|living room|couch|cushion|TV|home
+Remote control|TV|buttons|channel|batteries|lost|home
+Washing machine|clothes|wash|laundry|spin|detergent|home
+Vacuum cleaner|dust|clean|floor|suck|noise|home
+Bed|sleep|pillow|sheets|bedroom|mattress|home
+Umbrella|rain|wet|open|handle|sun|home
+Mirror|reflection|glass|look|bathroom|face|home
+Alarm clock|wake|morning|ring|snooze|time|home
+Toothbrush|teeth|toothpaste|brush|bathroom|morning|home
+Key|door|lock|open|keychain|lost|home
+Window|glass|open|view|curtain|house|home
+Lift|floor|button|up|down|stairs|home
+Candle|flame|wax|light|birthday|match|home
+Football|ball|goal|team|kick|pitch|sports
+Basketball|hoop|ball|dunk|team|court|sports
+Tennis|racket|ball|net|court|serve|sports
+Swimming|pool|water|stroke|goggles|lane|sports
+Marathon|run|42|race|kilometres|finish|sports
+Referee|whistle|card|game|foul|red|sports
+Chess|king|queen|board|checkmate|pawn|sports
+Bicycle|wheels|pedal|ride|helmet|bike|sports
+Gym|weights|exercise|muscles|treadmill|fit|sports
+Skiing|snow|mountain|slope|poles|winter|sports
+Golf|club|ball|hole|green|swing|sports
+Boxing|punch|gloves|ring|fight|knockout|sports
+Medal|gold|silver|bronze|win|Olympics|sports
+Phone|call|screen|apps|mobile|ring|general
+Internet|web|online|Wi-Fi|browser|website|general
+Airport|plane|flight|terminal|gate|luggage|general
+Beach|sand|sea|sun|towel|waves|general
+Rain|water|clouds|umbrella|drops|wet|general
+Snow|white|cold|winter|snowman|flakes|general
+Moon|night|sky|full|astronaut|crescent|general
+Sun|hot|light|sky|star|summer|general
+Wedding|bride|groom|church|ring|marry|general
+Birthday|cake|candles|party|presents|age|general
+Holiday|vacation|travel|beach|relax|trip|general
+School|teacher|students|class|lessons|homework|general
+Hospital|doctor|sick|nurse|ambulance|patient|general
+Bank|money|account|cash|loan|card|general
+Supermarket|shopping|trolley|food|checkout|aisle|general
+Train|tracks|station|carriage|ticket|railway|general
+Bus|stop|driver|ticket|passengers|route|general
+Traffic light|red|green|amber|stop|road|general
+Wallet|money|cards|pocket|cash|leather|general
+Suitcase|travel|clothes|wheels|pack|airport|general
+Camera|photo|picture|lens|click|selfie|general
+Television|TV|channels|screen|watch|remote|general
+Christmas|tree|presents|Santa|December|carols|general
+New Year|midnight|fireworks|January|countdown|resolution|general
+Rainbow|colours|rain|sky|seven|arc|general
+Dragon|fire|wings|myth|castle|knight|general
+Ghost|scary|white|sheet|haunted|boo|general
+Pirate|ship|treasure|parrot|eye patch|sea|general
+Robot|machine|metal|artificial|android|program|general
+Alien|space|UFO|green|planet|Mars|general
+Volcano|lava|erupt|mountain|ash|hot|general
+Earthquake|shake|ground|Richter|tremor|quake|general
+Lighthouse|light|sea|ships|tower|coast|general
+Island|sea|surrounded|beach|land|water|general
+Desert|sand|camel|hot|Sahara|dry|general
+Pyramid|Egypt|triangle|Pharaoh|desert|stone|general
+Dinosaur|extinct|T-Rex|fossil|big|Jurassic|general
+Cards|deck|ace|king|shuffle|poker|general
+Dice|six|roll|cube|game|dots|general
+Kite|wind|fly|string|sky|tail|general
+Chewing gum|chew|bubble|sticky|mint|mouth|general
+Moustache|hair|lip|face|beard|shave|general
+Snoring|sleep|noise|nose|loud|night|general
+Hiccups|breath|water|scare|hic|stomach|general
+Yawn|tired|mouth|sleepy|bored|open|general
+Selfie|photo|phone|face|camera|pose|general
+Emoji|smiley|text|face|message|icon|general
+Password|secret|login|account|forget|letters|general
+Charger|phone|battery|plug|cable|power|general
+Headphones|music|ears|listen|wireless|sound|general
+Library|books|borrow|quiet|shelves|read|general
+Museum|exhibits|art|history|old|gallery|general
+Circus|clown|acrobat|tent|lion|juggle|general
+Zoo|animals|cages|keeper|visit|lion|general
+Camping|tent|outdoors|fire|sleeping bag|forest|general
+Hotel|room|reception|stay|key|bed|general
+Cinema|film|screen|popcorn|ticket|seats|general
+Barbecue|grill|meat|charcoal|garden|sausages|general
+Present|gift|wrap|birthday|ribbon|box|general
+Secret|hidden|tell|whisper|nobody|private|general
+Dream|sleep|night|nightmare|wake|imagine|general
+Traffic jam|cars|stuck|road|horn|rush hour|general
+Passport|travel|country|border|photo|document|general
+Piggy bank|money|coins|save|pig|break|general
+Queue|wait|line|people|turn|bank|general
+Submarine|sea|underwater|periscope|yellow|navy|general
+Helicopter|blades|fly|pilot|rescue|noise|general
+Rocket|space|launch|fire|NASA|countdown|general
+Snowman|snow|carrot|winter|scarf|hat|general
+Mask|face|hide|carnival|wear|disguise|general
+Hat|head|wear|cap|sun|brim|general
+Tie|neck|shirt|suit|knot|wear|general
+Socks|feet|pair|shoes|wool|missing|general
+Pyjamas|sleep|bed|night|clothes|comfy|general
+Scissors|cut|paper|blades|sharp|hair|general
+Map|roads|country|GPS|directions|compass|general
+Compass|north|needle|direction|map|south|general
+Telescope|stars|lens|sky|far|astronomer|general
+Magnet|attract|metal|fridge|iron|poles|general
+Puzzle|pieces|picture|fit|jigsaw|solve|general
+!Hangover|drink|headache|morning|party|alcohol|18+
+!Ex|former|partner|broke up|relationship|text|18+
+!Mother-in-law|wife|husband|mother|family|visit|18+
+!Gossip|talk|rumour|neighbour|secret|whisper|18+
+!Couch potato|sofa|lazy|TV|sit|snacks|18+
+!Stingy|money|cheap|pay|wallet|mean|18+
+!Show-off|brag|look|attention|boast|flashy|18+
+!Drama queen|exaggerate|fuss|cry|attention|scene|18+

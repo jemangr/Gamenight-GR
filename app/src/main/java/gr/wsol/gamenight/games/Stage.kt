@@ -223,7 +223,7 @@ fun MinefieldGame(host: GameHost) {
     val who = players[turn % players.size]
 
     fun newTopic() { chain = deck.next()?.let { MineChain(it) }; text = ""; warn = null; phase = M.Play }
-    fun boom(reason: String) { loser = who; why = reason; tally.add(host, listOf(who), -1); Sfx.boom(); Sfx.pattern(300, 80, 400); phase = M.Boom }
+    fun boom(reason: String) { host.stat(who, "mine"); gr.wsol.gamenight.chaos.Chaos.tease("mine", who); loser = who; why = reason; tally.add(host, listOf(who), -1); Sfx.boom(); Sfx.pattern(300, 80, 400); phase = M.Boom }
 
     when (phase) {
         M.Intro -> Intro(game, host, listOf(

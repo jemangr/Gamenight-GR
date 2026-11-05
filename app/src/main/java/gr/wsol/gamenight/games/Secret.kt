@@ -99,6 +99,7 @@ object Votes {
 /** A big centered message with a button. */
 @Composable
 fun Announce(emoji: String, title: String, body: String?, button: String, color: Color = C.amber, onNext: () -> Unit) {
+    gr.wsol.gamenight.chaos.CalmScreen()
     Column(Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding().padding(24.dp).verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
         Text(emoji, style = Type.huge)
         Spacer(Modifier.height(10.dp))
