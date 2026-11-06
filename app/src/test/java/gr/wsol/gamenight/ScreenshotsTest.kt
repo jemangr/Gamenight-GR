@@ -27,6 +27,7 @@ import gr.wsol.gamenight.ui.SettingsScreen
 import com.github.takahirom.roborazzi.captureRoboImage
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import org.junit.Before
 import org.junit.Rule
@@ -103,6 +104,124 @@ class ScreenshotsTest {
     @Test fun s24_witness_scene() = shot("24-witness-scene") { gr.wsol.gamenight.games.WitnessScene(gr.wsol.gamenight.games.WitnessScenes.make(kotlin.random.Random(7))) }
 
     @Test fun s25_house_setup() = shot("25-house-setup", "Ξεκινάμε") { game("house")(host) }
+
+    @Test fun s25b_card_back() {
+        compose.setContent {
+            GamenightTheme {
+                androidx.compose.foundation.layout.Box(
+                    modifier = androidx.compose.ui.Modifier.fillMaxSize().background(gr.wsol.gamenight.ui.C.bg),
+                    contentAlignment = Alignment.Center
+                ) {
+                    gr.wsol.gamenight.games.GothicRoleCardBack()
+                }
+            }
+        }
+        compose.onRoot().captureRoboImage("../docs/screenshots/25b-card-back.png")
+    }
+
+    @Test fun s25c_role_zombie() {
+        compose.setContent {
+            GamenightTheme {
+                androidx.compose.foundation.layout.Box(
+                    modifier = androidx.compose.ui.Modifier.fillMaxSize().background(gr.wsol.gamenight.ui.C.bg),
+                    contentAlignment = Alignment.Center
+                ) {
+                    gr.wsol.gamenight.games.GothicRoleCard(
+                        role = gr.wsol.gamenight.games.Role.Zombie,
+                        otherZombies = listOf("Μαρία")
+                    )
+                }
+            }
+        }
+        compose.onRoot().captureRoboImage("../docs/screenshots/25c-role-zombie.png")
+    }
+
+    @Test fun s25d_role_healer() {
+        compose.setContent {
+            GamenightTheme {
+                androidx.compose.foundation.layout.Box(
+                    modifier = androidx.compose.ui.Modifier.fillMaxSize().background(gr.wsol.gamenight.ui.C.bg),
+                    contentAlignment = Alignment.Center
+                ) {
+                    gr.wsol.gamenight.games.GothicRoleCard(
+                        role = gr.wsol.gamenight.games.Role.Healer
+                    )
+                }
+            }
+        }
+        compose.onRoot().captureRoboImage("../docs/screenshots/25d-role-healer.png")
+    }
+
+    @Test fun s25e_role_mage() {
+        compose.setContent {
+            GamenightTheme {
+                androidx.compose.foundation.layout.Box(
+                    modifier = androidx.compose.ui.Modifier.fillMaxSize().background(gr.wsol.gamenight.ui.C.bg),
+                    contentAlignment = Alignment.Center
+                ) {
+                    gr.wsol.gamenight.games.GothicRoleCard(
+                        role = gr.wsol.gamenight.games.Role.Mage,
+                        lover = "Νίκος"
+                    )
+                }
+            }
+        }
+        compose.onRoot().captureRoboImage("../docs/screenshots/25e-role-mage.png")
+    }
+
+    @Test fun s25f_house_day() {
+        compose.setContent {
+            GamenightTheme {
+                gr.wsol.gamenight.games.HouseBackground(isNight = false) {
+                    androidx.compose.foundation.layout.Column(
+                        androidx.compose.ui.Modifier.fillMaxSize().padding(20.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        gr.wsol.gamenight.ui.Panel {
+                            androidx.compose.foundation.layout.Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(10.dp),
+                                modifier = androidx.compose.ui.Modifier.padding(12.dp)
+                            ) {
+                                androidx.compose.material3.Text("☀️ Πρωινό φως", style = gr.wsol.gamenight.ui.Type.title, color = gr.wsol.gamenight.ui.C.text)
+                                gr.wsol.gamenight.ui.Body("Τα φαντάσματα ησύχασαν. Κανείς δεν χάθηκε απόψε.", align = androidx.compose.ui.text.style.TextAlign.Center, color = gr.wsol.gamenight.ui.C.text)
+                                gr.wsol.gamenight.ui.BigButton("Συζήτηση", {}, color = gr.wsol.gamenight.ui.C.ghost)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        compose.onRoot().captureRoboImage("../docs/screenshots/25f-house-day.png")
+    }
+
+    @Test fun s25g_house_night() {
+        compose.setContent {
+            GamenightTheme {
+                gr.wsol.gamenight.games.HouseBackground(isNight = true) {
+                    androidx.compose.foundation.layout.Column(
+                        androidx.compose.ui.Modifier.fillMaxSize().padding(20.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        gr.wsol.gamenight.ui.Panel {
+                            androidx.compose.foundation.layout.Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(10.dp),
+                                modifier = androidx.compose.ui.Modifier.padding(12.dp)
+                            ) {
+                                androidx.compose.material3.Text("🕯️ Σκοτάδι 1", style = gr.wsol.gamenight.ui.Type.title, color = gr.wsol.gamenight.ui.C.candle)
+                                gr.wsol.gamenight.ui.Body("Όλοι μάτια κλειστά. Το σπίτι κοιμάται...", align = androidx.compose.ui.text.style.TextAlign.Center, color = gr.wsol.gamenight.ui.C.text)
+                                gr.wsol.gamenight.ui.BigButton("Εντάξει", {}, color = gr.wsol.gamenight.ui.C.ghost)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        compose.onRoot().captureRoboImage("../docs/screenshots/25g-house-night.png")
+    }
 
     @Test fun s26_gate() = shot("26-gate", "Ξεκινάμε", "Πάμε", wait = 1500) { game("gate")(host) }
     @Test fun s27_tower() = shot("27-tower", "Ξεκινάμε", "Πάμε", wait = 1500) { game("tower")(host) }
@@ -258,6 +377,43 @@ class ScreenshotsTest {
             }
         }
         compose.onRoot().captureRoboImage("../docs/screenshots/91-font.png")
+    }
+
+    @Test fun s92_witness_sheet() {
+        val rnd = kotlin.random.Random(101)
+        val scenes = (0 until 12).map { gr.wsol.gamenight.games.WitnessScenes.make(rnd) }
+        compose.setContent {
+            GamenightTheme {
+                androidx.compose.foundation.lazy.grid.LazyVerticalGrid(
+                    columns = androidx.compose.foundation.lazy.grid.GridCells.Fixed(3),
+                    modifier = androidx.compose.ui.Modifier.fillMaxSize().background(gr.wsol.gamenight.ui.C.bg).padding(6.dp),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(scenes.size) { idx ->
+                        val s = scenes[idx]
+                        androidx.compose.foundation.layout.Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            gr.wsol.gamenight.games.WitnessScene(s, androidx.compose.ui.Modifier.fillMaxWidth().height(140.dp))
+                            val placeName = when (s.place) { 1 -> "Beach"; 2 -> "Park"; else -> "Street" }
+                            val dn = if (s.night) "Night" else "Day"
+                            val info = "#${idx + 1}: $placeName · $dn\nCats:${s.cats.size} Birds:${s.birds} Bal:${s.balloons}(${s.balloonHue.el})\nLit:${s.litWindows}/4 Clk:${s.clock} Tr:${s.trees}"
+                            androidx.compose.material3.Text(
+                                text = info,
+                                style = gr.wsol.gamenight.ui.Type.small,
+                                fontSize = 9.sp,
+                                lineHeight = 11.sp,
+                                color = gr.wsol.gamenight.ui.C.muted,
+                                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                                modifier = androidx.compose.ui.Modifier.padding(top = 2.dp)
+                            )
+                        }
+                    }
+                }
+            }
+        }
+        compose.onRoot().captureRoboImage("../docs/screenshots/92-witness-sheet.png")
     }
     @Test fun n33_en_spy() { english(); shot("en-05-spy-intro") { game("spy")(host) } }
     @Test fun n34_en_tavli() { english(); shot("en-06-tavli", "Let's go", "Roll") { game("tavli")(host) } }

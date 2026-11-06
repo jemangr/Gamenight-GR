@@ -138,57 +138,271 @@ object WitnessScenes {
 fun WitnessScene(s: WScene, modifier: Modifier = Modifier) {
     Canvas(modifier.fillMaxWidth().aspectRatio(0.8f).clip(RoundedCornerShape(18.dp)).semantics { contentDescription = t("Η σκηνή", "The scene") }) {
         val w = size.width; val h = size.height
-        val sky = if (s.night) Color(0xFF16204A) else Color(0xFF9FD3F5)
-        drawRect(sky, size = Size(w, h * 0.62f))
-        // Sun or moon
-        if (s.night) { drawCircle(Color(0xFFF5F0C8), w * 0.07f, Offset(w * 0.85f, h * 0.1f)); drawCircle(sky, w * 0.06f, Offset(w * 0.82f, h * 0.09f)) }
-        else drawCircle(Color(0xFFFFD54F), w * 0.07f, Offset(w * 0.85f, h * 0.1f))
-        repeat(s.clouds) { i -> val cx = w * (0.15f + i * 0.25f); val cy = h * (0.08f + (i % 2) * 0.05f); listOf(-0.04f, 0f, 0.04f).forEach { dx -> drawCircle(Color.White.copy(alpha = if (s.night) 0.35f else 0.9f), w * 0.04f, Offset(cx + dx * w, cy)) } }
-        // the birds fly on the right of the sky, away from the house and its roof (drawn later, they would hide them)
-        repeat(s.birds) { i -> val bx = w * (0.54f + i * 0.085f); val by = h * (0.2f + (i % 3) * 0.04f); val p = Path().apply { moveTo(bx - w * 0.025f, by); quadraticTo(bx - w * 0.012f, by - h * 0.015f, bx, by); quadraticTo(bx + w * 0.012f, by - h * 0.015f, bx + w * 0.025f, by) }; drawPath(p, Color(0xFF333333), style = Stroke(w * 0.006f)) }
-        // Ground
-        val ground = when (s.place) { 1 -> Color(0xFFF2D59B); 2 -> Color(0xFF7CC56B); else -> Color(0xFFB9B9B9) }
-        if (s.place == 1) drawRect(Color(0xFF3C8DD9), Offset(0f, h * 0.52f), Size(w, h * 0.1f))
-        drawRect(ground, Offset(0f, h * 0.62f), Size(w, h * 0.38f))
-        // House with windows and a clock
+
+        // Sky gradient: sunny blue by day, deep twilight by night
+        val skyBrush = if (s.night) {
+            androidx.compose.ui.graphics.Brush.verticalGradient(
+                listOf(Color(0xFF0E1432), Color(0xFF1D265A), Color(0xFF283674)),
+                startY = 0f,
+                endY = h * 0.62f
+            )
+        } else {
+            androidx.compose.ui.graphics.Brush.verticalGradient(
+                listOf(Color(0xFF64B5F6), Color(0xFF90CAF9), Color(0xFFBBDEFB)),
+                startY = 0f,
+                endY = h * 0.62f
+            )
+        }
+        drawRect(skyBrush, size = Size(w, h * 0.62f))
+
+        // Sun or Moon
+        if (s.night) {
+            // Lunar halo and cratered crescent moon
+            drawCircle(Color(0xFFE2E8F0).copy(alpha = 0.15f), w * 0.12f, Offset(w * 0.85f, h * 0.1f))
+            drawCircle(Color(0xFFF5F0C8), w * 0.07f, Offset(w * 0.85f, h * 0.1f))
+            drawCircle(Color(0xFF141C42), w * 0.058f, Offset(w * 0.82f, h * 0.09f))
+        } else {
+            // Radiant golden sun
+            drawCircle(Color(0xFFFFEE58).copy(alpha = 0.25f), w * 0.11f, Offset(w * 0.85f, h * 0.1f))
+            drawCircle(Color(0xFFFFD54F), w * 0.07f, Offset(w * 0.85f, h * 0.1f))
+        }
+
+        // Layered flat clouds
+        repeat(s.clouds) { i ->
+            val cx = w * (0.15f + i * 0.25f)
+            val cy = h * (0.08f + (i % 2) * 0.05f)
+            val cloudColor = Color.White.copy(alpha = if (s.night) 0.35f else 0.92f)
+            drawCircle(cloudColor, w * 0.038f, Offset(cx - w * 0.035f, cy))
+            drawCircle(cloudColor, w * 0.05f, Offset(cx, cy - h * 0.01f))
+            drawCircle(cloudColor, w * 0.038f, Offset(cx + w * 0.035f, cy))
+            drawRoundRect(cloudColor, Offset(cx - w * 0.045f, cy - h * 0.005f), Size(w * 0.09f, h * 0.025f), androidx.compose.ui.geometry.CornerRadius(w * 0.015f))
+        }
+
+        // Flying birds on right side of sky
+        repeat(s.birds) { i ->
+            val bx = w * (0.54f + i * 0.085f)
+            val by = h * (0.2f + (i % 3) * 0.04f)
+            val birdColor = if (s.night) Color(0xFFC5CEE0) else Color(0xFF2D3748)
+            val p = Path().apply {
+                moveTo(bx - w * 0.025f, by + h * 0.003f)
+                quadraticTo(bx - w * 0.012f, by - h * 0.015f, bx, by)
+                quadraticTo(bx + w * 0.012f, by - h * 0.015f, bx + w * 0.025f, by + h * 0.003f)
+            }
+            drawPath(p, birdColor, style = Stroke(w * 0.006f, cap = androidx.compose.ui.graphics.StrokeCap.Round))
+        }
+
+        // Ground by place: 0 street, 1 beach, 2 park
+        when (s.place) {
+            1 -> {
+                // Ocean strip and beach sand dunes
+                drawRect(Color(0xFF3182CE), Offset(0f, h * 0.52f), Size(w, h * 0.1f))
+                drawLine(Color(0xFFEBF8FF), Offset(0f, h * 0.618f), Offset(w, h * 0.618f), 2f)
+                drawRect(Color(0xFFF6E05E), Offset(0f, h * 0.62f), Size(w, h * 0.38f))
+                // Subtle sand ripple texture
+                for (j in 0..4) {
+                    val ry = h * (0.68f + j * 0.06f)
+                    drawLine(Color(0xFFECC94B), Offset(w * (0.1f * j), ry), Offset(w * (0.1f * j + 0.35f), ry), 1.5f)
+                }
+            }
+            2 -> {
+                // Park meadow with layered green tones
+                drawRect(Color(0xFF68D391), Offset(0f, h * 0.62f), Size(w, h * 0.38f))
+                drawRect(Color(0xFF48BB78), Offset(0f, h * 0.62f), Size(w, h * 0.025f))
+            }
+            else -> {
+                // Street: asphalt with curb and sidewalk
+                drawRect(Color(0xFFCBD5E0), Offset(0f, h * 0.62f), Size(w, h * 0.04f))
+                drawRect(Color(0xFF4A5568), Offset(0f, h * 0.66f), Size(w, h * 0.34f))
+                // Dashed center road marking
+                for (d in 0..5) {
+                    drawLine(Color(0xFFE2E8F0), Offset(w * (d * 0.18f + 0.02f), h * 0.82f), Offset(w * (d * 0.18f + 0.1f), h * 0.82f), 3f)
+                }
+            }
+        }
+
+        // House with windows and clock
         val hx = w * 0.05f; val hy = h * 0.3f; val hw = w * 0.4f; val hh = h * 0.32f
-        drawRect(Color(0xFFE9D8C4), Offset(hx, hy), Size(hw, hh))
-        drawPath(Path().apply { moveTo(hx - w * 0.02f, hy); lineTo(hx + hw / 2, hy - h * 0.1f); lineTo(hx + hw + w * 0.02f, hy); close() }, Color(0xFFB5523B))
-        for (i in 0 until 4) { val wx = hx + w * 0.04f + (i % 2) * w * 0.2f; val wy = hy + h * 0.04f + (i / 2) * h * 0.11f; drawRect(if (i < s.litWindows) Color(0xFFFFE082) else Color(0xFF4A5568), Offset(wx, wy), Size(w * 0.12f, h * 0.07f)) }
-        val cc = Offset(hx + hw / 2, hy - h * 0.035f); drawCircle(Color.White, w * 0.035f, cc); drawCircle(Color.Black, w * 0.035f, cc, style = Stroke(w * 0.004f))
-        drawLine(Color.Black, cc, cc + Offset(0f, -w * 0.028f), w * 0.004f) // minute hand at 12
-        val a = Math.toRadians((s.clock % 12) * 30.0 - 90); drawLine(Color.Black, cc, cc + Offset((cos(a) * w * 0.02f).toFloat(), (sin(a) * w * 0.02f).toFloat()), w * 0.006f)
+        // Stone / stucco wall
+        drawRect(Color(0xFFE8DCCB), Offset(hx, hy), Size(hw, hh))
+        drawRect(Color(0xFFD6C5B0), Offset(hx, hy + hh - h * 0.03f), Size(hw, h * 0.03f))
+
+        // Terracotta roof
+        val roof = Path().apply {
+            moveTo(hx - w * 0.025f, hy)
+            lineTo(hx + hw / 2f, hy - h * 0.11f)
+            lineTo(hx + hw + w * 0.025f, hy)
+            close()
+        }
+        drawPath(roof, Color(0xFFC53030))
+        drawPath(roof, Color(0xFF9B2C2C), style = Stroke(1.5f))
+
+        // 4 Windows (2x2 grid)
+        for (i in 0 until 4) {
+            val wx = hx + w * 0.04f + (i % 2) * w * 0.2f
+            val wy = hy + h * 0.04f + (i / 2) * h * 0.11f
+            val winW = w * 0.12f
+            val winH = h * 0.07f
+            val isLit = i < s.litWindows
+
+            // Frame and sill
+            drawRect(Color(0xFF2D3748), Offset(wx - 2f, wy - 2f), Size(winW + 4f, winH + 4f))
+            drawRect(if (isLit) Color(0xFFFFD166) else Color(0xFF2D3748), Offset(wx, wy), Size(winW, winH))
+            // Crossbars
+            drawLine(Color(0xFF1A202C), Offset(wx + winW / 2f, wy), Offset(wx + winW / 2f, wy + winH), 2f)
+            drawLine(Color(0xFF1A202C), Offset(wx, wy + winH / 2f), Offset(wx + winW, wy + winH / 2f), 2f)
+        }
+
+        // Gable clock
+        val cc = Offset(hx + hw / 2f, hy - h * 0.04f)
+        val clockR = w * 0.038f
+        drawCircle(Color.White, clockR, cc)
+        drawCircle(Color(0xFF2D3748), clockR, cc, style = Stroke(w * 0.005f))
+        // Minute hand at 12 (straight up)
+        drawLine(Color(0xFF1A202C), cc, cc + Offset(0f, -clockR * 0.75f), w * 0.004f)
+        // Hour hand pointing to s.clock (3, 6, 9, 12)
+        val a = Math.toRadians((s.clock % 12) * 30.0 - 90)
+        drawLine(Color(0xFF1A202C), cc, cc + Offset((cos(a) * clockR * 0.55f).toFloat(), (sin(a) * clockR * 0.55f).toFloat()), w * 0.006f)
+
         // Trees
-        repeat(s.trees) { i -> val tx = w * (0.55f + i * 0.14f); drawRect(Color(0xFF7A4E2D), Offset(tx - w * 0.012f, h * 0.48f), Size(w * 0.024f, h * 0.14f)); drawCircle(Color(0xFF2F8F3A), w * 0.06f, Offset(tx, h * 0.46f)) }
-        // Car
-        s.car?.let { c -> drawRoundRect(c.color, Offset(w * 0.55f, h * 0.66f), Size(w * 0.32f, h * 0.07f), androidx.compose.ui.geometry.CornerRadius(w * 0.02f)); drawRect(c.color, Offset(w * 0.61f, h * 0.62f), Size(w * 0.17f, h * 0.05f)); listOf(0.61f, 0.81f).forEach { drawCircle(Color.Black, w * 0.03f, Offset(w * it, h * 0.735f)) } }
+        repeat(s.trees) { i ->
+            val tx = w * (0.55f + i * 0.14f)
+            // Trunk with slight flare
+            drawRect(Color(0xFF7B341E), Offset(tx - w * 0.012f, h * 0.48f), Size(w * 0.024f, h * 0.14f))
+            // Layered lush round canopy
+            drawCircle(Color(0xFF276749), w * 0.065f, Offset(tx, h * 0.46f))
+            drawCircle(Color(0xFF38A169), w * 0.052f, Offset(tx, h * 0.44f))
+        }
+
+        // Car (place == 0)
+        s.car?.let { c ->
+            val carY = h * 0.66f
+            // Main body
+            drawRoundRect(c.color, Offset(w * 0.55f, carY), Size(w * 0.32f, h * 0.07f), androidx.compose.ui.geometry.CornerRadius(w * 0.02f))
+            // Cabin
+            drawRoundRect(c.color, Offset(w * 0.61f, carY - h * 0.04f), Size(w * 0.17f, h * 0.045f), androidx.compose.ui.geometry.CornerRadius(w * 0.015f))
+            // Window reflection
+            drawRoundRect(Color(0xFFE2E8F0), Offset(w * 0.625f, carY - h * 0.035f), Size(w * 0.14f, h * 0.032f), androidx.compose.ui.geometry.CornerRadius(w * 0.01f))
+            // Wheels
+            listOf(0.61f, 0.81f).forEach { wx ->
+                drawCircle(Color(0xFF1A202C), w * 0.032f, Offset(w * wx, carY + h * 0.075f))
+                drawCircle(Color(0xFFCBD5E0), w * 0.014f, Offset(w * wx, carY + h * 0.075f))
+            }
+        }
+
         // Umbrella
         val ux = w * 0.9f; val uy = h * 0.7f
-        drawArc(s.umbrella.color, 180f, 180f, true, Offset(ux - w * 0.08f, uy - h * 0.06f), Size(w * 0.16f, h * 0.12f)); drawLine(Color(0xFF333333), Offset(ux, uy), Offset(ux, uy + h * 0.12f), w * 0.006f)
+        // Segmented canopy in s.umbrella.color
+        drawArc(s.umbrella.color, 180f, 180f, true, Offset(ux - w * 0.08f, uy - h * 0.06f), Size(w * 0.16f, h * 0.12f))
+        drawArc(Color.White.copy(alpha = 0.2f), 180f, 90f, true, Offset(ux - w * 0.08f, uy - h * 0.06f), Size(w * 0.16f, h * 0.12f))
+        // Pole and curved handle
+        drawLine(Color(0xFF2D3748), Offset(ux, uy), Offset(ux, uy + h * 0.12f), w * 0.006f)
+        val handle = Path().apply {
+            moveTo(ux, uy + h * 0.12f)
+            quadraticTo(ux, uy + h * 0.14f, ux - w * 0.02f, uy + h * 0.14f)
+        }
+        drawPath(handle, Color(0xFF2D3748), style = Stroke(w * 0.006f))
+
         // People
         s.people.forEach { p -> person(p, w, h) }
-        // Balloons, held by the first person
-        s.people.firstOrNull()?.let { p -> repeat(s.balloons) { i -> val bx = w * p.x + (i - s.balloons / 2f) * w * 0.035f; val by = h * 0.58f - (i % 2) * h * 0.04f; drawLine(Color(0xFF555555), Offset(bx, by + h * 0.03f), Offset(w * p.x + w * 0.03f, h * 0.76f), w * 0.002f); drawOval(s.balloonHue.color, Offset(bx - w * 0.022f, by - h * 0.03f), Size(w * 0.044f, h * 0.06f)) } }
+
+        // Balloons, held by first person
+        s.people.firstOrNull()?.let { p ->
+            repeat(s.balloons) { i ->
+                val bx = w * p.x + (i - s.balloons / 2f) * w * 0.035f
+                val by = h * 0.58f - (i % 2) * h * 0.04f
+                // String
+                drawLine(Color(0xFF718096), Offset(bx, by + h * 0.03f), Offset(w * p.x + w * 0.03f, h * 0.76f), w * 0.0025f)
+                // Glossy balloon
+                drawOval(s.balloonHue.color, Offset(bx - w * 0.022f, by - h * 0.03f), Size(w * 0.044f, h * 0.06f))
+                // Specular shine
+                drawCircle(Color.White.copy(alpha = 0.55f), w * 0.007f, Offset(bx - w * 0.008f, by - h * 0.015f))
+            }
+        }
+
         // Cats
         s.cats.forEach { (x, c) -> cat(x, c, w, h) }
     }
 }
 
 private fun DrawScope.person(p: WScene.Person, w: Float, h: Float) {
-    val x = w * p.x; val top = h * 0.7f
-    drawCircle(Color(0xFFF1C27D), w * 0.03f, Offset(x, top))
-    p.hat?.let { drawRect(it.color, Offset(x - w * 0.035f, top - h * 0.035f), Size(w * 0.07f, h * 0.012f)); drawRect(it.color, Offset(x - w * 0.022f, top - h * 0.06f), Size(w * 0.044f, h * 0.03f)) }
-    drawRoundRect(p.shirt.color, Offset(x - w * 0.035f, top + h * 0.025f), Size(w * 0.07f, h * 0.09f), androidx.compose.ui.geometry.CornerRadius(w * 0.015f))
-    drawRect(Color(0xFF34495E), Offset(x - w * 0.03f, top + h * 0.115f), Size(w * 0.025f, h * 0.08f)); drawRect(Color(0xFF34495E), Offset(x + w * 0.005f, top + h * 0.115f), Size(w * 0.025f, h * 0.08f))
+    val x = w * p.x
+    val top = h * 0.7f
+
+    // Head
+    drawCircle(Color(0xFFF6D0A7), w * 0.032f, Offset(x, top))
+    // Hair
+    drawCircle(Color(0xFF4A3728), w * 0.028f, Offset(x, top - h * 0.006f))
+
+    // Hat if present
+    p.hat?.let {
+        // Hat brim
+        drawRoundRect(it.color, Offset(x - w * 0.042f, top - h * 0.032f), Size(w * 0.084f, h * 0.012f), androidx.compose.ui.geometry.CornerRadius(w * 0.006f))
+        // Hat crown
+        drawRoundRect(it.color, Offset(x - w * 0.026f, top - h * 0.062f), Size(w * 0.052f, h * 0.032f), androidx.compose.ui.geometry.CornerRadius(w * 0.008f))
+    }
+
+    // Shirt: exact p.shirt.color
+    val shirtBounds = androidx.compose.ui.geometry.Rect(x - w * 0.035f, top + h * 0.025f, x + w * 0.035f, top + h * 0.115f)
+    drawRoundRect(p.shirt.color, Offset(shirtBounds.left, shirtBounds.top), Size(shirtBounds.width, shirtBounds.height), androidx.compose.ui.geometry.CornerRadius(w * 0.015f))
+
+    // If shirt is white (0xFFF2F2F2), draw an outline so it's clearly distinct
+    if (p.shirt.argb == 0xFFF2F2F2) {
+        drawRoundRect(Color(0xFF718096), Offset(shirtBounds.left, shirtBounds.top), Size(shirtBounds.width, shirtBounds.height), androidx.compose.ui.geometry.CornerRadius(w * 0.015f), style = Stroke(1.5f))
+    }
+
+    // Trousers
+    val pantColor = Color(0xFF2D3748)
+    drawRoundRect(pantColor, Offset(x - w * 0.032f, top + h * 0.115f), Size(w * 0.026f, h * 0.08f), androidx.compose.ui.geometry.CornerRadius(w * 0.005f))
+    drawRoundRect(pantColor, Offset(x + w * 0.006f, top + h * 0.115f), Size(w * 0.026f, h * 0.08f), androidx.compose.ui.geometry.CornerRadius(w * 0.005f))
+
+    // Shoes
+    drawCircle(Color(0xFF1A202C), w * 0.012f, Offset(x - w * 0.018f, top + h * 0.195f))
+    drawCircle(Color(0xFF1A202C), w * 0.012f, Offset(x + w * 0.018f, top + h * 0.195f))
 }
 
 private fun DrawScope.cat(x0: Float, c: Hue, w: Float, h: Float) {
-    val x = w * x0; val y = h * 0.93f
+    val x = w * x0
+    val y = h * 0.93f
+
+    // Cat body
     drawOval(c.color, Offset(x - w * 0.035f, y - h * 0.025f), Size(w * 0.07f, h * 0.04f))
-    drawCircle(c.color, w * 0.02f, Offset(x + w * 0.04f, y - h * 0.03f))
-    drawPath(Path().apply { moveTo(x + w * 0.025f, y - h * 0.04f); lineTo(x + w * 0.03f, y - h * 0.065f); lineTo(x + w * 0.04f, y - h * 0.045f); close(); moveTo(x + w * 0.045f, y - h * 0.045f); lineTo(x + w * 0.055f, y - h * 0.065f); lineTo(x + w * 0.058f, y - h * 0.035f); close() }, c.color)
-    drawLine(c.color, Offset(x - w * 0.035f, y - h * 0.005f), Offset(x - w * 0.06f, y - h * 0.04f), w * 0.008f)
-    if (c.argb == 0xFFF2F2F2) drawOval(Color(0xFF999999), Offset(x - w * 0.035f, y - h * 0.025f), Size(w * 0.07f, h * 0.04f), style = Stroke(w * 0.002f))
+    // Cat head
+    drawCircle(c.color, w * 0.022f, Offset(x + w * 0.04f, y - h * 0.03f))
+
+    // Pointed ears
+    val ears = Path().apply {
+        moveTo(x + w * 0.025f, y - h * 0.042f)
+        lineTo(x + w * 0.03f, y - h * 0.068f)
+        lineTo(x + w * 0.042f, y - h * 0.046f)
+        close()
+        moveTo(x + w * 0.045f, y - h * 0.046f)
+        lineTo(x + w * 0.056f, y - h * 0.068f)
+        lineTo(x + w * 0.059f, y - h * 0.036f)
+        close()
+    }
+    drawPath(ears, c.color)
+
+    // Curled tail
+    val tail = Path().apply {
+        moveTo(x - w * 0.035f, y - h * 0.005f)
+        quadraticTo(x - w * 0.065f, y - h * 0.02f, x - w * 0.055f, y - h * 0.05f)
+    }
+    drawPath(tail, c.color, style = Stroke(w * 0.008f, cap = androidx.compose.ui.graphics.StrokeCap.Round))
+
+    // Eye dots
+    val eyeColor = if (c.argb == 0xFF222222) Color(0xFF81E6D9) else Color(0xFF2D3748)
+    drawCircle(eyeColor, w * 0.003f, Offset(x + w * 0.046f, y - h * 0.034f))
+
+    // Whiskers
+    val whiskerColor = if (c.argb == 0xFF222222) Color(0xFFCBD5E0) else Color(0xFF4A5568)
+    drawLine(whiskerColor, Offset(x + w * 0.055f, y - h * 0.028f), Offset(x + w * 0.07f, y - h * 0.032f), 1f)
+    drawLine(whiskerColor, Offset(x + w * 0.055f, y - h * 0.024f), Offset(x + w * 0.07f, y - h * 0.022f), 1f)
+
+    // White cat outline so it's clearly distinct
+    if (c.argb == 0xFFF2F2F2) {
+        drawOval(Color(0xFF718096), Offset(x - w * 0.035f, y - h * 0.025f), Size(w * 0.07f, h * 0.04f), style = Stroke(1.5f))
+        drawCircle(Color(0xFF718096), w * 0.022f, Offset(x + w * 0.04f, y - h * 0.03f), style = Stroke(1.5f))
+    }
 }
 
 private enum class W { Intro, Pass, Look, Tell, Ask, Result, Over }

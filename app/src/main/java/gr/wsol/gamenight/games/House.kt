@@ -6,6 +6,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -127,16 +128,12 @@ fun HouseGame(host: GameHost) {
             Seg(listOf(90 to "1:30", 120 to "2:00", 180 to "3:00"), talk, { talk = it }, color = C.ghost)
         }
 
-        H.Deal -> { QuitGuard(host); val g = e!!; RevealRound(players, key = gameNo, title = t("Ο ρόλος σου", "Your role"), secret = { p ->
-            val r = g.role[p]!!
-            Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text(r.emoji, fontSize = 56.sp)
-                Text(r.title, style = Type.big, color = if (r.zombie) C.green else C.ghost, textAlign = TextAlign.Center)
-                Body(r.what, align = TextAlign.Center, color = C.text)
-                if (r.zombie) { val others = g.zombiesAlive().filter { it != p }; if (others.isNotEmpty()) Body(t("Τα άλλα ζόμπι: ", "The other zombies: ") + others.joinToString(", "), color = C.green, align = TextAlign.Center) }
-                g.loverOf(p)?.let { Text(t("💞 Είσαι ερωτευμένος/η με: $it", "💞 You're in love with: $it"), style = Type.h, color = C.pink, textAlign = TextAlign.Center) }
+        H.Deal -> {
+            QuitGuard(host)
+            HouseBackground(isNight = true) {
+                HouseDealScreen(e!!, gameNo) { phase = H.Night }
             }
-        }) { phase = H.Night } }
+        }
 
         H.Night -> { QuitGuard(host); NightScreen(e!!, gameNo) { r -> last = r; phase = H.Morning } }
 
@@ -180,12 +177,30 @@ fun HouseGame(host: GameHost) {
             val g = e!!
             LaunchedEffect(g.night) { Narrator.say(HouseTexts.talk()) }
             val left = rememberCountdown(talk, running = true, key = "t${g.night}-$gameNo", tickLast = 10) { phase = H.Vote }
-            Column(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(Color(0xFF15102A), C.bg))).statusBarsPadding().navigationBarsPadding().padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(14.dp, Alignment.CenterVertically)) {
-                Text(t("Ποιος είναι ζόμπι;", "Who's a zombie?"), style = Type.title, color = C.text)
-                TimerText(left, color = C.ghost)
-                Body(t("Στο σπίτι: ", "In the house: ") + g.alive.joinToString(", "), align = TextAlign.Center, color = C.text)
-                if (g.ghosts.isNotEmpty()) Body(t("👻 Φαντάσματα (σιωπή!): ", "👻 Ghosts (silence!): ") + g.ghosts.joinToString(", "), align = TextAlign.Center)
-                BigButton(t("Ψηφοφορία τώρα", "Vote now"), { phase = H.Vote }, color = C.ghost)
+            HouseBackground(isNight = false) {
+                Column(
+                    Modifier
+                        .fillMaxSize()
+                        .statusBarsPadding()
+                        .navigationBarsPadding()
+                        .padding(20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(14.dp, Alignment.CenterVertically)
+                ) {
+                    Panel {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                            modifier = Modifier.fillMaxWidth().padding(8.dp)
+                        ) {
+                            Text(t("Ποιος είναι ζόμπι;", "Who's a zombie?"), style = Type.title, color = C.text)
+                            TimerText(left, color = C.ghost)
+                            Body(t("Στο σπίτι: ", "In the house: ") + g.alive.joinToString(", "), align = TextAlign.Center, color = C.text)
+                            if (g.ghosts.isNotEmpty()) Body(t("👻 Φαντάσματα (σιωπή!): ", "👻 Ghosts (silence!): ") + g.ghosts.joinToString(", "), align = TextAlign.Center)
+                            BigButton(t("Ψηφοφορία τώρα", "Vote now"), { phase = H.Vote }, color = C.ghost)
+                        }
+                    }
+                }
             }
         }
 
@@ -346,5 +361,106 @@ private fun HouseVote(g: HouseEngine, key: String, onDone: (Map<String, String>)
         Text(if (ghost) t("Θα στοιχειώσεις; Μία κρυφή ψήφος, μία φορά στο παιχνίδι.", "Will you haunt? One secret vote, once per game.") else t("Ποιον πετάμε έξω στα φαντάσματα;", "Whom do we throw out to the ghosts?"), style = Type.title, color = C.text)
         g.alive.filter { it != who }.forEach { c -> GhostButton(c, { votes[who] = c; next() }, Modifier.fillMaxWidth(), color = Color(n.colorOf(n.sideOf(c)))) }
         if (ghost) Chip(t("Όχι τώρα", "Not now"), onClick = { next() })
+    }
+}
+
+/** Secret deal round with 3:4 gothic card and FlipCard animation. */
+@Composable
+private fun HouseDealScreen(g: HouseEngine, gameNo: Int, onDone: () -> Unit) {
+    val players = g.players
+    var i by remember(gameNo) { mutableIntStateOf(0) }
+    var ready by remember(gameNo, i) { mutableStateOf(false) }
+    var revealed by remember(gameNo, i) { mutableStateOf(false) }
+    val n = Store.night
+    val who = players.getOrNull(i) ?: return
+
+    if (!ready) {
+        PassTo(who, Color(n.colorOf(n.sideOf(who))), note = t("Μόνο εσύ πρέπει να βλέπεις την οθόνη.", "Only you should see the screen.")) {
+            ready = true
+            revealed = false
+        }
+        return
+    }
+
+    val role = g.role[who]!!
+    val lover = g.loverOf(who)
+    val otherZombies = if (role.zombie) g.zombiesAlive().filter { it != who } else emptyList()
+
+    Column(
+        Modifier
+            .fillMaxSize()
+            .statusBarsPadding()
+            .navigationBarsPadding()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically)
+    ) {
+        Text(who, style = Type.h, color = Color(n.colorOf(n.sideOf(who))))
+        Text(t("Ο ρόλος σου", "Your role"), style = Type.body, color = C.muted)
+
+        // 3:4 Gothic role card that flips on tap
+        Box(
+            modifier = Modifier
+                .clickable {
+                    if (!revealed) {
+                        revealed = true
+                        Sfx.buzz(15)
+                    }
+                },
+            contentAlignment = Alignment.Center
+        ) {
+            gr.wsol.gamenight.ui.FlipCard(
+                front = {
+                    GothicRoleCard(
+                        role = role,
+                        lover = lover,
+                        otherZombies = otherZombies
+                    )
+                },
+                back = {
+                    GothicRoleCardBack()
+                },
+                flipped = revealed
+            )
+        }
+
+        if (!revealed) {
+            BigButton(
+                t("Δες τον ρόλο σου", "See your role"),
+                {
+                    revealed = true
+                    Sfx.buzz(15)
+                },
+                color = C.ghost
+            )
+        } else {
+            Row(
+                modifier = Modifier.fillMaxWidth(0.85f),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                GhostButton(
+                    t("Απόκρυψη", "Hide"),
+                    {
+                        revealed = false
+                        Sfx.buzz(15)
+                    },
+                    Modifier.weight(1f)
+                )
+                BigButton(
+                    if (i + 1 < players.size) t("Το είδα · επόμενος", "Seen it · next") else t("Το είδα · τέλος", "Seen it · done"),
+                    {
+                        if (i + 1 < players.size) {
+                            i++
+                            ready = false
+                            revealed = false
+                        } else {
+                            onDone()
+                        }
+                    },
+                    Modifier.weight(1.5f),
+                    color = C.ghost
+                )
+            }
+        }
     }
 }
