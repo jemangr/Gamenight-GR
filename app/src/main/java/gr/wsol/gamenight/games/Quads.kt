@@ -161,11 +161,17 @@ fun QuadsGame(host: GameHost) {
 
 @Composable
 private fun GroupBar(g: QuadGroup, found: Boolean = true) {
+    val symbol = when (g.level.coerceIn(0, 3)) {
+        0 -> "●"
+        1 -> "◆"
+        2 -> "▲"
+        else -> "■"
+    }
     Column(
         Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(C.quad[g.level.coerceIn(0, 3)].copy(alpha = if (found) 1f else 0.55f)).padding(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(g.name, color = Color.Black, fontWeight = FontWeight.ExtraBold, fontSize = 15.sp, textAlign = TextAlign.Center)
+        Text("$symbol  ${g.name}", color = Color.Black, fontWeight = FontWeight.ExtraBold, fontSize = 15.sp, textAlign = TextAlign.Center)
         Text(g.words.joinToString(", "), color = Color.Black, fontSize = 14.sp, textAlign = TextAlign.Center)
     }
 }

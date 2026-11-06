@@ -78,8 +78,8 @@ fun HomeScreen() {
             if (n.players.isEmpty()) Body(t("Πρόσθεσε τους παίκτες (1 έως 7) για να ξεκινήσετε.", "Add the players (1 to 7) to start."), color = C.text)
             else FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 n.players.forEach { p ->
-                    Row(Modifier.clip(RoundedCornerShape(999.dp)).background(C.panel2).padding(horizontal = 12.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-                        Dot(Color(if (n.teams) n.colorOf(n.sideOf(p.name)) else p.color), 10.dp)
+                    Row(Modifier.clip(RoundedCornerShape(999.dp)).background(C.panel2).padding(start = 6.dp, end = 12.dp, top = 4.dp, bottom = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+                        MonsterAvatar(p.name, Color(if (n.teams) n.colorOf(n.sideOf(p.name)) else p.color), variant = p.avatar, size = 20.dp)
                         Spacer(Modifier.width(6.dp))
                         Text(p.name, color = C.text, fontWeight = FontWeight.Bold, fontSize = 14.sp)
                     }

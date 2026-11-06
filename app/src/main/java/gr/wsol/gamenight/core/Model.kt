@@ -2,9 +2,9 @@ package gr.wsol.gamenight.core
 
 import kotlinx.serialization.Serializable
 
-/** A player of tonight. [color] is an index into [Palette.players]. */
+/** A player of tonight. [color] is an index into [Palette.players], [avatar] is the monster avatar variant. */
 @Serializable
-data class Player(val name: String, val color: Int)
+data class Player(val name: String, val color: Int, val avatar: Int = 0)
 
 /** Points per side: in team mode the sides are the teams, otherwise the players. */
 @Serializable

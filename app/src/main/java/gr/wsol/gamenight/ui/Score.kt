@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -130,6 +131,11 @@ fun ScoreScreen() {
                 val (s, p) = r[0]
                 Panel(color = C.panel2) {
                     Text("🏆", fontSize = 40.sp, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+                    val player = n.players.firstOrNull { it.name == s }
+                    if (player != null) {
+                        MonsterAvatar(s, Color(n.colorOf(s)), variant = player.avatar, size = 48.dp, modifier = Modifier.align(Alignment.CenterHorizontally))
+                        Spacer(Modifier.height(4.dp))
+                    }
                     Text(n.label(s), fontFamily = DisplayFont, fontWeight = FontWeight.Bold, style = Type.big, color = Color(n.colorOf(s)), modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
                     Text(t("$p πόντοι · πρώτος απόψε", "$p points · leading tonight"), style = Type.body, color = C.muted, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
                 }
@@ -341,6 +347,26 @@ private fun PodiumPillar(
         VectorMedal(place)
 
         Spacer(Modifier.height(4.dp))
+
+        val player = night.players.firstOrNull { it.name == side }
+        if (player != null) {
+            MonsterAvatar(
+                name = side,
+                color = Color(night.colorOf(side)),
+                variant = player.avatar,
+                size = if (place == 1) 44.dp else 36.dp
+            )
+            Spacer(Modifier.height(4.dp))
+        } else if (side.startsWith("#")) {
+            val tm = side.drop(1).toIntOrNull() ?: 0
+            Box(
+                Modifier.size(if (place == 1) 36.dp else 30.dp).clip(CircleShape).background(Color(night.colorOf(side))),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("${tm + 1}", color = Color.Black, fontWeight = FontWeight.Black, fontSize = 14.sp)
+            }
+            Spacer(Modifier.height(4.dp))
+        }
 
         // Name
         Text(

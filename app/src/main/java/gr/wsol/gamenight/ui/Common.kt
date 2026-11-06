@@ -257,11 +257,29 @@ fun Toggle(title: String, sub: String?, value: Boolean, onChange: (Boolean) -> U
     }
 }
 
-/** A player's (or a team's) name with its colour. */
+/** A player's (or a team's) name with its colour and avatar or initial. */
 @Composable
 fun SideName(night: Night, side: String, style: androidx.compose.ui.text.TextStyle = Type.body, modifier: Modifier = Modifier) {
     Row(modifier, verticalAlignment = Alignment.CenterVertically) {
-        Dot(Color(night.colorOf(side)))
+        val player = night.players.firstOrNull { it.name == side }
+        if (player != null) {
+            MonsterAvatar(name = side, color = Color(night.colorOf(side)), variant = player.avatar, size = 22.dp)
+        } else if (side.startsWith("#")) {
+            val tm = side.drop(1).toIntOrNull() ?: 0
+            Box(
+                Modifier.size(20.dp).clip(CircleShape).background(Color(night.colorOf(side))),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "${tm + 1}",
+                    color = Color.Black,
+                    fontWeight = FontWeight.Black,
+                    fontSize = 11.sp
+                )
+            }
+        } else {
+            Dot(Color(night.colorOf(side)))
+        }
         Spacer(Modifier.width(8.dp))
         Text(night.label(side), style = style, color = C.text, fontWeight = FontWeight.Bold)
     }
@@ -274,8 +292,13 @@ fun SideName(night: Night, side: String, style: androidx.compose.ui.text.TextSty
 @Composable
 fun PassTo(name: String, color: Color, note: String? = null, button: String = t("Είμαι εγώ, πάμε", "It's me, go"), onReady: () -> Unit) {
     gr.wsol.gamenight.chaos.CalmScreen()
+    val player = gr.wsol.gamenight.core.Store.night.players.firstOrNull { it.name == name }
     Column(Modifier.fillMaxSize().padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-        Text("📱", fontSize = 56.sp)
+        if (player != null) {
+            MonsterAvatar(name = name, color = color, variant = player.avatar, size = 84.dp)
+        } else {
+            Text("📱", fontSize = 56.sp)
+        }
         Spacer(Modifier.height(14.dp))
         Text(t("Δώσε το κινητό σε", "Pass the phone to"), style = Type.body, color = C.muted)
         Text(name, style = Type.big, color = color, textAlign = TextAlign.Center)

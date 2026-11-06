@@ -21,11 +21,13 @@ import gr.wsol.gamenight.games.GameHost
 import gr.wsol.gamenight.games.Games
 import gr.wsol.gamenight.ui.GamenightTheme
 import gr.wsol.gamenight.ui.HomeScreen
+import gr.wsol.gamenight.ui.PassTo
 import gr.wsol.gamenight.ui.PlayersScreen
 import gr.wsol.gamenight.ui.ScoreScreen
 import gr.wsol.gamenight.ui.SettingsScreen
 import com.github.takahirom.roborazzi.captureRoboImage
 import androidx.compose.foundation.background
+import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
@@ -47,7 +49,7 @@ class ScreenshotsTest {
     private val names = listOf("Γιάννης", "Μαρία", "Νίκος", "Ελένη", "Κώστας")
 
     @Before fun night() {
-        val players = names.mapIndexed { i, n -> Player(n, Palette.players[i]) }
+        val players = names.mapIndexed { i, n -> Player(n, Palette.players[i], avatar = i) }
         Store.inMemory(Night(players = players, points = mapOf("Γιάννης" to 7, "Μαρία" to 9, "Νίκος" to 4, "Ελένη" to 6, "Κώστας" to 2)), Settings(sounds = false, haptics = false, updateCheck = false))
     }
 
@@ -76,7 +78,12 @@ class ScreenshotsTest {
     private fun game(id: String) = Games.byId(id)!!.play!!
 
     @Test fun s01_home() = shot("01-home") { HomeScreen() }
-    @Test fun s02_players() { Store.night = Store.night.copy(teams = true, teamOf = names.withIndex().associate { (i, n) -> n to i % 2 }); shot("02-players") { PlayersScreen() } }
+    @Test fun s02_players() {
+        val sixNames = listOf("Γιάννης", "Μαρία", "Νίκος", "Ελένη", "Κώστας", "Δήμητρα")
+        val sixPlayers = sixNames.mapIndexed { i, n -> Player(n, Palette.players[i], avatar = i) }
+        Store.night = Store.night.copy(players = sixPlayers, teams = true, teamOf = sixNames.withIndex().associate { (i, n) -> n to i % 2 })
+        shot("02-players") { PlayersScreen() }
+    }
     @Test fun s03_score() = shot("03-score") { ScoreScreen() }
     @Test fun s04_settings() = shot("04-settings") { SettingsScreen() }
     @Test fun s04b_havales() { Store.settings = Store.settings.copy(havales = true); shot("04b-havales") { androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(16.dp)) { gr.wsol.gamenight.ui.AiPanel() } } }
@@ -425,6 +432,107 @@ class ScreenshotsTest {
     @Test fun e02_taboo() { english(); shot("en-02-taboo", "Let's go", "Start the clock") { game("taboo")(host) } }
     @Test fun e03_house() { english(); shot("en-03-house", "Let's go") { game("house")(host) } }
     @Test fun e04_settings() { english(); shot("en-04-settings") { SettingsScreen() } }
+
+    @Test fun s93_pass_to() {
+        val p = Player("Γιάννης", Palette.players[0], avatar = 1)
+        Store.night = Store.night.copy(players = listOf(p))
+        shot("93-pass-to") {
+            PassTo(
+                name = "Γιάννης",
+                color = androidx.compose.ui.graphics.Color(Palette.players[0]),
+                note = "Μυστικός ρόλος. Μην κοιτάς!"
+            ) {}
+        }
+    }
+
+    @Test fun s94_icon_sheet() {
+        compose.setContent {
+            androidx.compose.foundation.layout.Column(
+                modifier = androidx.compose.ui.Modifier
+                    .fillMaxSize()
+                    .background(androidx.compose.ui.graphics.Color(0xFF0B0A12))
+                    .padding(16.dp),
+                horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
+                verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(16.dp)
+            ) {
+                androidx.compose.material3.Text(
+                    text = "Gamenight GR — Adaptive & Monochrome Icon",
+                    fontFamily = gr.wsol.gamenight.ui.DisplayFont,
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                    fontSize = 15.sp,
+                    color = gr.wsol.gamenight.ui.C.text
+                )
+                // 192dp adaptive
+                androidx.compose.foundation.layout.Row(
+                    horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(20.dp),
+                    verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                ) {
+                    androidx.compose.foundation.layout.Column(horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally) {
+                        androidx.compose.foundation.layout.Box(
+                            modifier = androidx.compose.ui.Modifier
+                                .size(140.dp)
+                                .clip(androidx.compose.foundation.shape.RoundedCornerShape(32.dp))
+                                .background(androidx.compose.ui.graphics.Color(0xFF0B0A12))
+                        ) {
+                            androidx.compose.foundation.Image(androidx.compose.ui.res.painterResource(R.drawable.ic_launcher_foreground), null, androidx.compose.ui.Modifier.fillMaxSize())
+                        }
+                        androidx.compose.material3.Text("Adaptive (140dp)", fontSize = 11.sp, color = gr.wsol.gamenight.ui.C.muted)
+                    }
+                    androidx.compose.foundation.layout.Column(horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally) {
+                        androidx.compose.foundation.layout.Box(
+                            modifier = androidx.compose.ui.Modifier
+                                .size(140.dp)
+                                .clip(androidx.compose.foundation.shape.RoundedCornerShape(32.dp))
+                                .background(androidx.compose.ui.graphics.Color(0xFF232A3B))
+                        ) {
+                            androidx.compose.foundation.Image(androidx.compose.ui.res.painterResource(R.drawable.ic_launcher_monochrome), null, androidx.compose.ui.Modifier.fillMaxSize())
+                        }
+                        androidx.compose.material3.Text("Themed / Mono", fontSize = 11.sp, color = gr.wsol.gamenight.ui.C.muted)
+                    }
+                }
+                // 96dp and 48dp sizes
+                androidx.compose.foundation.layout.Row(
+                    horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(24.dp),
+                    verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                ) {
+                    androidx.compose.foundation.layout.Column(horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally) {
+                        androidx.compose.foundation.layout.Box(
+                            modifier = androidx.compose.ui.Modifier
+                                .size(80.dp)
+                                .clip(androidx.compose.foundation.shape.RoundedCornerShape(18.dp))
+                                .background(androidx.compose.ui.graphics.Color(0xFF0B0A12))
+                        ) {
+                            androidx.compose.foundation.Image(androidx.compose.ui.res.painterResource(R.drawable.ic_launcher_foreground), null, androidx.compose.ui.Modifier.fillMaxSize())
+                        }
+                        androidx.compose.material3.Text("96dp", fontSize = 11.sp, color = gr.wsol.gamenight.ui.C.muted)
+                    }
+                    androidx.compose.foundation.layout.Column(horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally) {
+                        androidx.compose.foundation.layout.Box(
+                            modifier = androidx.compose.ui.Modifier
+                                .size(48.dp)
+                                .clip(androidx.compose.foundation.shape.RoundedCornerShape(12.dp))
+                                .background(androidx.compose.ui.graphics.Color(0xFF0B0A12))
+                        ) {
+                            androidx.compose.foundation.Image(androidx.compose.ui.res.painterResource(R.drawable.ic_launcher_foreground), null, androidx.compose.ui.Modifier.fillMaxSize())
+                        }
+                        androidx.compose.material3.Text("48dp", fontSize = 11.sp, color = gr.wsol.gamenight.ui.C.muted)
+                    }
+                    androidx.compose.foundation.layout.Column(horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally) {
+                        androidx.compose.foundation.layout.Box(
+                            modifier = androidx.compose.ui.Modifier
+                                .size(48.dp)
+                                .clip(androidx.compose.foundation.shape.RoundedCornerShape(12.dp))
+                                .background(androidx.compose.ui.graphics.Color(0xFF232A3B))
+                        ) {
+                            androidx.compose.foundation.Image(androidx.compose.ui.res.painterResource(R.drawable.ic_launcher_monochrome), null, androidx.compose.ui.Modifier.fillMaxSize())
+                        }
+                        androidx.compose.material3.Text("48dp Mono", fontSize = 11.sp, color = gr.wsol.gamenight.ui.C.muted)
+                    }
+                }
+            }
+        }
+        compose.onRoot().captureRoboImage("../docs/screenshots/94-icon-sheet.png")
+    }
 
     @Test fun logo() {
         compose.setContent {

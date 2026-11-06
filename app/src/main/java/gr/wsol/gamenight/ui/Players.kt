@@ -73,8 +73,18 @@ fun PlayersScreen() {
             BigButton("+", { add() }, Modifier.width(64.dp), enabled = name.isNotBlank() && n.players.size < MAX_PLAYERS)
         }
         n.players.forEach { p ->
-            Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(C.panel).padding(start = 14.dp), verticalAlignment = Alignment.CenterVertically) {
-                Dot(Color(p.color))
+            Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(C.panel).padding(horizontal = 10.dp, vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
+                androidx.compose.foundation.layout.Box(
+                    Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .clickable(role = Role.Button) {
+                            val nextAvatar = (p.avatar + 1) % 48
+                            Store.night = n.copy(players = n.players.map { if (it.name == p.name) it.copy(avatar = nextAvatar) else it })
+                        }
+                        .padding(4.dp)
+                ) {
+                    MonsterAvatar(p.name, Color(p.color), variant = p.avatar, size = 38.dp)
+                }
                 Spacer(Modifier.width(10.dp))
                 Text(p.name, style = Type.body, color = C.text, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
                 if (n.teams) {
