@@ -31,6 +31,8 @@ data class Settings(
     val look: Int = 0,
     /** 1.3: shake the phone to open the bug report (never while a game is on screen). */
     val shakeReport: Boolean = true,
+    /** Reduce motion: no confetti, shakes or flips. */
+    val reduceMotion: Boolean = false,
 )
 
 /**

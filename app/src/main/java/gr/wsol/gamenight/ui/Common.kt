@@ -1,6 +1,17 @@
 package gr.wsol.gamenight.ui
 
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -92,12 +103,80 @@ fun Page(
     }
 }
 
+/** Card depth modifier: vertical gradient, highlight border, soft shadow, optional accent strip. */
+fun Modifier.card(
+    accent: Color? = null,
+    shape: androidx.compose.ui.graphics.Shape = RoundedCornerShape(18.dp),
+): Modifier = this
+    .shadow(2.dp, shape)
+    .clip(shape)
+    .background(
+        Brush.verticalGradient(
+            listOf(C.panel2, C.panel)
+        )
+    )
+    .border(
+        width = 1.dp,
+        brush = Brush.verticalGradient(
+            listOf(
+                Color(
+                    (C.line.red + (1f - C.line.red) * 0.20f).coerceIn(0f, 1f),
+                    (C.line.green + (1f - C.line.green) * 0.20f).coerceIn(0f, 1f),
+                    (C.line.blue + (1f - C.line.blue) * 0.20f).coerceIn(0f, 1f),
+                    1f
+                ),
+                C.line
+            )
+        ),
+        shape = shape,
+    )
+    .then(
+        if (accent != null) {
+            Modifier.drawWithContent {
+                drawContent()
+                drawRect(
+                    color = accent,
+                    topLeft = Offset.Zero,
+                    size = Size(4.dp.toPx(), size.height)
+                )
+            }
+        } else Modifier
+    )
+
 @Composable
 fun BigButton(text: String, onClick: () -> Unit, modifier: Modifier = Modifier, color: Color = C.amber, enabled: Boolean = true, height: Dp = 60.dp) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val scale by animateFloatAsState(if (isPressed && enabled) 0.97f else 1f, label = "btnScale")
+    val hapticFeedback = LocalHapticFeedback.current
+
+    val btnBg = if (enabled) {
+        val mult = if (isPressed) 0.88f else 1.0f
+        Brush.verticalGradient(
+            listOf(
+                Color((color.red * mult * 1.05f).coerceAtMost(1f), (color.green * mult * 1.05f).coerceAtMost(1f), (color.blue * mult * 1.05f).coerceAtMost(1f)),
+                Color(color.red * mult * 0.92f, color.green * mult * 0.92f, color.blue * mult * 0.92f)
+            )
+        )
+    } else {
+        SolidColor(C.panel2)
+    }
+
     Box(
-        modifier.fillMaxWidth().heightIn(min = height).clip(RoundedCornerShape(18.dp))
-            .background(if (enabled) color else C.panel2)
-            .clickable(enabled = enabled, role = Role.Button) { Sfx.tap(); onClick() }
+        modifier.fillMaxWidth().heightIn(min = height)
+            .graphicsLayer { scaleX = scale; scaleY = scale }
+            .clip(RoundedCornerShape(18.dp))
+            .background(btnBg)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                enabled = enabled,
+                role = Role.Button
+            ) {
+                haptic(hapticFeedback, HapticFeedbackType.TextHandleMove)
+                Sfx.tap()
+                onClick()
+            }
             .padding(horizontal = 16.dp, vertical = 10.dp),
         contentAlignment = Alignment.Center,
     ) { Text(text, color = if (enabled) Color.Black else C.dim, fontWeight = FontWeight.ExtraBold, fontSize = 18.sp, textAlign = TextAlign.Center) }
@@ -113,10 +192,14 @@ fun GhostButton(text: String, onClick: () -> Unit, modifier: Modifier = Modifier
 }
 
 @Composable
-fun Panel(modifier: Modifier = Modifier, color: Color = C.panel, onClick: (() -> Unit)? = null, content: @Composable ColumnScope.() -> Unit) {
-    Column(
+fun Panel(modifier: Modifier = Modifier, color: Color? = null, accent: Color? = null, onClick: (() -> Unit)? = null, content: @Composable ColumnScope.() -> Unit) {
+    val base = if (color != null) {
         modifier.fillMaxWidth().clip(RoundedCornerShape(18.dp)).background(color).border(1.dp, C.line, RoundedCornerShape(18.dp))
-            .then(if (onClick != null) Modifier.clickable(role = Role.Button, onClick = onClick) else Modifier).padding(14.dp),
+    } else {
+        modifier.fillMaxWidth().card(accent)
+    }
+    Column(
+        base.then(if (onClick != null) Modifier.clickable(role = Role.Button, onClick = onClick) else Modifier).padding(14.dp),
         verticalArrangement = Arrangement.spacedBy(6.dp), content = content,
     )
 }

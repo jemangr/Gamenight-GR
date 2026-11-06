@@ -81,4 +81,11 @@ class CoreTest {
         assertFalse(Updates.newer("0.1.0", "0.1.0"))
         assertFalse(Updates.newer("0.1.0-beta", "0.1.0"))
     }
+
+    @Test fun settingsWithoutReduceMotionDeserializesNormally() {
+        val oldJson = """{"adult":false,"sounds":true,"haptics":true,"updateCheck":true,"skipVersion":"","english":false,"chaos":true,"chaosFreq":1,"havales":false,"havalesRude":false,"aiProvider":"GEMINI","look":0,"shakeReport":true}"""
+        val parsed = kotlinx.serialization.json.Json { ignoreUnknownKeys = true; encodeDefaults = true }.decodeFromString(gr.wsol.gamenight.core.Settings.serializer(), oldJson)
+        assertFalse(parsed.reduceMotion)
+        assertTrue(parsed.sounds)
+    }
 }

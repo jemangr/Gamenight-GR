@@ -54,6 +54,7 @@ fun SettingsScreen() {
             Toggle(t("Παρέα 18+", "18+ group"), t("Πιο τολμηρές λέξεις και ερωτήσεις (αργκό, πειράγματα). Ποτέ σεξουαλικό περιεχόμενο.", "Bolder words and questions (slang, teasing). Never sexual content."), s.adult) { Store.settings = s.copy(adult = it) }
             Toggle(t("Ήχοι", "Sounds"), null, s.sounds) { Store.settings = s.copy(sounds = it) }
             Toggle(t("Δόνηση", "Vibration"), null, s.haptics) { Store.settings = s.copy(haptics = it) }
+            Toggle(t("Λιγότερη κίνηση", "Reduce motion"), t("Χωρίς κομφετί, τραντάγματα και αναποδογυρίσματα.", "No confetti, shakes or flips."), s.reduceMotion) { Store.settings = s.copy(reduceMotion = it) }
             Toggle(t("Αναφορά προβλήματος με κούνημα", "Shake to report a problem"), t("Κούνα δυνατά το κινητό στο μενού. Ποτέ μέσα σε παιχνίδι.", "Shake the phone hard in the menus. Never during a game."), s.shakeReport) { Store.settings = s.copy(shakeReport = it) }
         }
         Panel {

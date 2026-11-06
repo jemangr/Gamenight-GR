@@ -44,12 +44,19 @@ object C {
     val quad = listOf(Color(0xFFF5D547), Color(0xFF7BD389), Color(0xFF6FA8FF), Color(0xFFC08CFF))
 }
 
-val Serif = FontFamily.Serif
+val DisplayFont = FontFamily(
+    androidx.compose.ui.text.font.Font(gr.wsol.gamenight.R.font.manrope, FontWeight.Normal),
+    androidx.compose.ui.text.font.Font(gr.wsol.gamenight.R.font.manrope, FontWeight.Bold),
+    androidx.compose.ui.text.font.Font(gr.wsol.gamenight.R.font.manrope, FontWeight.ExtraBold),
+    androidx.compose.ui.text.font.Font(gr.wsol.gamenight.R.font.manrope, FontWeight.Black),
+)
+
+val Serif = DisplayFont
 
 object Type {
-    val huge = TextStyle(fontFamily = Serif, fontWeight = FontWeight.Black, fontSize = 72.sp, lineHeight = 76.sp)
-    val big = TextStyle(fontFamily = Serif, fontWeight = FontWeight.Black, fontSize = 40.sp, lineHeight = 44.sp)
-    val title = TextStyle(fontWeight = FontWeight.ExtraBold, fontSize = 24.sp, lineHeight = 30.sp)
+    val huge = TextStyle(fontFamily = DisplayFont, fontWeight = FontWeight.Black, fontSize = 72.sp, lineHeight = 76.sp)
+    val big = TextStyle(fontFamily = DisplayFont, fontWeight = FontWeight.Black, fontSize = 40.sp, lineHeight = 44.sp)
+    val title = TextStyle(fontFamily = DisplayFont, fontWeight = FontWeight.ExtraBold, fontSize = 24.sp, lineHeight = 30.sp)
     val h = TextStyle(fontWeight = FontWeight.ExtraBold, fontSize = 18.sp, lineHeight = 24.sp)
     val body = TextStyle(fontSize = 16.sp, lineHeight = 23.sp)
     val small = TextStyle(fontSize = 13.5.sp, lineHeight = 19.sp)

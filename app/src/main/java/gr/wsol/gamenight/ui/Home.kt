@@ -31,6 +31,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -92,8 +93,21 @@ fun HomeScreen() {
         if (fits.isNotEmpty()) GhostButton(t("🎲 Τυχαίο παιχνίδι", "🎲 Random game"), { Nav.go(Screen.Play(fits.random().id)) }, Modifier.fillMaxWidth())
 
         Category.entries.forEach { cat ->
-            Spacer(Modifier.height(4.dp))
-            Text("${cat.emoji}  ${cat.title}", style = Type.h, color = C.text)
+            Spacer(Modifier.height(6.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                if (cat.icon != 0) {
+                    Icon(
+                        painter = painterResource(cat.icon),
+                        contentDescription = null,
+                        tint = C.amber,
+                        modifier = Modifier.size(22.dp)
+                    )
+                    Spacer(Modifier.width(8.dp))
+                } else {
+                    Text("${cat.emoji}  ", style = Type.h)
+                }
+                Text(cat.title, style = Type.h, color = C.text)
+            }
             Text(cat.sub, style = Type.small, color = C.muted)
             Games.all.filter { it.category == cat }.forEach { g -> GameCard(g, count) { why = it } }
         }
@@ -109,6 +123,7 @@ private fun GameCard(g: Game, count: Int, onBlocked: (String) -> Unit) {
     val noPlayers = count == 0
     Panel(
         Modifier.alpha(if (block == null) 1f else 0.55f),
+        accent = g.color,
         onClick = {
             when {
                 noPlayers && g.ready -> Nav.go(Screen.Players)
@@ -118,7 +133,23 @@ private fun GameCard(g: Game, count: Int, onBlocked: (String) -> Unit) {
         },
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Box(Modifier.size(46.dp).clip(RoundedCornerShape(14.dp)).background(g.color.copy(alpha = 0.18f)), contentAlignment = Alignment.Center) { Text(g.emoji, fontSize = 24.sp) }
+            Box(
+                Modifier.size(46.dp)
+                    .clip(RoundedCornerShape(14.dp))
+                    .background(Brush.radialGradient(listOf(g.color.copy(alpha = 0.32f), g.color.copy(alpha = 0.12f)))),
+                contentAlignment = Alignment.Center
+            ) {
+                if (g.icon != 0) {
+                    Icon(
+                        painter = painterResource(g.icon),
+                        contentDescription = g.title,
+                        tint = g.color,
+                        modifier = Modifier.size(26.dp)
+                    )
+                } else {
+                    Text(g.emoji, fontSize = 24.sp)
+                }
+            }
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
                 Text(g.title, style = Type.body, color = C.text, fontWeight = FontWeight.ExtraBold)

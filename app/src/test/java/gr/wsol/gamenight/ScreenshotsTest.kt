@@ -11,6 +11,10 @@ import gr.wsol.gamenight.core.Palette
 import gr.wsol.gamenight.core.Player
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.Alignment
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.height
 import gr.wsol.gamenight.core.Settings
 import gr.wsol.gamenight.core.Store
 import gr.wsol.gamenight.games.GameHost
@@ -153,6 +157,79 @@ class ScreenshotsTest {
     }
     @Test fun n31_summer() { Store.settings = Store.settings.copy(look = 1); shot("70-summer") { HomeScreen() } }
     @Test fun n32_christmas() { Store.settings = Store.settings.copy(look = 2); shot("71-christmas", "Ξεκινάμε") { game("whois")(host) } }
+    @Test fun n32b_christmas_home() { Store.settings = Store.settings.copy(look = 2); shot("71-christmas-home") { HomeScreen() } }
+
+    @Test fun s90_icons() {
+        compose.setContent {
+            GamenightTheme {
+                androidx.compose.foundation.lazy.grid.LazyVerticalGrid(
+                    columns = androidx.compose.foundation.lazy.grid.GridCells.Fixed(4),
+                    modifier = androidx.compose.ui.Modifier.fillMaxSize().padding(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(gr.wsol.gamenight.games.Games.all.size) { i ->
+                        val g = gr.wsol.gamenight.games.Games.all[i]
+                        androidx.compose.foundation.layout.Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = androidx.compose.ui.Modifier.padding(4.dp)
+                        ) {
+                            if (g.icon != 0) {
+                                androidx.compose.material3.Icon(
+                                    painter = androidx.compose.ui.res.painterResource(g.icon),
+                                    contentDescription = g.title,
+                                    tint = g.color,
+                                    modifier = androidx.compose.ui.Modifier.size(48.dp)
+                                )
+                                androidx.compose.foundation.layout.Spacer(androidx.compose.ui.Modifier.height(4.dp))
+                                androidx.compose.material3.Icon(
+                                    painter = androidx.compose.ui.res.painterResource(g.icon),
+                                    contentDescription = g.title,
+                                    tint = g.color,
+                                    modifier = androidx.compose.ui.Modifier.size(24.dp)
+                                )
+                            }
+                            androidx.compose.material3.Text(
+                                text = g.title,
+                                style = gr.wsol.gamenight.ui.Type.small,
+                                color = gr.wsol.gamenight.ui.C.text,
+                                maxLines = 1
+                            )
+                        }
+                    }
+                }
+            }
+        }
+        compose.onRoot().captureRoboImage("../docs/screenshots/90-icons.png")
+    }
+
+    @Test fun s91_font() {
+        compose.setContent {
+            GamenightTheme {
+                androidx.compose.foundation.layout.Column(
+                    modifier = androidx.compose.ui.Modifier.fillMaxSize().padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    androidx.compose.material3.Text("Display Font: Manrope", style = gr.wsol.gamenight.ui.Type.title, color = gr.wsol.gamenight.ui.C.amber)
+                    val glyphs = "ΆάΈέΉήΊίΌόΎύΏώΪϊΫϋΐΰ ς 0123456789 «» ;"
+                    val sample = "Μάντεψε την ταινία ή σειρά"
+
+                    androidx.compose.material3.Text("Bold (700):", color = gr.wsol.gamenight.ui.C.dim, style = gr.wsol.gamenight.ui.Type.small)
+                    androidx.compose.material3.Text(glyphs, fontFamily = gr.wsol.gamenight.ui.DisplayFont, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold, fontSize = 16.sp, color = gr.wsol.gamenight.ui.C.text)
+                    androidx.compose.material3.Text(sample, fontFamily = gr.wsol.gamenight.ui.DisplayFont, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold, fontSize = 20.sp, color = gr.wsol.gamenight.ui.C.text)
+
+                    androidx.compose.material3.Text("ExtraBold (800):", color = gr.wsol.gamenight.ui.C.dim, style = gr.wsol.gamenight.ui.Type.small)
+                    androidx.compose.material3.Text(glyphs, fontFamily = gr.wsol.gamenight.ui.DisplayFont, fontWeight = androidx.compose.ui.text.font.FontWeight.ExtraBold, fontSize = 16.sp, color = gr.wsol.gamenight.ui.C.text)
+                    androidx.compose.material3.Text(sample, fontFamily = gr.wsol.gamenight.ui.DisplayFont, fontWeight = androidx.compose.ui.text.font.FontWeight.ExtraBold, fontSize = 22.sp, color = gr.wsol.gamenight.ui.C.amber)
+
+                    androidx.compose.material3.Text("Black (900):", color = gr.wsol.gamenight.ui.C.dim, style = gr.wsol.gamenight.ui.Type.small)
+                    androidx.compose.material3.Text(glyphs, fontFamily = gr.wsol.gamenight.ui.DisplayFont, fontWeight = androidx.compose.ui.text.font.FontWeight.Black, fontSize = 16.sp, color = gr.wsol.gamenight.ui.C.text)
+                    androidx.compose.material3.Text(sample, fontFamily = gr.wsol.gamenight.ui.DisplayFont, fontWeight = androidx.compose.ui.text.font.FontWeight.Black, fontSize = 24.sp, color = gr.wsol.gamenight.ui.C.pink)
+                }
+            }
+        }
+        compose.onRoot().captureRoboImage("../docs/screenshots/91-font.png")
+    }
     @Test fun n33_en_spy() { english(); shot("en-05-spy-intro") { game("spy")(host) } }
     @Test fun n34_en_tavli() { english(); shot("en-06-tavli", "Let's go", "Roll") { game("tavli")(host) } }
     @Test fun n35_en_closest() { english(); shot("en-07-closest", "Let's go") { game("closest")(host) } }

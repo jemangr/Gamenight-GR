@@ -6,18 +6,18 @@ import gr.wsol.gamenight.core.Store
 import gr.wsol.gamenight.core.t
 import gr.wsol.gamenight.ui.C
 
-enum class Category(val emoji: String, val el: String, val en: String, val subEl: String, val subEn: String) {
-    Roles("🕵️", "Κρυφοί ρόλοι", "Hidden roles", "Κάποιος στην παρέα κρύβει κάτι. Βρείτε ποιος.", "Someone is hiding something. Find out who."),
-    Words("🗣️", "Λέξεις", "Words", "Περιγράφεις, μαντεύεις, συνδέεις λέξεις.", "Describe, guess, connect words."),
-    Party("🎉", "Παρέα", "Party", "Ψηφοφορίες, αλήθειες, ζάρια και μπουκάλι.", "Votes, truths, dice and the bottle."),
-    Bluff("🤥", "Μπλόφα και γνώσεις", "Bluff and trivia", "Ποιος λέει αλήθεια και ποιος θυμάται καλύτερα.", "Who tells the truth, who remembers best."),
-    Stage("🎭", "Θέατρο, τραγούδι, ζωγραφική", "Acting, singing, drawing", "Παίζεις, τραγουδάς, ζωγραφίζεις.", "Act, sing, draw."),
-    Reflex("⚡", "Αντανακλαστικά", "Reflexes", "Γρήγορα χέρια, γρήγορο μυαλό, σταθερό χέρι.", "Quick hands, quick mind, steady hand."),
-    Motion("📱", "Με κίνηση", "Motion", "Γέρνεις, γυρίζεις, κρατάς σταθερά το κινητό.", "Tilt, turn and hold the phone steady."),
-    Arcade("🎮", "Arcade", "Arcade", "Μόνος σου για ρεκόρ, ή κόντρα στην παρέα.", "Alone for a record, or against the group."),
-    Board("🎲", "Επιτραπέζια", "Board games", "Τάβλι για δύο σε ένα κινητό.", "Backgammon for two on one phone."),
-    Logic("🧠", "Λογική", "Logic", "Χωρίς τύχη: μετράει μόνο ο συλλογισμός.", "No luck: only reasoning counts."),
-    Ai("🤖", "Με AI", "With AI", "Θέλουν δικό σου δωρεάν κλειδί AI. Όλα τα άλλα παίζονται χωρίς.", "Need your own free AI key. Everything else plays without.");
+enum class Category(val emoji: String, val el: String, val en: String, val subEl: String, val subEn: String, val icon: Int = 0) {
+    Roles("🕵️", "Κρυφοί ρόλοι", "Hidden roles", "Κάποιος στην παρέα κρύβει κάτι. Βρείτε ποιος.", "Someone is hiding something. Find out who.", gr.wsol.gamenight.R.drawable.ic_cat_roles),
+    Words("🗣️", "Λέξεις", "Words", "Περιγράφεις, μαντεύεις, συνδέεις λέξεις.", "Describe, guess, connect words.", gr.wsol.gamenight.R.drawable.ic_cat_words),
+    Party("🎉", "Παρέα", "Party", "Ψηφοφορίες, αλήθειες, ζάρια και μπουκάλι.", "Votes, truths, dice and the bottle.", gr.wsol.gamenight.R.drawable.ic_cat_party),
+    Bluff("🤥", "Μπλόφα και γνώσεις", "Bluff and trivia", "Ποιος λέει αλήθεια και ποιος θυμάται καλύτερα.", "Who tells the truth, who remembers best.", gr.wsol.gamenight.R.drawable.ic_cat_bluff),
+    Stage("🎭", "Θέατρο, τραγούδι, ζωγραφική", "Acting, singing, drawing", "Παίζεις, τραγουδάς, ζωγραφίζεις.", "Act, sing, draw.", gr.wsol.gamenight.R.drawable.ic_cat_stage),
+    Reflex("⚡", "Αντανακλαστικά", "Reflexes", "Γρήγορα χέρια, γρήγορο μυαλό, σταθερό χέρι.", "Quick hands, quick mind, steady hand.", gr.wsol.gamenight.R.drawable.ic_cat_reflex),
+    Motion("📱", "Με κίνηση", "Motion", "Γέρνεις, γυρίζεις, κρατάς σταθερά το κινητό.", "Tilt, turn and hold the phone steady.", gr.wsol.gamenight.R.drawable.ic_cat_motion),
+    Arcade("🎮", "Arcade", "Arcade", "Μόνος σου για ρεκόρ, ή κόντρα στην παρέα.", "Alone for a record, or against the group.", gr.wsol.gamenight.R.drawable.ic_cat_arcade),
+    Board("🎲", "Επιτραπέζια", "Board games", "Τάβλι για δύο σε ένα κινητό.", "Backgammon for two on one phone.", gr.wsol.gamenight.R.drawable.ic_cat_board),
+    Logic("🧠", "Λογική", "Logic", "Χωρίς τύχη: μετράει μόνο ο συλλογισμός.", "No luck: only reasoning counts.", gr.wsol.gamenight.R.drawable.ic_cat_logic),
+    Ai("🤖", "Με AI", "With AI", "Θέλουν δικό σου δωρεάν κλειδί AI. Όλα τα άλλα παίζονται χωρίς.", "Need your own free AI key. Everything else plays without.", gr.wsol.gamenight.R.drawable.ic_cat_ai);
 
     val title get() = t(el, en)
     val sub get() = t(subEl, subEn)
@@ -33,6 +33,64 @@ interface GameHost {
     fun stat(who: String, key: String) { Store.night = Store.night.stat(who, key) }
 }
 
+private fun gameIconOf(id: String): Int = when (id) {
+    "house" -> gr.wsol.gamenight.R.drawable.ic_game_house
+    "alien" -> gr.wsol.gamenight.R.drawable.ic_game_alien
+    "saboteur" -> gr.wsol.gamenight.R.drawable.ic_game_saboteur
+    "fake" -> gr.wsol.gamenight.R.drawable.ic_game_fake
+    "whisper" -> gr.wsol.gamenight.R.drawable.ic_game_whisper
+    "spy" -> gr.wsol.gamenight.R.drawable.ic_game_spy
+    "lietower" -> gr.wsol.gamenight.R.drawable.ic_game_lietower
+    "taboo" -> gr.wsol.gamenight.R.drawable.ic_game_taboo
+    "forehead" -> gr.wsol.gamenight.R.drawable.ic_game_forehead
+    "quads" -> gr.wsol.gamenight.R.drawable.ic_game_quads
+    "minefield" -> gr.wsol.gamenight.R.drawable.ic_game_minefield
+    "find10" -> gr.wsol.gamenight.R.drawable.ic_game_find10
+    "related" -> gr.wsol.gamenight.R.drawable.ic_game_related
+    "whois" -> gr.wsol.gamenight.R.drawable.ic_game_whois
+    "knowme" -> gr.wsol.gamenight.R.drawable.ic_game_knowme
+    "dice" -> gr.wsol.gamenight.R.drawable.ic_game_dice
+    "bottle" -> gr.wsol.gamenight.R.drawable.ic_game_bottle
+    "bluffer" -> gr.wsol.gamenight.R.drawable.ic_game_bluffer
+    "lie" -> gr.wsol.gamenight.R.drawable.ic_game_lie
+    "witness" -> gr.wsol.gamenight.R.drawable.ic_game_witness
+    "movies" -> gr.wsol.gamenight.R.drawable.ic_game_movies
+    "closest" -> gr.wsol.gamenight.R.drawable.ic_game_closest
+    "quiz" -> gr.wsol.gamenight.R.drawable.ic_game_quiz
+    "number" -> gr.wsol.gamenight.R.drawable.ic_game_number
+    "telephone" -> gr.wsol.gamenight.R.drawable.ic_game_telephone
+    "song" -> gr.wsol.gamenight.R.drawable.ic_game_song
+    "chain" -> gr.wsol.gamenight.R.drawable.ic_game_chain
+    "mime" -> gr.wsol.gamenight.R.drawable.ic_game_mime
+    "bomb" -> gr.wsol.gamenight.R.drawable.ic_game_bomb
+    "balance" -> gr.wsol.gamenight.R.drawable.ic_game_balance
+    "drone" -> gr.wsol.gamenight.R.drawable.ic_game_drone
+    "defuse" -> gr.wsol.gamenight.R.drawable.ic_game_defuse
+    "icequiz" -> gr.wsol.gamenight.R.drawable.ic_game_icequiz
+    "safe" -> gr.wsol.gamenight.R.drawable.ic_game_safe
+    "gate" -> gr.wsol.gamenight.R.drawable.ic_game_gate
+    "drop" -> gr.wsol.gamenight.R.drawable.ic_game_drop
+    "grid" -> gr.wsol.gamenight.R.drawable.ic_game_grid
+    "orbit" -> gr.wsol.gamenight.R.drawable.ic_game_orbit
+    "slice" -> gr.wsol.gamenight.R.drawable.ic_game_slice
+    "tower" -> gr.wsol.gamenight.R.drawable.ic_game_tower
+    "path" -> gr.wsol.gamenight.R.drawable.ic_game_path
+    "sling" -> gr.wsol.gamenight.R.drawable.ic_game_sling
+    "dual" -> gr.wsol.gamenight.R.drawable.ic_game_dual
+    "ring" -> gr.wsol.gamenight.R.drawable.ic_game_ring
+    "laser" -> gr.wsol.gamenight.R.drawable.ic_game_laser
+    "spiral" -> gr.wsol.gamenight.R.drawable.ic_game_spiral
+    "tavli" -> gr.wsol.gamenight.R.drawable.ic_game_tavli
+    "core" -> gr.wsol.gamenight.R.drawable.ic_game_core
+    "interro" -> gr.wsol.gamenight.R.drawable.ic_game_interro
+    "drawai" -> gr.wsol.gamenight.R.drawable.ic_game_drawai
+    "endless" -> gr.wsol.gamenight.R.drawable.ic_game_endless
+    "court" -> gr.wsol.gamenight.R.drawable.ic_game_court
+    "aiq" -> gr.wsol.gamenight.R.drawable.ic_game_aiq
+    "oracle" -> gr.wsol.gamenight.R.drawable.ic_game_oracle
+    else -> 0
+}
+
 class Game(
     val id: String,
     val emoji: String,
@@ -45,6 +103,7 @@ class Game(
     private val shortEn: String,
     val color: Color,
     val play: (@Composable (GameHost) -> Unit)? = null,
+    val icon: Int = gameIconOf(id),
 ) {
     val title get() = t(titleEl, titleEn)
     val short get() = t(shortEl, shortEn)

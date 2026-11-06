@@ -11,6 +11,15 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.background
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,7 +47,22 @@ fun Intro(game: Game, host: GameHost, rules: List<String>, startEnabled: Boolean
     Page("${game.emoji} ${game.title}", onBack = { host.exit() }, bottom = {
         BigButton(t("Ξεκινάμε", "Let's go"), onStart, color = game.color, enabled = startEnabled)
     }) {
-        Text(game.short, style = Type.title, color = C.text)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Box(
+                Modifier.size(44.dp)
+                    .clip(RoundedCornerShape(13.dp))
+                    .background(Brush.radialGradient(listOf(game.color.copy(alpha = 0.32f), game.color.copy(alpha = 0.12f)))),
+                contentAlignment = Alignment.Center
+            ) {
+                if (game.icon != 0) {
+                    Icon(painterResource(game.icon), contentDescription = game.title, tint = game.color, modifier = Modifier.size(26.dp))
+                } else {
+                    Text(game.emoji, fontSize = 22.sp)
+                }
+            }
+            Spacer(Modifier.width(12.dp))
+            Text(game.short, style = Type.title, color = C.text, modifier = Modifier.weight(1f))
+        }
         Panel {
             Label(t("ΠΩΣ ΠΑΙΖΕΤΑΙ", "HOW TO PLAY"))
             rules.forEach { Body("• $it", color = C.text) }
