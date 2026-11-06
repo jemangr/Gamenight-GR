@@ -112,6 +112,35 @@ class ScreenshotsTest {
     @Test fun s31_orbit() = shot("31-orbit", "Ξεκινάμε", "Πάμε", wait = 1500) { game("orbit")(host) }
     @Test fun s32_path() = shot("32-path", "Ξεκινάμε", "Πάμε", wait = 1500) { game("path")(host) }
     @Test fun s33_sling() = shot("33-sling", "Ξεκινάμε", "Πάμε", wait = 1500) { game("sling")(host) }
+    @Test fun s26b_new_record() {
+        Store.forceBest("gate.record.all", 10)
+        shot("26b-new-record") {
+            val g = gr.wsol.gamenight.games.Games.byId("gate")!!
+            androidx.compose.foundation.layout.Box(androidx.compose.ui.Modifier.fillMaxSize()) {
+                androidx.compose.foundation.layout.Column(
+                    androidx.compose.ui.Modifier.fillMaxSize().padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(14.dp, Alignment.CenterVertically)
+                ) {
+                    androidx.compose.material3.Text(g.emoji, fontSize = 52.sp)
+                    androidx.compose.material3.Text("42", style = gr.wsol.gamenight.ui.Type.huge, color = g.color)
+                    androidx.compose.material3.Text("Νέο ρεκόρ! 🏆", style = gr.wsol.gamenight.ui.Type.huge, color = gr.wsol.gamenight.ui.C.amber)
+                    gr.wsol.gamenight.ui.Panel {
+                        androidx.compose.foundation.layout.Row {
+                            androidx.compose.material3.Text("Ρεκόρ", style = gr.wsol.gamenight.ui.Type.body, color = gr.wsol.gamenight.ui.C.muted, modifier = androidx.compose.ui.Modifier.weight(1f))
+                            androidx.compose.material3.Text("🏆 42", style = gr.wsol.gamenight.ui.Type.h, color = gr.wsol.gamenight.ui.C.text)
+                        }
+                        androidx.compose.foundation.layout.Row {
+                            androidx.compose.material3.Text("Σήμερα", style = gr.wsol.gamenight.ui.Type.body, color = gr.wsol.gamenight.ui.C.muted, modifier = androidx.compose.ui.Modifier.weight(1f))
+                            androidx.compose.material3.Text("42", style = gr.wsol.gamenight.ui.Type.h, color = gr.wsol.gamenight.ui.C.text)
+                        }
+                    }
+                    gr.wsol.gamenight.ui.BigButton("Ξανά", {}, color = g.color, height = 72.dp)
+                }
+                gr.wsol.gamenight.ui.Confetti(trigger = Unit)
+            }
+        }
+    }
 
     @Test fun s34_core_levels() = shot("34-core-levels") { game("core")(host) }
     @Test fun s35_core_board() { (1..10).forEach { Store.forceBest("core.$it.solved", 1) }; shot("35-core-board", "11") { game("core")(host) } }

@@ -1,7 +1,6 @@
 package gr.wsol.gamenight.games
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -16,17 +15,26 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.input.pointer.positionChanged
 import gr.wsol.gamenight.core.t
 import gr.wsol.gamenight.extras.Sfx
 import gr.wsol.gamenight.extras.rememberTilt
 import gr.wsol.gamenight.ui.C
+import gr.wsol.gamenight.ui.Particles
+import gr.wsol.gamenight.ui.drawNeonBall
+import gr.wsol.gamenight.ui.drawNeonCircle
+import gr.wsol.gamenight.ui.drawNeonLine
+import gr.wsol.gamenight.ui.drawNeonPath
+import gr.wsol.gamenight.ui.drawNeonRect
 import kotlinx.coroutines.delay
 import kotlin.math.abs
 import kotlin.math.atan2
@@ -87,25 +95,70 @@ fun DropRun(key: Int, onOver: (Int) -> Unit) {
     val tilt by rememberTilt()
     var touch by remember(key) { mutableStateOf(0f) }
     var frame by remember(key) { mutableIntStateOf(0) }
+    val trail = remember(key) { mutableListOf<Offset>() }
+    var overTrigger by remember(key) { mutableStateOf<Any?>(null) }
+    var flashRed by remember(key) { mutableStateOf(false) }
+
     LaunchedEffect(key) {
         val clock = FrameClock(); var lastDepth = 0
-        while (!g.over) { g.step(clock.tick(withFrameNanos { it }), (tilt.x / 4f).coerceIn(-1f, 1f).let { if (abs(it) < 0.05f) touch else it }); if (g.depth != lastDepth) { lastDepth = g.depth; Sfx.tick() }; frame++ }
+        while (!g.over) {
+            val dt = clock.tick(withFrameNanos { it })
+            g.step(dt, (tilt.x / 4f).coerceIn(-1f, 1f).let { if (abs(it) < 0.05f) touch else it })
+            if (g.depth != lastDepth) { lastDepth = g.depth; Sfx.tick() }
+            frame++
+        }
+        flashRed = true; overTrigger = Unit
         Sfx.boom(); Sfx.buzz(300, true); onOver(g.score)
     }
-    ArcadeBody {
-        Canvas(Modifier.fillMaxSize().background(Color(0xFF07131B)).pointerInput(key) {
+    ArcadeBody(shakeTrigger = overTrigger, flashRed = flashRed) {
+        Canvas(Modifier.fillMaxSize().pointerInput(key) {
             awaitEachGesture { val d = awaitFirstDown(); touch = if (d.position.x < size.width / 2) -1f else 1f; do { val e = awaitPointerEvent() } while (e.changes.any { it.pressed }); touch = 0f }
         }) {
             frame.let { }
             val w = size.width; val h = size.height
+            // Update trail
+            val curPos = Offset(g.x * w, g.y * h - w * 0.035f)
+            trail.add(curPos)
+            if (trail.size > 8) trail.removeAt(0)
+
+            // Floors & Lasers
             g.rows.forEach { r ->
                 val c = if (r.laser) Color(0xFFFF4D5E) else Color(0xFF22D3EE)
-                val th = if (r.laser) 6f else 18f
-                drawRect(c, Offset(0f, r.y * h), Size(r.gap * w, th)); drawRect(c, Offset((r.gap + g.gapW) * w, r.y * h), Size((1 - r.gap - g.gapW) * w, th))
-                if (r.coin) drawCircle(C.amber, w * 0.025f, Offset((r.gap + g.gapW / 2) * w, r.y * h + 30f))
+                val th = if (r.laser) 10f else 18f
+                val leftW = r.gap * w
+                val rightX = (r.gap + g.gapW) * w
+                val rightW = (1 - r.gap - g.gapW) * w
+                val ry = r.y * h
+
+                if (r.laser) {
+                    // Pulsing neon laser beams
+                    drawNeonLine(Color(0xFFFF1744), Offset(0f, ry + th / 2f), Offset(leftW, ry + th / 2f), 3f)
+                    drawNeonLine(Color(0xFFFF1744), Offset(rightX, ry + th / 2f), Offset(w, ry + th / 2f), 3f)
+                } else {
+                    // Neon cyan tubes with glow
+                    drawRoundRect(c.copy(alpha = 0.22f), Offset(0f, ry - 2f), Size(leftW, th + 4f), CornerRadius(6f))
+                    drawRoundRect(Brush.verticalGradient(listOf(Color.White.copy(alpha = 0.5f), c, lerp(c, Color.Black, 0.4f)), startY = ry, endY = ry + th), Offset(0f, ry), Size(leftW, th), CornerRadius(5f))
+                    drawRoundRect(Color.White.copy(alpha = 0.6f), Offset(0f, ry), Size(leftW, th), CornerRadius(5f), style = Stroke(1.5f))
+
+                    drawRoundRect(c.copy(alpha = 0.22f), Offset(rightX, ry - 2f), Size(rightW, th + 4f), CornerRadius(6f))
+                    drawRoundRect(Brush.verticalGradient(listOf(Color.White.copy(alpha = 0.5f), c, lerp(c, Color.Black, 0.4f)), startY = ry, endY = ry + th), Offset(rightX, ry), Size(rightW, th), CornerRadius(5f))
+                    drawRoundRect(Color.White.copy(alpha = 0.6f), Offset(rightX, ry), Size(rightW, th), CornerRadius(5f), style = Stroke(1.5f))
+                }
+
+                if (r.coin) {
+                    val coinCenter = Offset((r.gap + g.gapW / 2) * w, ry + 30f)
+                    val spinScale = abs(cos(frame * 0.08f)) * 0.7f + 0.3f
+                    drawCircle(Color(0xFFFFD54F).copy(alpha = 0.35f), w * 0.038f, coinCenter)
+                    drawOval(Color(0xFFFFD54F), Offset(coinCenter.x - w * 0.025f * spinScale, coinCenter.y - w * 0.025f), Size(w * 0.05f * spinScale, w * 0.05f))
+                }
             }
-            drawCircle(C.lime, w * 0.035f, Offset(g.x * w, g.y * h - w * 0.035f))
-            drawRect(Color(0x55FF4D5E), Offset.Zero, Size(w, h * 0.02f))
+
+            // Ball with falling neon trail
+            drawNeonBall(C.lime, curPos, w * 0.035f, trail)
+
+            // Red warning ceiling
+            drawNeonLine(Color(0xFFFF1744), Offset(0f, h * 0.02f), Offset(w, h * 0.02f), 3f)
+            drawRect(Color(0x33FF4D5E), Offset.Zero, Size(w, h * 0.02f))
         }
         Column { Hud(g.score, g.mult, t("βάθος ${g.depth}", "depth ${g.depth}"), C.cyan); ArcadeNote(t("Γείρε το κινητό (ή πάτα αριστερά/δεξιά). Πέσε από τα κενά, πρόσεχε τα λέιζερ και το ταβάνι.", "Tilt the phone (or tap left/right). Drop through the gaps; mind the lasers and the ceiling.")) }
     }
@@ -181,21 +234,72 @@ class OrbitGame(private val rnd: Random = Random) {
 fun OrbitRun(key: Int, onOver: (Int) -> Unit) {
     val g = remember(key) { OrbitGame() }
     var frame by remember(key) { mutableIntStateOf(0) }
-    LaunchedEffect(key) { val clock = FrameClock(); var last = 0; while (!g.over) { g.step(clock.tick(withFrameNanos { it })); if (g.streak != last) { last = g.streak; Sfx.correct(); Sfx.buzz(20) }; frame++ }; Sfx.boom(); Sfx.buzz(300, true); onOver(g.score) }
-    ArcadeBody {
-        Canvas(Modifier.fillMaxSize().background(Color(0xFF05040A)).pointerInput(key) {
+    val trail = remember(key) { mutableListOf<Offset>() }
+    val particles = remember(key) { Particles(80) }
+    var overTrigger by remember(key) { mutableStateOf<Any?>(null) }
+    var flashRed by remember(key) { mutableStateOf(false) }
+
+    LaunchedEffect(key) {
+        val clock = FrameClock(); var last = 0
+        while (!g.over) {
+            val dt = clock.tick(withFrameNanos { it })
+            g.step(dt)
+            particles.update(dt)
+            if (g.streak != last) {
+                last = g.streak
+                Sfx.correct(); Sfx.buzz(20)
+                particles.emit(0.5f * 1000f, 0.5f * 1800f, C.amber, count = 16)
+            }
+            frame++
+        }
+        flashRed = true; overTrigger = Unit
+        Sfx.boom(); Sfx.buzz(300, true); onOver(g.score)
+    }
+    ArcadeBody(shakeTrigger = overTrigger, flashRed = flashRed) {
+        Canvas(Modifier.fillMaxSize().pointerInput(key) {
             awaitEachGesture { awaitFirstDown(); g.press(); Sfx.tap(); do { val e = awaitPointerEvent() } while (e.changes.any { it.pressed }); g.release() }
         }) {
             frame.let { }
             val w = size.width; val h = size.height
             val camY = g.pos.y - 0.35f
             fun p(x: Float, y: Float) = Offset(x * w, h - (y - camY) * w)
+
+            val shipPos = p(g.pos.x, g.pos.y)
+            trail.add(shipPos)
+            if (trail.size > 10) trail.removeAt(0)
+
+            // Planets & mines
             g.anchors.forEach { a ->
-                drawCircle(C.ghost, 10f, p(a.x, a.y)); drawCircle(C.ghost.copy(alpha = 0.18f), 0.42f * w, p(a.x, a.y), style = Stroke(2f))
-                a.mine?.let { m -> drawCircle(C.red, 0.03f * w, p(m.x, m.y)); drawCircle(C.red.copy(alpha = 0.3f), 0.08f * w, p(m.x, m.y), style = Stroke(2f)) }
+                val ap = p(a.x, a.y)
+                // Planet ring
+                drawOval(C.ghost.copy(alpha = 0.32f), Offset(ap.x - 24f, ap.y - 8f), Size(48f, 16f), style = Stroke(2f))
+                // Planet body with sphere gradient
+                drawCircle(
+                    Brush.radialGradient(
+                        listOf(Color.White, Color(0xFF9575CD), Color(0xFF211440)),
+                        center = Offset(ap.x - 4f, ap.y - 4f),
+                        radius = 14f
+                    ),
+                    14f, ap
+                )
+                // Field circle
+                drawCircle(C.ghost.copy(alpha = 0.14f), 0.42f * w, ap, style = Stroke(1.5f))
+
+                a.mine?.let { m ->
+                    val mp = p(m.x, m.y)
+                    drawNeonCircle(C.red, mp, 0.035f * w, 2.5f)
+                    drawCircle(C.red.copy(alpha = 0.25f), 0.08f * w, mp, style = Stroke(1.5f))
+                }
             }
-            g.hold?.let { a -> drawLine(C.cyan, p(a.x, a.y), p(g.pos.x, g.pos.y), 4f, pathEffect = PathEffect.dashPathEffect(floatArrayOf(12f, 10f))) }
-            drawCircle(C.cyan, 14f, p(g.pos.x, g.pos.y)); drawCircle(C.cyan.copy(alpha = 0.3f), 28f, p(g.pos.x, g.pos.y))
+
+            // Holding tether
+            g.hold?.let { a ->
+                drawLine(C.cyan, p(a.x, a.y), shipPos, 3.5f, pathEffect = PathEffect.dashPathEffect(floatArrayOf(12f, 8f)))
+            }
+
+            // Ship with comet trail
+            drawNeonBall(C.cyan, shipPos, 14f, trail)
+            particles.draw(this)
         }
         Column { Hud(g.score, g.mult, null, C.cyan); ArcadeNote(t("Κράτα πατημένο για να γυρίσεις γύρω από την πιο κοντινή άγκυρα, άφησε για να εκτοξευτείς. Πέρνα ξυστά από τις κόκκινες νάρκες για bonus.", "Hold to orbit the nearest anchor, release to launch. Skim past the red mines for a bonus.")) }
     }
@@ -244,30 +348,74 @@ fun PathRun(key: Int, onOver: (Int) -> Unit) {
     var round by remember(key) { mutableIntStateOf(0) }
     var traced by remember(key) { mutableStateOf(listOf<Int>()) }
     var flash by remember(key) { mutableStateOf<Boolean?>(null) }
-    // the new path waits for the green/red flash of the last trace (400 ms), then shows for its full time
+    var overTrigger by remember(key) { mutableStateOf<Any?>(null) }
+    var flashRed by remember(key) { mutableStateOf(false) }
+
     LaunchedEffect(key, round) { showing = true; if (round > 0) delay(450); delay(g.showMs); showing = false }
     LaunchedEffect(flash) { if (flash != null) { delay(400); flash = null } }
-    ArcadeBody {
-        Canvas(Modifier.fillMaxSize().background(Color(0xFF07110C)).pointerInput(key, round, showing) {
+    ArcadeBody(shakeTrigger = overTrigger, flashRed = flashRed || flash == false) {
+        Canvas(Modifier.fillMaxSize().pointerInput(key, round, showing) {
             if (showing) return@pointerInput
             val cell = size.width / 5f; val top = (size.height - size.width) / 2
             fun at(o: Offset): Int? { val c = (o.x / cell).toInt(); val r = ((o.y - top) / cell).toInt(); return if (c in 0..4 && r in 0..4) r * 5 + c else null }
             detectDragGestures(onDragStart = { o -> traced = listOfNotNull(at(o)) }, onDragEnd = {
                 val ok = g.trace(traced)
-                flash = ok; if (ok) { Sfx.correct(); Sfx.buzz(30) } else { Sfx.wrong(); Sfx.buzz(200) }
+                flash = ok; if (ok) { Sfx.correct(); Sfx.buzz(30) } else { Sfx.wrong(); Sfx.buzz(200); overTrigger = Unit }
                 traced = emptyList()
-                if (g.over) onOver(g.score) else round++
+                if (g.over) { flashRed = true; onOver(g.score) } else round++
             }) { ch, _ -> at(ch.position)?.let { c -> if (traced.lastOrNull() != c && c !in traced) { traced = traced + c; Sfx.tick() } } }
         }) {
             val w = size.width; val cell = w / 5f; val top = (size.height - w) / 2
+
+            // Glowing neon circuit path trail
+            if (showing && g.path.size >= 2) {
+                val pathTrail = Path()
+                g.path.forEachIndexed { idx, cellIdx ->
+                    val r = cellIdx / 5; val c = cellIdx % 5
+                    val pt = Offset((c + 0.5f) * cell, top + (r + 0.5f) * cell)
+                    if (idx == 0) pathTrail.moveTo(pt.x, pt.y) else pathTrail.lineTo(pt.x, pt.y)
+                }
+                drawNeonPath(pathTrail, C.green, 3.5f)
+            }
+
             for (i in 0 until 25) {
                 val r = i / 5; val c = i % 5
                 val lit = (showing && i in g.path) || i in traced
-                val color = when { flash == true -> C.green; flash == false -> C.red; lit -> C.green; else -> Color(0xFF16261C) }
-                // (while the flash lasts the path isn't drawn: it starts right after, see the LaunchedEffect above)
-                drawRoundRect(color, Offset(c * cell + 6f, top + r * cell + 6f), Size(cell - 12f, cell - 12f), androidx.compose.ui.geometry.CornerRadius(18f))
+                val cellTopLeft = Offset(c * cell + 6f, top + r * cell + 6f)
+                val cellSize = Size(cell - 12f, cell - 12f)
+                val cr = CornerRadius(16f)
+
+                if (flash == true) {
+                    drawRoundRect(C.green.copy(alpha = 0.25f), Offset(cellTopLeft.x - 2f, cellTopLeft.y - 2f), Size(cellSize.width + 4f, cellSize.height + 4f), CornerRadius(18f))
+                    drawRoundRect(C.green, cellTopLeft, cellSize, cr)
+                } else if (flash == false) {
+                    drawRoundRect(C.red.copy(alpha = 0.25f), Offset(cellTopLeft.x - 2f, cellTopLeft.y - 2f), Size(cellSize.width + 4f, cellSize.height + 4f), CornerRadius(18f))
+                    drawRoundRect(C.red, cellTopLeft, cellSize, cr)
+                } else if (lit) {
+                    // Glowing green card with depth
+                    drawRoundRect(C.green.copy(alpha = 0.25f), Offset(cellTopLeft.x - 3f, cellTopLeft.y - 3f), Size(cellSize.width + 6f, cellSize.height + 6f), CornerRadius(18f))
+                    drawRoundRect(
+                        Brush.verticalGradient(
+                            listOf(Color(0xFF69F0AE), C.green, Color(0xFF1B5E20)),
+                            startY = cellTopLeft.y, endY = cellTopLeft.y + cellSize.height
+                        ),
+                        cellTopLeft, cellSize, cr
+                    )
+                    drawRoundRect(Color.White.copy(alpha = 0.7f), cellTopLeft, cellSize, cr, style = Stroke(1.5f))
+                } else {
+                    // Unlit subtle dark card with depth bevel
+                    drawRoundRect(Color(0xFF132019), cellTopLeft, cellSize, cr)
+                    drawRoundRect(Color(0xFF1E3328), cellTopLeft, cellSize, cr, style = Stroke(1.5f))
+                }
             }
-            if (showing && g.path.isNotEmpty()) { val s = g.path.first(); drawCircle(Color.White, cell * 0.15f, Offset((s % 5 + 0.5f) * cell, top + (s / 5 + 0.5f) * cell)) }
+
+            // Start waypoint pulsing dot
+            if (showing && g.path.isNotEmpty()) {
+                val s = g.path.first()
+                val sc = Offset((s % 5 + 0.5f) * cell, top + (s / 5 + 0.5f) * cell)
+                drawCircle(Color.White.copy(alpha = 0.35f), cell * 0.25f, sc)
+                drawCircle(Color.White, cell * 0.14f, sc)
+            }
         }
         Column { Hud(g.score, g.mult, "❤️".repeat(g.lives.coerceAtLeast(0)), C.green); ArcadeNote(if (showing) t("Θυμήσου τη διαδρομή (ξεκινά από τη λευκή τελεία)…", "Remember the path (it starts at the white dot)…") else t("Σύρε το δάχτυλο πάνω στην ίδια διαδρομή, χωρίς να το σηκώσεις.", "Trace the same path without lifting your finger.")) }
     }
@@ -335,23 +483,83 @@ fun SlingRun(key: Int, onOver: (Int) -> Unit) {
     val g = remember(key) { SlingGame() }
     var frame by remember(key) { mutableIntStateOf(0) }
     var pull by remember(key) { mutableStateOf<Offset?>(null) }
-    LaunchedEffect(key) { val clock = FrameClock(); while (!g.over) { val got = g.step(clock.tick(withFrameNanos { it })); if (got > 0) { Sfx.correct(); Sfx.buzz(if (got >= 4) 60 else 20) }; frame++ }; Sfx.end(); onOver(g.score) }
-    ArcadeBody {
-        Canvas(Modifier.fillMaxSize().background(Color(0xFF120E07)).pointerInput(key) {
+    val trail = remember(key) { mutableListOf<Offset>() }
+    val particles = remember(key) { Particles(90) }
+    var overTrigger by remember(key) { mutableStateOf<Any?>(null) }
+    var flashRed by remember(key) { mutableStateOf(false) }
+
+    LaunchedEffect(key) {
+        val clock = FrameClock()
+        while (!g.over) {
+            val dt = clock.tick(withFrameNanos { it })
+            val got = g.step(dt)
+            particles.update(dt)
+            if (got > 0) {
+                Sfx.correct(); Sfx.buzz(if (got >= 4) 60 else 20)
+                particles.emit(0.5f * 1000f, 0.5f * 1800f, C.amber, count = 20)
+            }
+            frame++
+        }
+        flashRed = true; overTrigger = Unit
+        Sfx.end(); onOver(g.score)
+    }
+    ArcadeBody(shakeTrigger = overTrigger, flashRed = flashRed) {
+        Canvas(Modifier.fillMaxSize().pointerInput(key) {
             val s = size.width.toFloat()
             detectDragGestures(onDragStart = { pull = Offset.Zero }, onDragEnd = { pull?.let { g.shoot(it); Sfx.pass() }; pull = null }) { ch, amount -> ch.consume(); pull = (pull ?: Offset.Zero) + amount / s }
         }) {
             frame.let { }
             val w = size.width; val scale = minOf(w, size.height / g.H); val ox = (w - scale) / 2; val oy = (size.height - g.H * scale) / 2
             fun p(o: Offset) = Offset(ox + o.x * scale, oy + o.y * scale)
-            drawRect(Color(0xFF2A2214), Offset(ox, oy), Size(scale, g.H * scale), style = Stroke(6f))
-            g.targets.forEach { t -> drawCircle(Color.hsv(30f + 30f * t.hp, 0.8f, 0.95f), 0.06f * scale, p(Offset(t.x, t.y))); drawCircle(Color.Black.copy(alpha = 0.5f), 0.06f * scale, p(Offset(t.x, t.y)), style = Stroke(3f)) }
+
+            // Neon room bounds
+            drawNeonRect(Color(0xFF8D6E63), Offset(ox, oy), Size(scale, g.H * scale), cornerRadius = 8f, strokeWidth = 2.5f)
+
+            // Slingshot posts at base
+            val postLX = ox + (g.start.x - 0.08f) * scale
+            val postRX = ox + (g.start.x + 0.08f) * scale
+            val postY = oy + g.start.y * scale
+            drawNeonLine(Color(0xFF8D6E63), Offset(postLX, postY), Offset(postLX, postY + 36f), 5f)
+            drawNeonLine(Color(0xFF8D6E63), Offset(postRX, postY), Offset(postRX, postY + 36f), 5f)
+
+            // Rubber band Bézier curve
+            val ballPt = p(if (g.flying) g.ball else (pull?.let { g.start + it } ?: g.start))
+            if (!g.flying) {
+                val band = Path().apply {
+                    moveTo(postLX, postY)
+                    quadraticTo(ballPt.x, ballPt.y, postRX, postY)
+                }
+                drawPath(band, Color(0xFFFFB300), style = Stroke(4f))
+            }
+
+            // Trajectory aim dots
             val pl = pull
             if (pl != null && !g.flying) {
                 val dir = Offset(-pl.x, -pl.y)
                 drawLine(C.amber.copy(alpha = 0.7f), p(g.start), p(g.start + dir * 1.6f), 5f, pathEffect = PathEffect.dashPathEffect(floatArrayOf(14f, 10f)))
             }
-            drawCircle(C.amber, 0.03f * scale, p(if (g.flying) g.ball else g.start))
+
+            // Target rings with neon glow
+            g.targets.forEach { t ->
+                val tp = p(Offset(t.x, t.y))
+                val tr = 0.06f * scale
+                val tCol = Color.hsv(30f + 30f * t.hp, 0.85f, 0.95f)
+                drawNeonCircle(tCol, tp, tr, 3f)
+                drawCircle(tCol.copy(alpha = 0.18f), tr, tp)
+                // Center core
+                drawCircle(Color.White.copy(alpha = 0.8f), tr * 0.35f, tp)
+            }
+
+            // Ball with neon trail
+            if (g.flying) {
+                trail.add(ballPt)
+                if (trail.size > 8) trail.removeAt(0)
+            } else {
+                trail.clear()
+            }
+            drawNeonBall(C.amber, ballPt, 0.035f * scale, trail)
+
+            particles.draw(this)
         }
         Column { Hud(g.score, if (g.bounces > 0 && g.flying) 1 shl minOf(g.bounces, 6) else 1, "${g.time.toInt().coerceAtLeast(0)}″", C.amber); ArcadeNote(t("Τράβα προς τα κάτω και άφησε. Κάθε αναπήδηση πριν το χτύπημα διπλασιάζει τους πόντους. Καθαρό ταμπλό: +5″.", "Pull down and release. Each bounce before a hit doubles the points. A clear board: +5″.")) }
     }

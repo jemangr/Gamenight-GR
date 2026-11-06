@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,8 +30,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.semantics.Role
@@ -41,7 +46,13 @@ import androidx.compose.ui.unit.sp
 import gr.wsol.gamenight.core.t
 import gr.wsol.gamenight.extras.Sfx
 import gr.wsol.gamenight.ui.C
+import gr.wsol.gamenight.ui.Particles
 import gr.wsol.gamenight.ui.Type
+import gr.wsol.gamenight.ui.card
+import gr.wsol.gamenight.ui.drawNeonBall
+import gr.wsol.gamenight.ui.drawNeonCircle
+import gr.wsol.gamenight.ui.drawNeonLine
+import gr.wsol.gamenight.ui.drawNeonRect
 import kotlin.math.abs
 import kotlin.random.Random
 
@@ -87,21 +98,104 @@ class GateGame(private val rnd: Random = Random) {
     }
 }
 
+private fun DrawScope.drawColorMarker(index: Int, center: Offset, size: Float, color: Color = Color.White) {
+    when (index % 4) {
+        0 -> drawCircle(color, size * 0.42f, center)
+        1 -> {
+            val p = Path().apply {
+                moveTo(center.x, center.y - size * 0.48f)
+                lineTo(center.x + size * 0.48f, center.y)
+                lineTo(center.x, center.y + size * 0.48f)
+                lineTo(center.x - size * 0.48f, center.y)
+                close()
+            }
+            drawPath(p, color)
+        }
+        2 -> {
+            val p = Path().apply {
+                moveTo(center.x, center.y - size * 0.48f)
+                lineTo(center.x + size * 0.48f, center.y + size * 0.42f)
+                lineTo(center.x - size * 0.48f, center.y + size * 0.42f)
+                close()
+            }
+            drawPath(p, color)
+        }
+        3 -> drawRect(color, Offset(center.x - size * 0.35f, center.y - size * 0.35f), Size(size * 0.7f, size * 0.7f))
+    }
+}
+
+private class FallingCut(
+    var x: Float,
+    var y: Float,
+    var w: Float,
+    val fh: Float,
+    var vy: Float = -0.04f,
+    var rot: Float = 0f,
+    var vRot: Float = 90f,
+    val color: Color,
+    var alpha: Float = 1f
+)
+
 @Composable
 fun GateRun(key: Int, onOver: (Int) -> Unit) {
     val g = remember(key) { GateGame() }
     var frame by remember(key) { mutableIntStateOf(0) }
+    val particles = remember(key) { Particles(80) }
+    var overTrigger by remember(key) { mutableStateOf<Any?>(null) }
+    var flashRed by remember(key) { mutableStateOf(false) }
+
     LaunchedEffect(key) {
         val clock = FrameClock()
-        while (true) { val r = g.step(clock.tick(withFrameNanos { it })); frame++; if (r > 0) { Sfx.tick(); if (g.mult > 1) Sfx.buzz(15) }; if (r < 0) { Sfx.boom(); Sfx.buzz(300, true); onOver(g.score); break } }
+        while (true) {
+            val dt = clock.tick(withFrameNanos { it })
+            val r = g.step(dt)
+            particles.update(dt)
+            frame++
+            if (r > 0) {
+                Sfx.tick()
+                if (g.mult > 1) Sfx.buzz(15)
+                particles.emit(0.5f * 1000f, g.ballY * 1800f, GATE_COLORS[g.ball % GATE_COLORS.size], count = 16)
+            }
+            if (r < 0) {
+                Sfx.boom()
+                Sfx.buzz(300, true)
+                flashRed = true
+                overTrigger = Unit
+                onOver(g.score)
+                break
+            }
+        }
     }
-    ArcadeBody {
-        Canvas(Modifier.fillMaxSize().background(Color(0xFF0B0A12)).pointerInput(key) { detectTapGestures { g.tap(); Sfx.tap() } }) {
+    ArcadeBody(shakeTrigger = overTrigger, flashRed = flashRed) {
+        Canvas(Modifier.fillMaxSize().pointerInput(key) { detectTapGestures { g.tap(); Sfx.tap() } }) {
             frame.let { }
             val w = size.width; val h = size.height
-            g.bars.forEach { b -> drawRoundRect(GATE_COLORS[b.color % g.colors], Offset(w * 0.12f, b.y * h - 10f), Size(w * 0.76f, 20f), CornerRadius(10f)) }
-            drawCircle(GATE_COLORS[g.ball], w * 0.05f, Offset(w / 2, g.ballY * h))
-            drawCircle(Color.White.copy(alpha = 0.5f), w * 0.05f, Offset(w / 2, g.ballY * h), style = androidx.compose.ui.graphics.drawscope.Stroke(4f))
+            g.bars.forEach { b ->
+                val col = GATE_COLORS[b.color % g.colors]
+                val bx = w * 0.12f; val by = b.y * h - 12f; val bw = w * 0.76f; val bh = 24f
+                // Glow aura around tube
+                drawRoundRect(col.copy(alpha = 0.22f), Offset(bx - 3f, by - 3f), Size(bw + 6f, bh + 6f), CornerRadius(12f))
+                // Tube body with gradient
+                drawRoundRect(
+                    Brush.verticalGradient(
+                        listOf(lerp(col, Color.White, 0.45f), col, lerp(col, Color.Black, 0.4f)),
+                        startY = by, endY = by + bh
+                    ),
+                    Offset(bx, by), Size(bw, bh), CornerRadius(10f)
+                )
+                // Crisp highlight outline
+                drawRoundRect(Color.White.copy(alpha = 0.65f), Offset(bx, by), Size(bw, bh), CornerRadius(10f), style = Stroke(1.5f))
+                // Colorblind markers on both ends and center
+                drawColorMarker(b.color % g.colors, Offset(w / 2f, by + bh / 2f), 12f, Color.White.copy(alpha = 0.9f))
+                drawColorMarker(b.color % g.colors, Offset(bx + 18f, by + bh / 2f), 10f, Color.White.copy(alpha = 0.8f))
+                drawColorMarker(b.color % g.colors, Offset(bx + bw - 18f, by + bh / 2f), 10f, Color.White.copy(alpha = 0.8f))
+            }
+            // Neon ball with colorblind marker
+            val ballCenter = Offset(w / 2f, g.ballY * h)
+            val ballR = w * 0.055f
+            drawNeonBall(GATE_COLORS[g.ball], ballCenter, ballR)
+            drawColorMarker(g.ball, ballCenter, 14f, Color.White)
+            particles.draw(this)
         }
         Column { Hud(g.score, g.mult, t("χρώματα: ${g.colors}", "colours: ${g.colors}")); ArcadeNote(t("Πάτα για να αλλάξεις χρώμα. Πέρνα μόνο από το ίδιο χρώμα.", "Tap to change colour. Pass only through your colour.")) }
     }
@@ -143,30 +237,100 @@ class TowerGame {
 fun TowerRun(key: Int, onOver: (Int) -> Unit) {
     val g = remember(key) { TowerGame() }
     var frame by remember(key) { mutableIntStateOf(0) }
-    // a quick double tap after the end must not report the run twice (in versus: a fake score for the next one)
     var reported by remember(key) { mutableStateOf(false) }
     var pop by remember(key) { mutableStateOf<String?>(null) }
-    LaunchedEffect(key) { val clock = FrameClock(); while (!g.over) { g.step(clock.tick(withFrameNanos { it })); frame++ } }
-    ArcadeBody {
-        Canvas(Modifier.fillMaxSize().background(Color(0xFF0E1326)).pointerInput(key) {
+    val cuts = remember(key) { mutableListOf<FallingCut>() }
+    val particles = remember(key) { Particles(80) }
+    var camBase by remember(key) { mutableFloatStateOf(0f) }
+    var overTrigger by remember(key) { mutableStateOf<Any?>(null) }
+    var flashRed by remember(key) { mutableStateOf(false) }
+
+    LaunchedEffect(key) {
+        val clock = FrameClock()
+        while (!g.over) {
+            val dt = clock.tick(withFrameNanos { it })
+            g.step(dt)
+            val targetBase = (g.floors.size - 14).coerceAtLeast(0).toFloat()
+            camBase += (targetBase - camBase) * (dt * 7f).coerceAtMost(1f)
+            for (c in cuts) {
+                c.vy += 1.8f * dt
+                c.y += c.vy * dt
+                c.rot += c.vRot * dt
+                c.alpha -= dt * 0.9f
+            }
+            cuts.removeAll { it.alpha <= 0f }
+            particles.update(dt)
+            frame++
+        }
+    }
+    ArcadeBody(shakeTrigger = overTrigger, flashRed = flashRed) {
+        Canvas(Modifier.fillMaxSize().pointerInput(key) {
             detectTapGestures {
+                val prevTop = g.floors.last()
+                val px = g.x; val pw = g.w
                 when (g.drop()) {
-                    "perfect" -> { Sfx.correct(); Sfx.buzz(30); pop = if (g.streak % 3 == 0) t("ΤΕΛΕΙΟ! +πλάτος", "PERFECT! +width") else t("ΤΕΛΕΙΟ ×${g.streak}", "PERFECT ×${g.streak}") }
-                    "ok" -> { Sfx.tap(); pop = null }
-                    else -> if (!reported) { reported = true; Sfx.boom(); Sfx.buzz(300, true); onOver(g.score) }
+                    "perfect" -> {
+                        Sfx.correct(); Sfx.buzz(30)
+                        pop = if (g.streak % 3 == 0) t("ΤΕΛΕΙΟ! +πλάτος", "PERFECT! +width") else t("ΤΕΛΕΙΟ ×${g.streak}", "PERFECT ×${g.streak}")
+                        particles.emit(size.width * (prevTop.x + prevTop.w / 2f), size.height * 0.88f - (g.floors.size - 1 - camBase) * (size.height * 0.045f), C.lime, 18)
+                    }
+                    "ok" -> {
+                        Sfx.tap(); pop = null
+                        val fh = size.height * 0.045f
+                        val curY = size.height * 0.88f - (g.floors.size - 1 - camBase) * fh
+                        val blockCol = Color.hsv((200f + g.floors.size * 9f) % 360f, 0.55f, 0.95f)
+                        if (px < prevTop.x) {
+                            val cw = prevTop.x - px
+                            cuts += FallingCut(px, curY, cw, fh, vy = 0.02f, vRot = -100f, color = blockCol)
+                        } else if (px + pw > prevTop.x + prevTop.w) {
+                            val cx = prevTop.x + prevTop.w
+                            val cw = (px + pw) - cx
+                            cuts += FallingCut(cx, curY, cw, fh, vy = 0.02f, vRot = 100f, color = blockCol)
+                        }
+                    }
+                    else -> if (!reported) {
+                        reported = true; Sfx.boom(); Sfx.buzz(300, true)
+                        flashRed = true; overTrigger = Unit
+                        onOver(g.score)
+                    }
                 }
             }
         }) {
             frame.let { }
             val w = size.width; val h = size.height; val fh = h * 0.045f
-            val visible = 14
-            val base = (g.floors.size - visible).coerceAtLeast(0)
-            g.floors.drop(base).forEachIndexed { i, f ->
-                val y = h * 0.88f - i * fh
-                drawRect(Color.hsv((200f + (base + i) * 9f) % 360f, 0.55f, 0.95f), Offset(f.x * w, y), Size(f.w * w, fh - 3f))
+            fun drawBlock3D(bx: Float, by: Float, bw: Float, bh: Float, col: Color, alpha: Float = 1f) {
+                val c = col.copy(alpha = alpha)
+                // Glow
+                drawRoundRect(c.copy(alpha = 0.2f * alpha), Offset(bx - 2f, by - 2f), Size(bw + 4f, bh + 4f), CornerRadius(4f))
+                // Front
+                drawRect(c, Offset(bx, by), Size(bw, bh - 3f))
+                // Top highlight
+                drawRect(lerp(c, Color.White, 0.4f), Offset(bx, by), Size(bw, (bh - 3f) * 0.25f))
+                // Bottom shadow
+                drawRect(lerp(c, Color.Black, 0.45f), Offset(bx, by + (bh - 3f) * 0.75f), Size(bw, (bh - 3f) * 0.25f))
+                // Neon outline
+                drawRect(Color.White.copy(alpha = 0.5f * alpha), Offset(bx, by), Size(bw, bh - 3f), style = Stroke(1.5f))
             }
-            val y = h * 0.88f - (g.floors.size - base) * fh
-            drawRect(C.lime, Offset(g.x * w, y), Size(g.w * w, fh - 3f))
+
+            // Placed floors
+            g.floors.forEachIndexed { i, f ->
+                val y = h * 0.88f - (i - camBase) * fh
+                if (y in -fh..(h + fh)) {
+                    val col = Color.hsv((200f + i * 9f) % 360f, 0.55f, 0.95f)
+                    drawBlock3D(f.x * w, y, f.w * w, fh, col)
+                }
+            }
+            // Moving floor
+            val curY = h * 0.88f - (g.floors.size - camBase) * fh
+            drawBlock3D(g.x * w, curY, g.w * w, fh, C.lime)
+
+            // Falling cut pieces
+            for (c in cuts) {
+                rotate(c.rot, Offset(c.x * w + c.w * w / 2f, c.y + c.fh / 2f)) {
+                    drawBlock3D(c.x * w, c.y, c.w * w, c.fh, c.color, c.alpha)
+                }
+            }
+            particles.draw(this)
         }
         Column { Hud(g.score, if (g.streak >= 2) g.streak else 1, t("όροφοι: ${g.floors.size - 1}", "floors: ${g.floors.size - 1}")); ComboPop(pop, C.lime) }
     }
@@ -220,8 +384,21 @@ class GridGame(private val rnd: Random = Random) {
 fun GridRun(key: Int, onOver: (Int) -> Unit) {
     val g = remember(key) { GridGame() }
     var frame by remember(key) { mutableIntStateOf(0) }
-    LaunchedEffect(key) { val clock = FrameClock(); while (!g.over) { g.step(clock.tick(withFrameNanos { it })); frame++ }; Sfx.boom(); onOver(g.score) }
-    ArcadeBody {
+    var overTrigger by remember(key) { mutableStateOf<Any?>(null) }
+    var flashRed by remember(key) { mutableStateOf(false) }
+
+    LaunchedEffect(key) {
+        val clock = FrameClock()
+        while (!g.over) {
+            g.step(clock.tick(withFrameNanos { it }))
+            frame++
+        }
+        flashRed = true
+        overTrigger = Unit
+        Sfx.boom()
+        onOver(g.score)
+    }
+    ArcadeBody(shakeTrigger = overTrigger, flashRed = flashRed) {
         Column(Modifier.fillMaxSize().padding(14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             frame.let { }
             Hud(g.score, g.mult, "%.1f″".format(g.time), C.amber)
@@ -230,8 +407,21 @@ fun GridRun(key: Int, onOver: (Int) -> Unit) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     (0 until 4).forEach { c ->
                         val i = r * 4 + c
-                        Box(Modifier.weight(1f).aspectRatio(1f).clip(RoundedCornerShape(14.dp)).background(if (i == g.red) Color(0xFFE53935) else C.panel2)
-                            .clickable(role = Role.Button) { if (g.tap(i)) { Sfx.tick(); Sfx.buzz(10) } else { Sfx.wrong(); Sfx.buzz(120) }; frame++ }, contentAlignment = Alignment.Center) {
+                        val isRed = i == g.red
+                        Box(
+                            Modifier
+                                .weight(1f)
+                                .aspectRatio(1f)
+                                .card(accent = if (isRed) Color(0xFFE53935) else null)
+                                .clip(RoundedCornerShape(14.dp))
+                                .background(if (isRed) Color(0xFFE53935) else C.panel2)
+                                .clickable(role = Role.Button) {
+                                    if (g.tap(i)) { Sfx.tick(); Sfx.buzz(10) }
+                                    else { Sfx.wrong(); Sfx.buzz(120) }
+                                    frame++
+                                },
+                            contentAlignment = Alignment.Center
+                        ) {
                             Text("${g.cells[i]}", fontSize = 26.sp, fontWeight = FontWeight.Black, color = C.text)
                         }
                     }
@@ -242,6 +432,19 @@ fun GridRun(key: Int, onOver: (Int) -> Unit) {
 }
 
 /* ======================= ✂️ Κόψε και ταίριαξε ======================= */
+private class SlicedPiece(
+    var x: Float,
+    var y: Float,
+    var vx: Float,
+    var vy: Float,
+    var rot: Float,
+    var vRot: Float,
+    val r: Float,
+    val isRed: Boolean,
+    val isLeft: Boolean,
+    var alpha: Float = 1f
+)
+
 class SliceGame(private val rnd: Random = Random) {
     /** dir: 0 up, 1 right, 2 down, 3 left. Red: swipe with the arrow; blue: against it. */
     data class Shape(val x: Float, var y: Float, val dir: Int, val red: Boolean, var done: Boolean = false)
@@ -282,28 +485,110 @@ class SliceGame(private val rnd: Random = Random) {
 fun SliceRun(key: Int, onOver: (Int) -> Unit) {
     val g = remember(key) { SliceGame() }
     var frame by remember(key) { mutableIntStateOf(0) }
-    LaunchedEffect(key) { val clock = FrameClock(); while (!g.over) { g.step(clock.tick(withFrameNanos { it })); frame++ }; Sfx.boom(); onOver(g.score) }
-    ArcadeBody {
+    val particles = remember(key) { Particles(90) }
+    val sliced = remember(key) { mutableListOf<SlicedPiece>() }
+    var overTrigger by remember(key) { mutableStateOf<Any?>(null) }
+    var flashRed by remember(key) { mutableStateOf(false) }
+
+    LaunchedEffect(key) {
+        val clock = FrameClock()
+        while (!g.over) {
+            val dt = clock.tick(withFrameNanos { it })
+            g.step(dt)
+            particles.update(dt)
+            for (p in sliced) {
+                p.x += p.vx * dt
+                p.y += p.vy * dt
+                p.rot += p.vRot * dt
+                p.alpha -= dt * 1.8f
+            }
+            sliced.removeAll { it.alpha <= 0f }
+            frame++
+        }
+        flashRed = true
+        overTrigger = Unit
+        Sfx.boom()
+        onOver(g.score)
+    }
+    ArcadeBody(shakeTrigger = overTrigger, flashRed = flashRed) {
         var drag by remember { mutableStateOf(Offset.Zero) }
-        Canvas(Modifier.fillMaxSize().background(Color(0xFF120B16)).pointerInput(key) {
+        Canvas(Modifier.fillMaxSize().pointerInput(key) {
             detectDragGestures(onDragStart = { drag = Offset.Zero }, onDragEnd = {
                 val d = if (abs(drag.x) > abs(drag.y)) (if (drag.x > 0) 1 else 3) else (if (drag.y > 0) 2 else 0)
-                if (drag.getDistance() > 40f) { if (g.swipe(d)) { Sfx.pass(); Sfx.buzz(15) } else { Sfx.wrong(); Sfx.buzz(150) } }
+                if (drag.getDistance() > 40f) {
+                    val tgt = g.target()
+                    val ok = g.swipe(d)
+                    if (ok) {
+                        Sfx.pass(); Sfx.buzz(15)
+                        if (tgt != null) {
+                            val cx = tgt.x * size.width; val cy = tgt.y * size.height; val r = size.width * 0.09f
+                            particles.emit(cx, cy, if (tgt.red) Color(0xFFFF5252) else Color(0xFF448AFF), count = 22)
+                            sliced += SlicedPiece(cx, cy, -140f, -60f, 0f, -180f, r, tgt.red, isLeft = true)
+                            sliced += SlicedPiece(cx, cy, 140f, -60f, 0f, 180f, r, tgt.red, isLeft = false)
+                        }
+                    } else {
+                        Sfx.wrong(); Sfx.buzz(150)
+                    }
+                }
             }) { ch, amount -> ch.consume(); drag += amount }
         }) {
             frame.let { }
             val w = size.width; val h = size.height
-            drawLine(Color.White.copy(alpha = 0.25f), Offset(0f, h * 0.45f), Offset(w, h * 0.45f), 4f)
+
+            // Cutting line as a glowing laser blade of light
+            val cutY = h * 0.45f
+            drawNeonLine(Color(0xFF00E5FF), Offset(0f, cutY), Offset(w, cutY), 3f)
+            drawLine(Color.White, Offset(0f, cutY), Offset(w, cutY), 1.5f)
+
             val tgt = g.target()
+            // Active rising shapes
             g.shapes.filter { !it.done }.forEach { s ->
                 val c = Offset(s.x * w, s.y * h); val r = w * 0.09f
-                drawCircle(if (s.red) Color(0xFFE53935) else Color(0xFF1E63D6), r, c)
-                if (s == tgt) drawCircle(Color.White, r + 6f, c, style = androidx.compose.ui.graphics.drawscope.Stroke(5f))
+                val col = if (s.red) Color(0xFFE53935) else Color(0xFF1E63D6)
+
+                // Outer glow
+                drawCircle(col.copy(alpha = 0.25f), r * 1.25f, c)
+                // Radial sphere gradient
+                drawCircle(
+                    Brush.radialGradient(
+                        listOf(Color.White.copy(alpha = 0.6f), col, lerp(col, Color.Black, 0.4f)),
+                        center = Offset(c.x - r * 0.25f, c.y - r * 0.25f),
+                        radius = r
+                    ),
+                    r, c
+                )
+                // Target highlight ring
+                if (s == tgt) {
+                    drawNeonCircle(Color.White, c, r + 4f, 2.5f)
+                }
+
+                // Arrow inside
                 rotate(s.dir * 90f, c) {
-                    val p = Path().apply { moveTo(c.x, c.y - r * 0.6f); lineTo(c.x + r * 0.45f, c.y + r * 0.1f); lineTo(c.x + r * 0.15f, c.y + r * 0.1f); lineTo(c.x + r * 0.15f, c.y + r * 0.55f); lineTo(c.x - r * 0.15f, c.y + r * 0.55f); lineTo(c.x - r * 0.15f, c.y + r * 0.1f); lineTo(c.x - r * 0.45f, c.y + r * 0.1f); close() }
+                    val p = Path().apply {
+                        moveTo(c.x, c.y - r * 0.55f)
+                        lineTo(c.x + r * 0.45f, c.y + r * 0.1f)
+                        lineTo(c.x + r * 0.16f, c.y + r * 0.1f)
+                        lineTo(c.x + r * 0.16f, c.y + r * 0.55f)
+                        lineTo(c.x - r * 0.16f, c.y + r * 0.55f)
+                        lineTo(c.x - r * 0.16f, c.y + r * 0.1f)
+                        lineTo(c.x - r * 0.45f, c.y + r * 0.1f)
+                        close()
+                    }
                     drawPath(p, Color.White)
                 }
             }
+
+            // Sliced pieces flying apart
+            for (p in sliced) {
+                val col = (if (p.isRed) Color(0xFFE53935) else Color(0xFF1E63D6)).copy(alpha = p.alpha)
+                rotate(p.rot, Offset(p.x, p.y)) {
+                    val arcStart = if (p.isLeft) 90f else 270f
+                    drawArc(col, arcStart, 180f, true, Offset(p.x - p.r, p.y - p.r), Size(p.r * 2f, p.r * 2f))
+                }
+            }
+
+            // Laser sparks
+            particles.draw(this)
         }
         Column { Hud(g.score, g.mult, "❤️".repeat((3 - g.mistakes).coerceAtLeast(0))); ArcadeNote(t("Κόκκινο: σύρε προς το βέλος. Μπλε: ανάποδα. Πριν τη γραμμή!", "Red: swipe with the arrow. Blue: against it. Before the line!")) }
     }

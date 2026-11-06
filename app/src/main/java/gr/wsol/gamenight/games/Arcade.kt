@@ -1,5 +1,8 @@
 package gr.wsol.gamenight.games
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -19,21 +23,28 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import gr.wsol.gamenight.core.Store
 import gr.wsol.gamenight.core.t
 import gr.wsol.gamenight.extras.Sfx
+import gr.wsol.gamenight.ui.ArcadeBackground
 import gr.wsol.gamenight.ui.BigButton
 import gr.wsol.gamenight.ui.Body
 import gr.wsol.gamenight.ui.C
+import gr.wsol.gamenight.ui.Confetti
 import gr.wsol.gamenight.ui.GhostButton
 import gr.wsol.gamenight.ui.Panel
 import gr.wsol.gamenight.ui.PassTo
 import gr.wsol.gamenight.ui.Seg
 import gr.wsol.gamenight.ui.Type
+import gr.wsol.gamenight.ui.haptic
+import gr.wsol.gamenight.ui.shake
 
 /**
  * The group's high-score showdown: +3, +2, +1 to the best three runs. Equal scores get the same
@@ -75,35 +86,41 @@ fun ArcadeShell(game: Game, host: GameHost, rules: List<String>, run: @Composabl
 
         AP.Run -> {
             QuitGuard(host)
+            val haptic = LocalHapticFeedback.current
             run(runNo) { score ->
                 last = score
                 beat = if (!versus) Store.arcadeRecord(game.id, score) else emptySet()
                 if (beat.contains("all")) Sfx.win() else Sfx.end()
+                haptic(haptic, HapticFeedbackType.LongPress)
                 if (versus) { scores.add(who to score); phase = if (scores.size >= order.size) AP.Podium else AP.Over } else phase = AP.Over
             }
         }
 
         AP.Over -> {
             val (all, day, week) = Store.arcadeBest(game.id)
-            Column(Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding().padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(14.dp, Alignment.CenterVertically)) {
-                Text(game.emoji, fontSize = 52.sp)
-                Text("$last", style = Type.huge, color = game.color)
-                if (versus) Text(t("${scores.lastOrNull()?.first}: $last πόντοι", "${scores.lastOrNull()?.first}: $last points"), style = Type.title, color = C.text)
-                else {
-                    when {
-                        "all" in beat -> Text(t("Νέο ρεκόρ! 🎉", "New record! 🎉"), style = Type.title, color = C.amber)
-                        "week" in beat -> Text(t("Ρεκόρ της εβδομάδας!", "Record of the week!"), style = Type.title, color = C.amber)
-                        "day" in beat -> Text(t("Ρεκόρ της ημέρας!", "Record of the day!"), style = Type.title, color = C.amber)
+            val isNewRecord = "all" in beat
+            Box(Modifier.fillMaxSize()) {
+                Column(Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding().padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(14.dp, Alignment.CenterVertically)) {
+                    Text(game.emoji, fontSize = 52.sp)
+                    Text("$last", style = Type.huge, color = game.color)
+                    if (versus) Text(t("${scores.lastOrNull()?.first}: $last πόντοι", "${scores.lastOrNull()?.first}: $last points"), style = Type.title, color = C.text)
+                    else {
+                        when {
+                            isNewRecord -> Text(t("Νέο ρεκόρ! 🏆", "New record! 🏆"), style = Type.title, color = C.amber)
+                            "week" in beat -> Text(t("Ρεκόρ της εβδομάδας! 🏆", "Record of the week! 🏆"), style = Type.title, color = C.amber)
+                            "day" in beat -> Text(t("Ρεκόρ της ημέρας! 🏆", "Record of the day! 🏆"), style = Type.title, color = C.amber)
+                        }
+                        Panel {
+                            Row { Text(t("Ρεκόρ", "Record"), style = Type.body, color = C.muted, modifier = Modifier.weight(1f)); Text("🏆 $all", style = Type.h, color = C.text) }
+                            Row { Text(t("Σήμερα", "Today"), style = Type.body, color = C.muted, modifier = Modifier.weight(1f)); Text("$day", style = Type.h, color = C.text) }
+                            Row { Text(t("Αυτή την εβδομάδα", "This week"), style = Type.body, color = C.muted, modifier = Modifier.weight(1f)); Text("$week", style = Type.h, color = C.text) }
+                        }
                     }
-                    Panel {
-                        Row { Text(t("Ρεκόρ", "Record"), style = Type.body, color = C.muted, modifier = Modifier.weight(1f)); Text("$all", style = Type.h, color = C.text) }
-                        Row { Text(t("Σήμερα", "Today"), style = Type.body, color = C.muted, modifier = Modifier.weight(1f)); Text("$day", style = Type.h, color = C.text) }
-                        Row { Text(t("Αυτή την εβδομάδα", "This week"), style = Type.body, color = C.muted, modifier = Modifier.weight(1f)); Text("$week", style = Type.h, color = C.text) }
-                    }
+                    if (versus) BigButton(t("Επόμενος: ${order.getOrNull(scores.size)}", "Next: ${order.getOrNull(scores.size)}"), { phase = AP.Pass }, color = game.color)
+                    else BigButton(t("Ξανά", "Again"), { runNo++; phase = AP.Run }, color = game.color, height = 72.dp)
+                    GhostButton(t("Στο μενού", "Menu"), { host.exit() }, Modifier.fillMaxWidth())
                 }
-                if (versus) BigButton(t("Επόμενος: ${order.getOrNull(scores.size)}", "Next: ${order.getOrNull(scores.size)}"), { phase = AP.Pass }, color = game.color)
-                else BigButton(t("Ξανά", "Again"), { runNo++; phase = AP.Run }, color = game.color, height = 72.dp)
-                GhostButton(t("Στο μενού", "Menu"), { host.exit() }, Modifier.fillMaxWidth())
+                Confetti(trigger = if (isNewRecord) beat else null)
             }
         }
 
@@ -118,11 +135,36 @@ fun ArcadeShell(game: Game, host: GameHost, rules: List<String>, run: @Composabl
 
 /** The score and combo in the corner of every arcade game. */
 @Composable
-fun Hud(score: Int, mult: Int = 1, extra: String? = null, color: Color = C.text) {
+fun Hud(score: Int, mult: Int = 1, extra: String? = null, color: Color = C.text, record: Int? = null) {
+    val comboColor = when {
+        mult >= 5 -> Color(0xFFFF4081) // ροζ
+        mult >= 3 -> Color(0xFFFF9800) // πορτοκαλί
+        else -> Color(0xFFFFD54F)      // κίτρινο
+    }
+    val comboScale = remember { Animatable(1f) }
+    var prevMult by remember { mutableIntStateOf(mult) }
+    LaunchedEffect(mult) {
+        if (mult > 1 && mult > prevMult) {
+            comboScale.snapTo(1.35f)
+            comboScale.animateTo(1f, tween(180, easing = FastOutSlowInEasing))
+        }
+        prevMult = mult
+    }
+
     Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
         Text("$score", style = Type.big, color = color, modifier = Modifier.weight(1f))
+        if (record != null && record > 0) {
+            Text("🏆 $record  ", style = Type.body, color = C.muted)
+        }
         if (extra != null) Text(extra, style = Type.h, color = C.muted)
-        if (mult > 1) Text("  ×$mult", style = Type.title, color = C.amber)
+        if (mult > 1) {
+            Text(
+                "  ×$mult",
+                style = Type.title,
+                color = comboColor,
+                modifier = Modifier.scale(comboScale.value)
+            )
+        }
     }
 }
 
@@ -130,12 +172,28 @@ fun Hud(score: Int, mult: Int = 1, extra: String? = null, color: Color = C.text)
 @Composable
 fun ComboPop(text: String?, color: Color = C.amber) {
     if (text == null) return
-    Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) { Text(text, style = Type.big, color = color, textAlign = TextAlign.Center) }
+    Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+        Text(text, style = Type.big, color = color, textAlign = TextAlign.Center)
+    }
 }
 
 /** Helper for the frame loop of the arcade games: seconds since the last frame, at most 1/20 s. */
 class FrameClock { private var last = 0L; fun tick(now: Long): Float { val dt = if (last == 0L) 0f else ((now - last) / 1e9f).coerceAtMost(0.05f); last = now; return dt } }
 
-@Composable fun ArcadeBody(content: @Composable () -> Unit) = Box(Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding()) { content() }
+@Composable
+fun ArcadeBody(
+    shakeTrigger: Any? = null,
+    flashRed: Boolean = false,
+    content: @Composable () -> Unit
+) = Box(
+    Modifier
+        .fillMaxSize()
+        .shake(shakeTrigger)
+) {
+    ArcadeBackground(flashRed = flashRed)
+    Box(Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding()) {
+        content()
+    }
+}
 
 @Composable fun ArcadeNote(s: String) = Body(s, align = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(8.dp))

@@ -1,7 +1,6 @@
 package gr.wsol.gamenight.games
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
@@ -10,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameNanos
@@ -17,13 +17,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import gr.wsol.gamenight.core.t
 import gr.wsol.gamenight.extras.Sfx
 import gr.wsol.gamenight.ui.C
+import gr.wsol.gamenight.ui.Particles
+import gr.wsol.gamenight.ui.drawNeonArc
+import gr.wsol.gamenight.ui.drawNeonBall
+import gr.wsol.gamenight.ui.drawNeonCircle
+import gr.wsol.gamenight.ui.drawNeonLine
+import gr.wsol.gamenight.ui.drawNeonRect
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.atan2
@@ -87,20 +95,67 @@ class DualGame(private val rnd: Random = Random) {
 fun DualRun(key: Int, onOver: (Int) -> Unit) {
     val g = remember(key) { DualGame() }
     var frame by remember(key) { mutableIntStateOf(0) }
+    val trail0 = remember(key) { mutableListOf<Offset>() }
+    val trail1 = remember(key) { mutableListOf<Offset>() }
+    val particles = remember(key) { Particles(80) }
+    var overTrigger by remember(key) { mutableStateOf<Any?>(null) }
+    var flashRed by remember(key) { mutableStateOf(false) }
+
     LaunchedEffect(key) {
         val clock = FrameClock()
-        while (true) { val r = g.step(clock.tick(withFrameNanos { it })); frame++; if (r > 0) Sfx.tick(); if (r < 0) { Sfx.boom(); Sfx.buzz(300, true); onOver(g.score); break } }
+        while (true) {
+            val dt = clock.tick(withFrameNanos { it })
+            val r = g.step(dt)
+            particles.update(dt)
+            frame++
+            if (r > 0) Sfx.tick()
+            if (r < 0) {
+                Sfx.boom(); Sfx.buzz(300, true)
+                flashRed = true; overTrigger = Unit
+                onOver(g.score)
+                break
+            }
+        }
     }
     val cols = listOf(C.cyan, C.pink)
-    ArcadeBody {
-        Canvas(Modifier.fillMaxSize().background(Color(0xFF0B0A12)).pointerInput(key) { detectTapGestures { o -> g.tap(if (o.x < size.width / 2) 0 else 1); Sfx.tap() } }) {
+    ArcadeBody(shakeTrigger = overTrigger, flashRed = flashRed) {
+        Canvas(Modifier.fillMaxSize().pointerInput(key) { detectTapGestures { o -> g.tap(if (o.x < size.width / 2) 0 else 1); Sfx.tap() } }) {
             frame.let { }
             val w = size.width; val h = size.height; val half = w / 2
-            drawLine(Color.White.copy(alpha = 0.25f), Offset(half, 0f), Offset(half, h), 3f)
+            // Center neon divider
+            drawNeonLine(Color.White.copy(alpha = 0.5f), Offset(half, 0f), Offset(half, h), 2f)
+
             fun laneX(side: Int, lane: Int) = side * half + half * (0.27f + 0.46f * lane)
-            for (s in 0..1) for (l in 0..1) drawLine(cols[s].copy(alpha = 0.12f), Offset(laneX(s, l), 0f), Offset(laneX(s, l), h), half * 0.3f)
-            g.blocks.forEach { b -> drawRoundRect(cols[b.side], Offset(laneX(b.side, b.lane) - half * 0.16f, b.y * h - 14f), Size(half * 0.32f, 28f), CornerRadius(8f)) }
-            for (s in 0..1) drawCircle(Color.White, half * 0.08f, Offset(laneX(s, g.lane[s]), g.dotY * h))
+            // Faint lane tracks
+            for (s in 0..1) for (l in 0..1) {
+                val lx = laneX(s, l)
+                drawLine(cols[s].copy(alpha = 0.12f), Offset(lx, 0f), Offset(lx, h), half * 0.28f)
+            }
+
+            // Blocks with neon glow
+            g.blocks.forEach { b ->
+                val col = cols[b.side]
+                val bx = laneX(b.side, b.lane) - half * 0.16f
+                val by = b.y * h - 14f
+                val bw = half * 0.32f
+                val bh = 28f
+                drawRoundRect(col.copy(alpha = 0.25f), Offset(bx - 2f, by - 2f), Size(bw + 4f, bh + 4f), CornerRadius(10f))
+                drawRoundRect(
+                    Brush.verticalGradient(listOf(Color.White.copy(alpha = 0.5f), col, lerp(col, Color.Black, 0.4f)), startY = by, endY = by + bh),
+                    Offset(bx, by), Size(bw, bh), CornerRadius(8f)
+                )
+                drawRoundRect(Color.White.copy(alpha = 0.6f), Offset(bx, by), Size(bw, bh), CornerRadius(8f), style = Stroke(1.5f))
+            }
+
+            // Player dots with neon trail
+            for (s in 0..1) {
+                val pt = Offset(laneX(s, g.lane[s]), g.dotY * h)
+                val tr = if (s == 0) trail0 else trail1
+                tr.add(pt)
+                if (tr.size > 8) tr.removeAt(0)
+                drawNeonBall(cols[s], pt, half * 0.08f, tr)
+            }
+            particles.draw(this)
         }
         Column { Hud(g.score, g.mult, t("ξυστά: ${g.close}", "close: ${g.close}")); ArcadeNote(t("Πάτα αριστερά ή δεξιά: αλλάζει λωρίδα η αντίστοιχη μπίλια.", "Tap left or right: that side's dot switches lane.")) }
     }
@@ -158,12 +213,29 @@ class RingGame(private val rnd: Random = Random) {
 fun RingRun(key: Int, onOver: (Int) -> Unit) {
     val g = remember(key) { RingGame() }
     var frame by remember(key) { mutableIntStateOf(0) }
+    val trail = remember(key) { mutableListOf<Offset>() }
+    val particles = remember(key) { Particles(80) }
+    var overTrigger by remember(key) { mutableStateOf<Any?>(null) }
+    var flashRed by remember(key) { mutableStateOf(false) }
+
     LaunchedEffect(key) {
         val clock = FrameClock()
-        while (true) { val r = g.step(clock.tick(withFrameNanos { it })); frame++; if (r > 1) { Sfx.correct(); Sfx.buzz(20) } else if (r > 0) Sfx.tick(); if (r < 0) { Sfx.boom(); Sfx.buzz(300, true); onOver(g.score); break } }
+        while (true) {
+            val dt = clock.tick(withFrameNanos { it })
+            val r = g.step(dt)
+            particles.update(dt)
+            frame++
+            if (r > 1) { Sfx.correct(); Sfx.buzz(20) } else if (r > 0) Sfx.tick()
+            if (r < 0) {
+                Sfx.boom(); Sfx.buzz(300, true)
+                flashRed = true; overTrigger = Unit
+                onOver(g.score)
+                break
+            }
+        }
     }
-    ArcadeBody {
-        Canvas(Modifier.fillMaxSize().background(Color(0xFF0B0A12)).pointerInput(key) { detectTapGestures { g.tap(); Sfx.tap() } }) {
+    ArcadeBody(shakeTrigger = overTrigger, flashRed = flashRed) {
+        Canvas(Modifier.fillMaxSize().pointerInput(key) { detectTapGestures { g.tap(); Sfx.tap() } }) {
             frame.let { }
             val c = Offset(size.width / 2, size.height * 0.55f)
             val R = minOf(size.width, size.height) * 0.38f
@@ -172,17 +244,31 @@ fun RingRun(key: Int, onOver: (Int) -> Unit) {
             for (s in 0 until g.sectors) {
                 val start = Math.toDegrees((g.ringA).toDouble()).toFloat() + s * step
                 val col = when (s) { in g.spikes -> C.red; else -> C.ghost.copy(alpha = 0.55f) }
-                drawArc(col, start + 1.5f, step - 3f, false, Offset(c.x - R, c.y - R), Size(2 * R, 2 * R), style = Stroke(sw))
+                if (s in g.spikes) {
+                    drawNeonArc(C.red, start + 1.5f, step - 3f, Offset(c.x - R, c.y - R), Size(2 * R, 2 * R), sw * 0.6f)
+                } else {
+                    drawArc(col, start + 1.5f, step - 3f, false, Offset(c.x - R, c.y - R), Size(2 * R, 2 * R), style = Stroke(sw))
+                }
                 if (s in g.tokens) {
                     val mid = Math.toRadians((start + step / 2).toDouble())
-                    drawCircle(C.amber, sw * 0.35f, Offset(c.x + (R - sw * 1.3f) * cos(mid).toFloat(), c.y + (R - sw * 1.3f) * sin(mid).toFloat()))
+                    val tokenCenter = Offset(c.x + (R - sw * 1.3f) * cos(mid).toFloat(), c.y + (R - sw * 1.3f) * sin(mid).toFloat())
+                    drawCircle(Color(0xFFFFD54F).copy(alpha = 0.35f), sw * 0.5f, tokenCenter)
+                    drawCircle(C.amber, sw * 0.35f, tokenCenter)
+                    drawCircle(Color.White, sw * 0.15f, tokenCenter)
                 }
             }
-            // where the ball is heading
-            if (g.out) drawLine(Color.White.copy(alpha = 0.12f), c, Offset(c.x + R * cos(g.ballA), c.y + R * sin(g.ballA)), 4f)
+            // Guideline
+            if (g.out) drawLine(Color.White.copy(alpha = 0.12f), c, Offset(c.x + R * cos(g.ballA), c.y + R * sin(g.ballA)), 3f)
+
+            // Ball with trail
             val br = g.ballR * (R - sw / 2)
-            drawCircle(Color.White, sw * 0.45f, Offset(c.x + br * cos(g.ballA), c.y + br * sin(g.ballA)))
-            drawCircle(Color.White.copy(alpha = 0.3f), 6f, c)
+            val ballPos = Offset(c.x + br * cos(g.ballA), c.y + br * sin(g.ballA))
+            trail.add(ballPos)
+            if (trail.size > 8) trail.removeAt(0)
+            drawNeonBall(Color.White, ballPos, sw * 0.45f, trail)
+            drawCircle(Color.White.copy(alpha = 0.35f), 6f, c)
+
+            particles.draw(this)
         }
         Column { Hud(g.score, 1, t("αναπηδήσεις: ${g.bounces}", "bounces: ${g.bounces}")); ArcadeNote(t("Πάτα για να αλλάξει φορά ο δακτύλιος. Η μπίλια να πέφτει στα ήσυχα κομμάτια, όχι στα κόκκινα. Τα κίτρινα: +3 επιπλέον.", "Tap to reverse the ring. Let the ball hit the calm parts, not the red ones. Yellow: +3 extra.")) }
     }
@@ -241,16 +327,28 @@ class LaserGame(private val rnd: Random = Random) {
 fun LaserRun(key: Int, onOver: (Int) -> Unit) {
     val g = remember(key) { LaserGame() }
     var frame by remember(key) { mutableIntStateOf(0) }
+    var overTrigger by remember(key) { mutableStateOf<Any?>(null) }
+    var flashRed by remember(key) { mutableStateOf(false) }
+
     LaunchedEffect(key) {
         val clock = FrameClock()
-        while (true) { val r = g.step(clock.tick(withFrameNanos { it })); frame++; if (r > 0) Sfx.tick(); if (r < 0) { Sfx.boom(); Sfx.buzz(300, true); onOver(g.score); break } }
+        while (true) {
+            val r = g.step(clock.tick(withFrameNanos { it }))
+            frame++
+            if (r > 0) Sfx.tick()
+            if (r < 0) {
+                Sfx.boom(); Sfx.buzz(300, true)
+                flashRed = true; overTrigger = Unit
+                onOver(g.score)
+                break
+            }
+        }
     }
-    ArcadeBody {
+    ArcadeBody(shakeTrigger = overTrigger, flashRed = flashRed) {
         var drag = Offset.Zero
-        Canvas(Modifier.fillMaxSize().background(Color(0xFF0B0A12)).pointerInput(key) {
+        Canvas(Modifier.fillMaxSize().pointerInput(key) {
             detectDragGestures(onDragStart = { drag = Offset.Zero }, onDragEnd = {
                 if (drag.getDistance() > 30f) {
-                    // isometric: right-down = next column, left-down = next row
                     when { drag.x >= 0 && drag.y >= 0 -> g.move(0, 1); drag.x < 0 && drag.y < 0 -> g.move(0, -1); drag.x < 0 -> g.move(1, 0); else -> g.move(-1, 0) }
                     Sfx.tap()
                 }
@@ -263,16 +361,25 @@ fun LaserRun(key: Int, onOver: (Int) -> Unit) {
             fun pt(rr: Float, cc: Float) = Offset(o.x + (cc - rr) * tw / 2, o.y + (cc + rr) * th / 2)
             fun cell(rr: Int, cc: Int, col: Color) {
                 val p = Path().apply { pt(rr.toFloat(), cc.toFloat()).let { moveTo(it.x, it.y) }; pt(rr.toFloat(), cc + 1f).let { lineTo(it.x, it.y) }; pt(rr + 1f, cc + 1f).let { lineTo(it.x, it.y) }; pt(rr + 1f, cc.toFloat()).let { lineTo(it.x, it.y) }; close() }
-                drawPath(p, col); drawPath(p, Color.White.copy(alpha = 0.15f), style = Stroke(2f))
+                drawPath(p, col)
+                drawPath(p, Color.White.copy(alpha = 0.2f), style = Stroke(1.5f))
             }
             for (rr in 0 until n) for (cc in 0 until n) cell(rr, cc, Color(0xFF1A1830))
             g.lasers.forEach { l ->
-                val col = if (g.firing(l)) C.red else C.red.copy(alpha = if ((l.t * 10).toInt() % 2 == 0) 0.35f else 0.12f)
+                val col = if (g.firing(l)) C.red else C.red.copy(alpha = if ((l.t * 10).toInt() % 2 == 0) 0.4f else 0.12f)
                 for (k in 0 until n) if (l.row) cell(l.index, k, col) else cell(k, l.index, col)
             }
-            g.core?.let { k -> val m = pt(k.r + 0.5f, k.c + 0.5f); drawCircle(C.amber, th * 0.28f * (0.6f + k.left / 10f), m) }
+            g.core?.let { k ->
+                val m = pt(k.r + 0.5f, k.c + 0.5f)
+                drawCircle(Color(0xFFFFD54F).copy(alpha = 0.35f), th * 0.35f, m)
+                drawCircle(C.amber, th * 0.25f * (0.6f + k.left / 10f), m)
+                drawCircle(Color.White, th * 0.1f, m)
+            }
             val m = pt(g.r + 0.5f, g.c + 0.5f)
+            // Glowing neon cyan player
+            drawRoundRect(C.cyan.copy(alpha = 0.3f), Offset(m.x - th * 0.34f, m.y - th * 0.8f), Size(th * 0.68f, th * 0.85f), CornerRadius(8f))
             drawRoundRect(C.cyan, Offset(m.x - th * 0.3f, m.y - th * 0.75f), Size(th * 0.6f, th * 0.75f), CornerRadius(6f))
+            drawRoundRect(Color.White.copy(alpha = 0.7f), Offset(m.x - th * 0.3f, m.y - th * 0.75f), Size(th * 0.6f, th * 0.75f), CornerRadius(6f), style = Stroke(1.5f))
         }
         Column { Hud(g.score, 1, "❤️".repeat(g.lives.coerceAtLeast(0))); ArcadeNote(t("Σύρε διαγώνια για ένα κελί. Φύγε από τη γραμμή που αναβοσβήνει: το λέιζερ τελειώνει το παιχνίδι. Μάζεψε τους κίτρινους πυρήνες πριν σκάσουν (κάθε πυρήνας που σκάει τρώει μία καρδιά).", "Swipe diagonally to move one cell. Leave the flashing line: the laser ends the game. Grab the yellow cores before they blow (each core that blows costs a heart).")) }
     }
@@ -330,24 +437,60 @@ class SpiralGame(private val rnd: Random = Random) {
 fun SpiralRun(key: Int, onOver: (Int) -> Unit) {
     val g = remember(key) { SpiralGame() }
     var frame by remember(key) { mutableIntStateOf(0) }
+    val particles = remember(key) { Particles(90) }
+    var overTrigger by remember(key) { mutableStateOf<Any?>(null) }
+    var flashRed by remember(key) { mutableStateOf(false) }
+
     LaunchedEffect(key) {
         val clock = FrameClock()
-        while (true) { val r = g.step(clock.tick(withFrameNanos { it })); frame++; if (r >= 3) { Sfx.correct(); Sfx.buzz(20) } else if (r > 0) Sfx.tick(); if (r < 0) { Sfx.boom(); Sfx.buzz(300, true); onOver(g.score); break } }
+        while (true) {
+            val dt = clock.tick(withFrameNanos { it })
+            val r = g.step(dt)
+            particles.update(dt)
+            frame++
+            if (r >= 3) { Sfx.correct(); Sfx.buzz(20) } else if (r > 0) Sfx.tick()
+            if (r < 0) {
+                Sfx.boom(); Sfx.buzz(300, true)
+                flashRed = true; overTrigger = Unit
+                onOver(g.score)
+                break
+            }
+        }
     }
-    ArcadeBody {
-        Canvas(Modifier.fillMaxSize().background(Color(0xFF0B0A12)).pointerInput(key) {
+    ArcadeBody(shakeTrigger = overTrigger, flashRed = flashRed) {
+        Canvas(Modifier.fillMaxSize().pointerInput(key) {
             fun aim(o: Offset) { g.shield = atan2(o.y - size.height * 0.55f, o.x - size.width / 2f) }
             detectDragGestures(onDragStart = { aim(it) }) { ch, _ -> ch.consume(); aim(ch.position) }
         }) {
             frame.let { }
             val c = Offset(size.width / 2, size.height * 0.55f)
             val R = minOf(size.width, size.height) * 0.4f
-            drawCircle(Color.White.copy(alpha = 0.07f), R, c, style = Stroke(2f))
-            g.cores.forEach { k -> drawCircle(C.lime, R * 0.05f, Offset(c.x + R * k.r * cos(k.a), c.y + R * k.r * sin(k.a))) }
-            val deg = Math.toDegrees(g.shield.toDouble()).toFloat(); val arcDeg = Math.toDegrees(g.arc.toDouble()).toFloat()
-            drawArc(C.cyan, deg - arcDeg / 2, arcDeg, false, Offset(c.x - R, c.y - R), Size(2 * R, 2 * R), style = Stroke(R * 0.06f))
+
+            // Guide ring
+            drawCircle(Color.White.copy(alpha = 0.08f), R, c, style = Stroke(2f))
+
+            // Cores with lime glow
+            g.cores.forEach { k ->
+                val kp = Offset(c.x + R * k.r * cos(k.a), c.y + R * k.r * sin(k.a))
+                drawCircle(C.lime.copy(alpha = 0.25f), R * 0.08f, kp)
+                drawCircle(C.lime, R * 0.05f, kp)
+                drawCircle(Color.White, R * 0.02f, kp)
+            }
+
+            // Shield arc with neon glow
+            val deg = Math.toDegrees(g.shield.toDouble()).toFloat()
+            val arcDeg = Math.toDegrees(g.arc.toDouble()).toFloat()
+            drawNeonArc(C.cyan, deg - arcDeg / 2, arcDeg, Offset(c.x - R, c.y - R), Size(2 * R, 2 * R), R * 0.06f)
+            // Amber sweet spot
             drawArc(C.amber, deg - 7f, 14f, false, Offset(c.x - R, c.y - R), Size(2 * R, 2 * R), style = Stroke(R * 0.06f))
-            g.balls.filter { it.alive }.forEach { b -> val p = g.pos(b); drawCircle(Color.White, R * 0.035f, Offset(c.x + R * p.x, c.y + R * p.y)) }
+
+            // Spiraling balls
+            g.balls.filter { it.alive }.forEach { b ->
+                val p = g.pos(b)
+                drawNeonBall(Color.White, Offset(c.x + R * p.x, c.y + R * p.y), R * 0.04f)
+            }
+
+            particles.draw(this)
         }
         Column { Hud(g.score, 1, t("κύμα ${g.wave}", "wave ${g.wave}")); ArcadeNote(t("Σύρε γύρω γύρω για να γυρίσεις την ασπίδα. Με το κίτρινο κέντρο: Perfect ×3. Σπάσε τους πράσινους πυρήνες.", "Drag around to turn the shield. With the yellow centre: Perfect ×3. Break the green cores.")) }
     }

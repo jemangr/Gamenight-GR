@@ -24,11 +24,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
@@ -276,6 +283,177 @@ class Particles(val maxCount: Int = 120) {
                 color = p.color.copy(alpha = alpha),
                 radius = p.size * alpha,
                 center = Offset(p.x, p.y),
+            )
+        }
+    }
+}
+
+/** Draws a glowing neon stroke along a path using 3 layered strokes: broad faint, medium, and sharp core. */
+fun DrawScope.drawNeonPath(path: Path, color: Color, strokeWidth: Float = 3f) {
+    drawPath(path, color.copy(alpha = 0.15f), style = Stroke(strokeWidth * 4f, cap = StrokeCap.Round, join = StrokeJoin.Round))
+    drawPath(path, color.copy(alpha = 0.38f), style = Stroke(strokeWidth * 2f, cap = StrokeCap.Round, join = StrokeJoin.Round))
+    drawPath(path, lerp(color, Color.White, 0.45f), style = Stroke(strokeWidth, cap = StrokeCap.Round, join = StrokeJoin.Round))
+}
+
+/** Draws a glowing neon line between two points. */
+fun DrawScope.drawNeonLine(color: Color, start: Offset, end: Offset, strokeWidth: Float = 3f) {
+    drawLine(color.copy(alpha = 0.15f), start, end, strokeWidth * 4f, cap = StrokeCap.Round)
+    drawLine(color.copy(alpha = 0.38f), start, end, strokeWidth * 2f, cap = StrokeCap.Round)
+    drawLine(lerp(color, Color.White, 0.45f), start, end, strokeWidth, cap = StrokeCap.Round)
+}
+
+/** Draws a glowing neon rectangle. */
+fun DrawScope.drawNeonRect(color: Color, topLeft: Offset, size: Size, cornerRadius: Float = 0f, strokeWidth: Float = 3f) {
+    if (cornerRadius > 0f) {
+        val cr = CornerRadius(cornerRadius)
+        drawRoundRect(color.copy(alpha = 0.15f), topLeft, size, cr, style = Stroke(strokeWidth * 4f))
+        drawRoundRect(color.copy(alpha = 0.38f), topLeft, size, cr, style = Stroke(strokeWidth * 2f))
+        drawRoundRect(lerp(color, Color.White, 0.45f), topLeft, size, cr, style = Stroke(strokeWidth))
+    } else {
+        drawRect(color.copy(alpha = 0.15f), topLeft, size, style = Stroke(strokeWidth * 4f))
+        drawRect(color.copy(alpha = 0.38f), topLeft, size, style = Stroke(strokeWidth * 2f))
+        drawRect(lerp(color, Color.White, 0.45f), topLeft, size, style = Stroke(strokeWidth))
+    }
+}
+
+/** Draws a glowing neon circle outline. */
+fun DrawScope.drawNeonCircle(color: Color, center: Offset, radius: Float, strokeWidth: Float = 3f) {
+    drawCircle(color.copy(alpha = 0.15f), radius, center, style = Stroke(strokeWidth * 4f))
+    drawCircle(color.copy(alpha = 0.38f), radius, center, style = Stroke(strokeWidth * 2f))
+    drawCircle(lerp(color, Color.White, 0.45f), radius, center, style = Stroke(strokeWidth))
+}
+
+/** Draws a glowing neon arc. */
+fun DrawScope.drawNeonArc(color: Color, startAngle: Float, sweepAngle: Float, topLeft: Offset, size: Size, strokeWidth: Float = 3f) {
+    drawArc(color.copy(alpha = 0.15f), startAngle, sweepAngle, false, topLeft, size, style = Stroke(strokeWidth * 4f))
+    drawArc(color.copy(alpha = 0.38f), startAngle, sweepAngle, false, topLeft, size, style = Stroke(strokeWidth * 2f))
+    drawArc(lerp(color, Color.White, 0.45f), startAngle, sweepAngle, false, topLeft, size, style = Stroke(strokeWidth))
+}
+
+/**
+ * Draws a glowing arcade neon ball: radial gradient, small specular highlight top-left,
+ * and a fading trail of past positions.
+ */
+fun DrawScope.drawNeonBall(color: Color, center: Offset, radius: Float, trail: List<Offset> = emptyList()) {
+    if (trail.isNotEmpty()) {
+        val count = trail.size
+        for (i in trail.indices) {
+            val progress = (i + 1f) / count
+            val tr = radius * (0.35f + 0.65f * progress)
+            val ta = progress * 0.4f
+            drawCircle(color.copy(alpha = ta), tr, trail[i])
+        }
+    }
+    // Outer glow
+    drawCircle(
+        Brush.radialGradient(
+            listOf(color.copy(alpha = 0.45f), color.copy(alpha = 0.15f), Color.Transparent),
+            center = center,
+            radius = radius * 1.8f
+        ),
+        radius = radius * 1.8f,
+        center = center
+    )
+    // Ball body with spherical radial gradient
+    drawCircle(
+        Brush.radialGradient(
+            listOf(Color.White, color, lerp(color, Color.Black, 0.45f)),
+            center = Offset(center.x - radius * 0.25f, center.y - radius * 0.25f),
+            radius = radius
+        ),
+        radius = radius,
+        center = center
+    )
+    // Specular shine dot
+    drawCircle(
+        Color.White.copy(alpha = 0.85f),
+        radius * 0.22f,
+        Offset(center.x - radius * 0.35f, center.y - radius * 0.35f)
+    )
+}
+
+/**
+ * Shared retro-arcade background: deep gradient, parallax starfield,
+ * perspective grid, and optional edge vignette flash.
+ */
+@Composable
+fun ArcadeBackground(modifier: Modifier = Modifier, flashRed: Boolean = false) {
+    val reduced = rememberReducedMotion()
+    val stars = remember {
+        val rnd = Random(42)
+        List(52) {
+            Triple(rnd.nextFloat(), rnd.nextFloat(), rnd.nextFloat() < 0.45f)
+        }
+    }
+    val infiniteTransition = rememberInfiniteTransition(label = "arcadeBackground")
+    val time by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(22000, easing = androidx.compose.animation.core.LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "starDrift"
+    )
+
+    Canvas(modifier = modifier.fillMaxSize()) {
+        val w = size.width
+        val h = size.height
+
+        // 1. Deep space gradient: top #0B0A1F to bottom #05040D
+        drawRect(
+            Brush.verticalGradient(
+                listOf(Color(0xFF0B0A1F), Color(0xFF080614), Color(0xFF05040D))
+            )
+        )
+
+        // 2. Parallax stars (2 layers)
+        val drift = if (reduced) 0f else time
+        for ((sx, sy, isFast) in stars) {
+            val speed = if (isFast) 0.16f else 0.08f
+            val curY = ((sy + drift * speed) % 1f) * h
+            val curX = sx * w
+            val alpha = if (isFast) 0.6f else 0.25f
+            val r = if (isFast) 1.8f else 1.1f
+            drawCircle(Color.White.copy(alpha = alpha), r, Offset(curX, curY))
+        }
+
+        // 3. Perspective grid lines at the lower section
+        val gridTop = h * 0.62f
+        val vanishPoint = Offset(w / 2f, gridTop - 70f)
+        val gridLines = 8
+        var yOff = 0f
+        var step = 12f
+        while (gridTop + yOff < h) {
+            val progress = yOff / (h - gridTop)
+            val alpha = progress.coerceIn(0.03f, 0.14f)
+            drawLine(
+                Color(0xFF7C4DFF).copy(alpha = alpha),
+                Offset(0f, gridTop + yOff),
+                Offset(w, gridTop + yOff),
+                1.5f
+            )
+            yOff += step
+            step += 7f
+        }
+        for (i in 0..gridLines) {
+            val bottomX = (w / gridLines) * i
+            drawLine(
+                Color(0xFF7C4DFF).copy(alpha = 0.07f),
+                vanishPoint,
+                Offset(bottomX, h),
+                1.5f
+            )
+        }
+
+        // 4. Red vignette flash
+        if (flashRed) {
+            drawRect(
+                Brush.radialGradient(
+                    listOf(Color.Transparent, Color(0x66FF1744)),
+                    center = Offset(w / 2, h / 2),
+                    radius = maxOf(w, h) * 0.72f
+                )
             )
         }
     }
