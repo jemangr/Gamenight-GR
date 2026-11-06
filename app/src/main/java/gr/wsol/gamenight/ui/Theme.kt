@@ -44,11 +44,12 @@ object C {
     val quad = listOf(Color(0xFFF5D547), Color(0xFF7BD389), Color(0xFF6FA8FF), Color(0xFFC08CFF))
 }
 
+@OptIn(androidx.compose.ui.text.ExperimentalTextApi::class)
 val DisplayFont = FontFamily(
-    androidx.compose.ui.text.font.Font(gr.wsol.gamenight.R.font.manrope, FontWeight.Normal),
-    androidx.compose.ui.text.font.Font(gr.wsol.gamenight.R.font.manrope, FontWeight.Bold),
-    androidx.compose.ui.text.font.Font(gr.wsol.gamenight.R.font.manrope, FontWeight.ExtraBold),
-    androidx.compose.ui.text.font.Font(gr.wsol.gamenight.R.font.manrope, FontWeight.Black),
+    androidx.compose.ui.text.font.Font(gr.wsol.gamenight.R.font.manrope, FontWeight.Normal, variationSettings = androidx.compose.ui.text.font.FontVariation.Settings(androidx.compose.ui.text.font.FontVariation.weight(400))),
+    androidx.compose.ui.text.font.Font(gr.wsol.gamenight.R.font.manrope, FontWeight.Bold, variationSettings = androidx.compose.ui.text.font.FontVariation.Settings(androidx.compose.ui.text.font.FontVariation.weight(700))),
+    androidx.compose.ui.text.font.Font(gr.wsol.gamenight.R.font.manrope, FontWeight.ExtraBold, variationSettings = androidx.compose.ui.text.font.FontVariation.Settings(androidx.compose.ui.text.font.FontVariation.weight(800))),
+    androidx.compose.ui.text.font.Font(gr.wsol.gamenight.R.font.manrope, FontWeight.Black, variationSettings = androidx.compose.ui.text.font.FontVariation.Settings(androidx.compose.ui.text.font.FontVariation.weight(800))),
 )
 
 val Serif = DisplayFont
