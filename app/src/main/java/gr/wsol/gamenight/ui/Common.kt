@@ -1,6 +1,12 @@
 package gr.wsol.gamenight.ui
 
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.ui.draw.scale
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.ui.draw.drawWithContent
@@ -331,9 +337,32 @@ fun rememberCountdown(seconds: Int, running: Boolean, key: Any? = Unit, tickLast
 @Composable
 fun TimerText(ms: Long, color: Color = C.amber, modifier: Modifier = Modifier) {
     val s = ((ms + 999) / 1000).toInt()
+    val isUrgent = s in 1..10
+    val isZero = s == 0
+    val pulse by rememberInfiniteTransition(label = "timerPulse").animateFloat(
+        initialValue = 1f,
+        targetValue = if (isUrgent) 1.15f else 1f,
+        animationSpec = infiniteRepeatable(tween(350), RepeatMode.Reverse),
+        label = "tp"
+    )
+    val flashAlpha by rememberInfiniteTransition(label = "timerFlash").animateFloat(
+        initialValue = 1f,
+        targetValue = if (isZero) 0.25f else 1f,
+        animationSpec = infiniteRepeatable(tween(150), RepeatMode.Reverse),
+        label = "tf"
+    )
+
     Text(
-        if (s >= 60) "%d:%02d".format(s / 60, s % 60) else "$s″",
-        style = Type.huge, color = if (s <= 5) C.red else color, modifier = modifier.fillMaxWidth(), textAlign = TextAlign.Center,
+        text = if (s >= 60) "%d:%02d".format(s / 60, s % 60) else "$s″",
+        fontFamily = DisplayFont,
+        fontWeight = FontWeight.Black,
+        style = Type.huge,
+        color = if (isUrgent || isZero) C.red else color,
+        modifier = modifier
+            .fillMaxWidth()
+            .scale(if (isUrgent) pulse else 1f)
+            .alpha(if (isZero) flashAlpha else 1f),
+        textAlign = TextAlign.Center,
     )
 }
 
