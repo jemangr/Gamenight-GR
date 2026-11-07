@@ -1,4 +1,16 @@
-**Gamenight GR 1.2.1**: 54 παιχνίδια παρέας σε ένα κινητό.
+**Gamenight GR 1.3.0**: 54 παιχνίδια παρέας σε ένα κινητό, με νέα εμφάνιση.
+
+### Νέο στην 1.3.0: νέα γραφικά
+- **Εικονίδια** για κάθε παιχνίδι και κατηγορία, και νέα γραμματοσειρά στους τίτλους.
+- **Arcade σε στιλ νέον:** φωτεινές γραμμές, σωματίδια σε κάθε χτύπημα, combo, και κομφετί στο νέο ρεκόρ.
+- **Το στοιχειωμένο σπίτι:** κάρτες ρόλων που γυρίζουν όσο τις κρατάς πατημένες, νύχτα με ομίχλη και μέρα.
+- **Ο Μάρτυρας:** ξαναζωγραφισμένη σκηνή, πιο καθαρή (και τα πουλιά φαίνονται και τη νύχτα).
+- **Τάβλι:** ξύλινο ταμπλό, πούλια με όγκο, ζάρια που κυλάνε.
+- **Πίνακας της βραδιάς:** βάθρο για τους 3 πρώτους, με ισοπαλίες και ομάδες.
+- **Παίκτες:** κάθε παίκτης έχει δικό του τερατάκι (πάτα το για να αλλάξει).
+- **Βόμβα** με φιτίλι που σπινθηρίζει (ο χρόνος μένει κρυφός) και χρονόμετρα που κοκκινίζουν τα τελευταία 10″.
+- **Ρυθμίσεις → «Λιγότερη κίνηση»:** χωρίς κομφετί, τραντάγματα και αναποδογυρίσματα.
+- Νέο εικονίδιο εφαρμογής, και στα themed icons του Android 13+.
 
 ### Νέο στην 1.2.1
 - Η αναφορά προβλήματος στέλνεται κατευθείαν από την εφαρμογή, χωρίς εφαρμογή email. Το email σου μπαίνει μόνο αν το γράψεις (για να σου απαντήσουμε)· αλλιώς φτάνει ανώνυμα. Υπάρχει και το «Από το email μου».
@@ -43,4 +55,4 @@
 
 ---
 
-**Gamenight GR 1.1.1**: 54 party games on one phone. New in 1.1.1: «Share Gamenight» in the settings sends the download link (platebit.app/game). New: 26 games (party, hidden roles, quiz with a buzzer, sound chain, backgammon, motion games, 4 arcade, 6 AI games with your own key), card packs from GitHub and your own words, a history of past nights with streaks, and Summer and Christmas looks. Install `GamenightGR.apk` below (allow “unknown sources”), add the players and pick a game. Later versions show up on the home screen and install with one tap.
+**Gamenight GR 1.3.0**: 54 party games on one phone. New in 1.3.0: a new look (game icons, neon arcade, flip role cards in the Haunted House, a redrawn Witness scene, a wooden backgammon board, a podium, player avatars and a «Reduce motion» setting). New in 1.1.1: «Share Gamenight» in the settings sends the download link (platebit.app/game). New: 26 games (party, hidden roles, quiz with a buzzer, sound chain, backgammon, motion games, 4 arcade, 6 AI games with your own key), card packs from GitHub and your own words, a history of past nights with streaks, and Summer and Christmas looks. Install `GamenightGR.apk` below (allow “unknown sources”), add the players and pick a game. Later versions show up on the home screen and install with one tap.
