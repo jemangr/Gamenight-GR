@@ -362,16 +362,17 @@ fun TimerText(ms: Long, color: Color = C.amber, modifier: Modifier = Modifier) {
     val s = ((ms + 999) / 1000).toInt()
     val isUrgent = s in 1..10
     val isZero = s == 0
+    val reducedMotion = rememberReducedMotion()
     val pulse by rememberInfiniteTransition(label = "timerPulse").animateFloat(
         initialValue = 1f,
-        targetValue = if (isUrgent) 1.15f else 1f,
+        targetValue = if (isUrgent && !reducedMotion) 1.15f else 1f,
         animationSpec = infiniteRepeatable(tween(350), RepeatMode.Reverse),
         label = "tp"
     )
     val flashAlpha by rememberInfiniteTransition(label = "timerFlash").animateFloat(
         initialValue = 1f,
-        targetValue = if (isZero) 0.25f else 1f,
-        animationSpec = infiniteRepeatable(tween(150), RepeatMode.Reverse),
+        targetValue = if (isZero && !reducedMotion) 0.25f else 1f,
+        animationSpec = infiniteRepeatable(tween(400), RepeatMode.Reverse),
         label = "tf"
     )
 
@@ -383,8 +384,8 @@ fun TimerText(ms: Long, color: Color = C.amber, modifier: Modifier = Modifier) {
         color = if (isUrgent || isZero) C.red else color,
         modifier = modifier
             .fillMaxWidth()
-            .scale(if (isUrgent) pulse else 1f)
-            .alpha(if (isZero) flashAlpha else 1f),
+            .scale(if (isUrgent && !reducedMotion) pulse else 1f)
+            .alpha(if (isZero && !reducedMotion) flashAlpha else 1f),
         textAlign = TextAlign.Center,
     )
 }
