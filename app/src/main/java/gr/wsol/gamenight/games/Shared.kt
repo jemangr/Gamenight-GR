@@ -55,7 +55,7 @@ fun Intro(game: Game, host: GameHost, rules: List<String>, startEnabled: Boolean
                 contentAlignment = Alignment.Center
             ) {
                 if (game.icon != 0) {
-                    Icon(painterResource(game.icon), contentDescription = game.title, tint = game.color, modifier = Modifier.size(26.dp))
+                    Icon(painterResource(game.icon), contentDescription = null, tint = game.color, modifier = Modifier.size(26.dp))
                 } else {
                     Text(game.emoji, fontSize = 22.sp)
                 }
