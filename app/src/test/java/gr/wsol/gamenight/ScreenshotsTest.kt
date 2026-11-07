@@ -330,41 +330,79 @@ class ScreenshotsTest {
     @Test fun n32_christmas() { Store.settings = Store.settings.copy(look = 2); shot("71-christmas", "Ξεκινάμε") { game("whois")(host) } }
     @Test fun n32b_christmas_home() { Store.settings = Store.settings.copy(look = 2); shot("71-christmas-home") { HomeScreen() } }
 
+    @org.robolectric.annotation.Config(qualifiers = "w540dp-h1450dp-xhdpi")
     @Test fun s90_icons() {
+        val allGames = gr.wsol.gamenight.games.Games.all
+        val allCats = gr.wsol.gamenight.games.Category.entries
         compose.setContent {
             GamenightTheme {
                 androidx.compose.foundation.lazy.grid.LazyVerticalGrid(
-                    columns = androidx.compose.foundation.lazy.grid.GridCells.Fixed(4),
-                    modifier = androidx.compose.ui.Modifier.fillMaxSize().padding(8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                    columns = androidx.compose.foundation.lazy.grid.GridCells.Fixed(5),
+                    modifier = androidx.compose.ui.Modifier.fillMaxSize().background(gr.wsol.gamenight.ui.C.bg).padding(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(gr.wsol.gamenight.games.Games.all.size) { i ->
-                        val g = gr.wsol.gamenight.games.Games.all[i]
+                    items(allGames.size) { i ->
+                        val g = allGames[i]
                         androidx.compose.foundation.layout.Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = androidx.compose.ui.Modifier.padding(4.dp)
+                            modifier = androidx.compose.ui.Modifier.padding(2.dp)
                         ) {
                             if (g.icon != 0) {
                                 androidx.compose.material3.Icon(
                                     painter = androidx.compose.ui.res.painterResource(g.icon),
-                                    contentDescription = g.title,
+                                    contentDescription = null,
                                     tint = g.color,
-                                    modifier = androidx.compose.ui.Modifier.size(48.dp)
+                                    modifier = androidx.compose.ui.Modifier.size(44.dp)
                                 )
-                                androidx.compose.foundation.layout.Spacer(androidx.compose.ui.Modifier.height(4.dp))
+                                androidx.compose.foundation.layout.Spacer(androidx.compose.ui.Modifier.height(2.dp))
                                 androidx.compose.material3.Icon(
                                     painter = androidx.compose.ui.res.painterResource(g.icon),
-                                    contentDescription = g.title,
+                                    contentDescription = null,
                                     tint = g.color,
-                                    modifier = androidx.compose.ui.Modifier.size(24.dp)
+                                    modifier = androidx.compose.ui.Modifier.size(22.dp)
                                 )
                             }
+                            androidx.compose.foundation.layout.Spacer(androidx.compose.ui.Modifier.height(2.dp))
                             androidx.compose.material3.Text(
                                 text = g.title,
-                                style = gr.wsol.gamenight.ui.Type.small,
+                                style = gr.wsol.gamenight.ui.Type.small.copy(fontSize = 10.sp, lineHeight = 12.sp),
                                 color = gr.wsol.gamenight.ui.C.text,
-                                maxLines = 1
+                                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                                maxLines = 2,
+                                minLines = 2
+                            )
+                        }
+                    }
+                    items(allCats.size) { i ->
+                        val c = allCats[i]
+                        androidx.compose.foundation.layout.Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = androidx.compose.ui.Modifier.padding(2.dp)
+                        ) {
+                            if (c.icon != 0) {
+                                androidx.compose.material3.Icon(
+                                    painter = androidx.compose.ui.res.painterResource(c.icon),
+                                    contentDescription = null,
+                                    tint = gr.wsol.gamenight.ui.C.amber,
+                                    modifier = androidx.compose.ui.Modifier.size(44.dp)
+                                )
+                                androidx.compose.foundation.layout.Spacer(androidx.compose.ui.Modifier.height(2.dp))
+                                androidx.compose.material3.Icon(
+                                    painter = androidx.compose.ui.res.painterResource(c.icon),
+                                    contentDescription = null,
+                                    tint = gr.wsol.gamenight.ui.C.amber,
+                                    modifier = androidx.compose.ui.Modifier.size(22.dp)
+                                )
+                            }
+                            androidx.compose.foundation.layout.Spacer(androidx.compose.ui.Modifier.height(2.dp))
+                            androidx.compose.material3.Text(
+                                text = "[${c.title}]",
+                                style = gr.wsol.gamenight.ui.Type.small.copy(fontSize = 10.sp, lineHeight = 12.sp),
+                                color = gr.wsol.gamenight.ui.C.amber,
+                                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                                maxLines = 2,
+                                minLines = 2
                             )
                         }
                     }
