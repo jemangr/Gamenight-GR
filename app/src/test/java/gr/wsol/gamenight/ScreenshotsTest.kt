@@ -596,4 +596,81 @@ class ScreenshotsTest {
         }
         compose.onRoot().captureRoboImage("../docs/logo.png")
     }
+
+    // -----------------------------------------------------------------------
+    // Cinema look screenshots (96 - 104)
+    // -----------------------------------------------------------------------
+    private fun cinemaShot(name: String, vararg clicks: String, wait: Long = 1200, content: @Composable () -> Unit) {
+        Store.settings = Store.settings.copy(look = 3)
+        shot(name, *clicks, wait = wait, content = content)
+    }
+
+    @Test fun s96_cinema_home() = cinemaShot("96-cinema-home") { HomeScreen() }
+
+    @Test fun s97_cinema_category() = cinemaShot("97-cinema-category") {
+        HomeScreen()
+    }
+
+    @Test fun s98_cinema_intro_alien() = cinemaShot("98-cinema-intro-alien") {
+        game("alien")(host)
+    }
+
+    @Test fun s99_cinema_pass() = cinemaShot("99-cinema-pass") {
+        PassTo(names[0], androidx.compose.ui.graphics.Color(Palette.players[0])) {}
+    }
+
+    @Test fun s100_cinema_house_night() = cinemaShot("100-cinema-house-night") {
+        gr.wsol.gamenight.games.HouseBackground(isNight = true) {
+            androidx.compose.foundation.layout.Box(
+                modifier = androidx.compose.ui.Modifier.fillMaxSize(),
+                contentAlignment = androidx.compose.ui.Alignment.Center
+            ) {
+                gr.wsol.gamenight.ui.Panel {
+                    gr.wsol.gamenight.ui.Body("Όλοι μάτια κλειστά…")
+                }
+            }
+        }
+    }
+
+    @Test fun s101_cinema_house_role() = cinemaShot("101-cinema-house-role") {
+        androidx.compose.foundation.layout.Box(
+            modifier = androidx.compose.ui.Modifier
+                .fillMaxSize()
+                .background(gr.wsol.gamenight.ui.C.bg),
+            contentAlignment = androidx.compose.ui.Alignment.Center
+        ) {
+            gr.wsol.gamenight.games.GothicRoleCard(
+                role = gr.wsol.gamenight.games.Role.Zombie,
+                otherZombies = listOf("Μαρία")
+            )
+        }
+    }
+
+    @Test fun s102_cinema_house_back() = cinemaShot("102-cinema-house-back") {
+        androidx.compose.foundation.layout.Box(
+            modifier = androidx.compose.ui.Modifier
+                .fillMaxSize()
+                .background(gr.wsol.gamenight.ui.C.bg),
+            contentAlignment = androidx.compose.ui.Alignment.Center
+        ) {
+            gr.wsol.gamenight.games.GothicRoleCardBack()
+        }
+    }
+
+    @Test fun s103_cinema_chaos() = cinemaShot("103-cinema-chaos") {
+        gr.wsol.gamenight.chaos.ChaosOverlay(
+            event = gr.wsol.gamenight.chaos.Chaos.Event(
+                gr.wsol.gamenight.chaos.Chaos.Kind.Gift,
+                "🎁",
+                "Δώρο από τον ουρανό!",
+                "Μαρία: +1, γιατί είπε το καλύτερο αστείο.",
+                "Μαρία",
+                1
+            )
+        ) {}
+    }
+
+    @Test fun s104_cinema_score() = cinemaShot("104-cinema-score") {
+        ScoreScreen()
+    }
 }

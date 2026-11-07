@@ -1,6 +1,20 @@
 package gr.wsol.gamenight.games
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
+import gr.wsol.gamenight.ui.CinemaScrim
+import gr.wsol.gamenight.ui.rememberCinemaImage
+import gr.wsol.gamenight.ui.rememberReducedMotion
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -47,6 +61,39 @@ fun Intro(game: Game, host: GameHost, rules: List<String>, startEnabled: Boolean
     Page("${game.emoji} ${game.title}", onBack = { host.exit() }, bottom = {
         BigButton(t("Ξεκινάμε", "Let's go"), onStart, color = game.color, enabled = startEnabled)
     }) {
+        val introImg = rememberCinemaImage("intro/${game.id}.webp")
+        if (introImg != null) {
+            val reduced = rememberReducedMotion()
+            val zoomTransition = rememberInfiniteTransition(label = "kenBurns")
+            val zoomScale by zoomTransition.animateFloat(
+                initialValue = 1.00f,
+                targetValue = if (reduced) 1.00f else 1.06f,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(durationMillis = 12000, easing = LinearEasing),
+                    repeatMode = RepeatMode.Reverse
+                ),
+                label = "kenBurnsZoom"
+            )
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .height(180.dp)
+                    .clip(RoundedCornerShape(18.dp))
+            ) {
+                Image(
+                    bitmap = introImg,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .graphicsLayer {
+                            scaleX = zoomScale
+                            scaleY = zoomScale
+                        }
+                )
+                CinemaScrim()
+            }
+        }
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(
                 Modifier.size(44.dp)

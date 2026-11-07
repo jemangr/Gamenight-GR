@@ -1,5 +1,6 @@
 package gr.wsol.gamenight.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -7,11 +8,17 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.EmojiEvents
@@ -48,9 +55,45 @@ import kotlinx.coroutines.launch
 fun HomeScreen() {
     val n = Store.night
     var why by remember { mutableStateOf<String?>(null) }
+    val homeBg = rememberCinemaImage("bg/home.webp")
+    val scrollState = rememberScrollState()
+    val reducedMotion = rememberReducedMotion()
+
     Page(
         title = "",
         onBack = null,
+        scrollState = scrollState,
+        background = {
+            if (homeBg != null) {
+                val parallaxY = if (reducedMotion) 0 else -(scrollState.value * 0.28f).toInt()
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.48f)
+                        .offset { IntOffset(0, parallaxY) }
+                ) {
+                    Image(
+                        bitmap = homeBg,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                    Box(
+                        Modifier
+                            .fillMaxSize()
+                            .background(
+                                Brush.verticalGradient(
+                                    listOf(
+                                        Color.Black.copy(alpha = 0.35f),
+                                        Color.Black.copy(alpha = 0.60f),
+                                        C.bg
+                                    )
+                                )
+                            )
+                    )
+                }
+            }
+        },
         actions = {
             IconButton(onClick = { Nav.go(Screen.Score) }) { Icon(Icons.Filled.EmojiEvents, t("Πίνακας της βραδιάς", "Tonight's scores"), tint = C.amber) }
             IconButton(onClick = { Nav.go(Screen.Settings) }) { Icon(Icons.Filled.Settings, t("Ρυθμίσεις", "Settings"), tint = C.text) }
@@ -94,21 +137,67 @@ fun HomeScreen() {
 
         Category.entries.forEach { cat ->
             Spacer(Modifier.height(6.dp))
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                if (cat.icon != 0) {
-                    Icon(
-                        painter = painterResource(cat.icon),
+            val catImg = rememberCinemaImage("cat/${cat.name.lowercase()}.webp")
+            if (catImg != null) {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(14.dp))
+                ) {
+                    Image(
+                        bitmap = catImg,
                         contentDescription = null,
-                        tint = C.amber,
-                        modifier = Modifier.size(22.dp)
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.matchParentSize()
                     )
-                    Spacer(Modifier.width(8.dp))
-                } else {
-                    Text("${cat.emoji}  ", style = Type.h)
+                    Box(
+                        Modifier
+                            .matchParentSize()
+                            .background(
+                                Brush.verticalGradient(
+                                    listOf(
+                                        Color.Black.copy(alpha = 0.70f),
+                                        Color.Black.copy(alpha = 0.40f),
+                                        Color.Black.copy(alpha = 0.75f)
+                                    )
+                                )
+                            )
+                    )
+                    Column(Modifier.padding(horizontal = 14.dp, vertical = 10.dp)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            if (cat.icon != 0) {
+                                Icon(
+                                    painter = painterResource(cat.icon),
+                                    contentDescription = null,
+                                    tint = C.amber,
+                                    modifier = Modifier.size(22.dp)
+                                )
+                                Spacer(Modifier.width(8.dp))
+                            } else {
+                                Text("${cat.emoji}  ", style = Type.h)
+                            }
+                            Text(cat.title, style = Type.h, color = C.text)
+                        }
+                        Text(cat.sub, style = Type.small, color = C.muted)
+                    }
                 }
-                Text(cat.title, style = Type.h, color = C.text)
+            } else {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    if (cat.icon != 0) {
+                        Icon(
+                            painter = painterResource(cat.icon),
+                            contentDescription = null,
+                            tint = C.amber,
+                            modifier = Modifier.size(22.dp)
+                        )
+                        Spacer(Modifier.width(8.dp))
+                    } else {
+                        Text("${cat.emoji}  ", style = Type.h)
+                    }
+                    Text(cat.title, style = Type.h, color = C.text)
+                }
+                Text(cat.sub, style = Type.small, color = C.muted)
             }
-            Text(cat.sub, style = Type.small, color = C.muted)
             Games.all.filter { it.category == cat }.forEach { g -> GameCard(g, count) { why = it } }
         }
         Spacer(Modifier.height(6.dp))

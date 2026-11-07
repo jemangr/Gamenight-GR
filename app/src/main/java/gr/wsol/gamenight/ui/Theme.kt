@@ -19,7 +19,8 @@ object Looks {
     val night = LookColors(Color(0xFF0B0A12), Color(0xFF15131F), Color(0xFF1E1B2B), Color(0xFF2B2740), Color(0xFFF4F1FF), Color(0xFFA79FC4), Color(0xFF8A82AC), "🎲")
     val summer = LookColors(Color(0xFF05202B), Color(0xFF0B2E3B), Color(0xFF113A4A), Color(0xFF1B5165), Color(0xFFF2FBFF), Color(0xFFA6D3E0), Color(0xFF83B8C8), "☀️")
     val christmas = LookColors(Color(0xFF0D1A12), Color(0xFF15261B), Color(0xFF1C3224), Color(0xFF2D4C37), Color(0xFFFBF6EC), Color(0xFFC9D8C6), Color(0xFF9DB9A0), "🎄")
-    val all = listOf(night, summer, christmas)
+    val cinema = LookColors(Color(0xFF07070A), Color(0xE6121118), Color(0xE61B1924), Color(0xFF332F42), Color(0xFFF8F6FF), Color(0xFFB5AECC), Color(0xFF938BAA), "🎬")
+    val all = listOf(night, summer, christmas, cinema)
     val current get() = all.getOrElse(gr.wsol.gamenight.core.Store.settings.look) { night }
 }
 

@@ -5,7 +5,9 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -106,49 +108,65 @@ fun ScoreScreen() {
                 val place2 = if (r[2].second == r[1].second) place1 else 3
                 val height2 = if (r[2].second == r[1].second) height1 else 85.dp
 
-                Panel(color = Color(0x33000000)) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 10.dp, bottom = 4.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
-                        verticalAlignment = Alignment.Bottom
-                    ) {
-                        // 2nd Place (Left)
-                        PodiumPillar(
-                            place = place1,
-                            side = r[1].first,
-                            points = r[1].second,
-                            targetHeight = height1,
-                            entered = entered,
-                            night = n,
-                            showConfetti = false,
-                            modifier = Modifier.weight(1f)
+                val stageBg = rememberCinemaImage("bg/stage.webp")
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(18.dp))
+                ) {
+                    if (stageBg != null) {
+                        Image(
+                            bitmap = stageBg,
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.matchParentSize()
                         )
+                        CinemaScrim()
+                    }
+                    Panel(color = if (stageBg != null) Color.Transparent else Color(0x33000000)) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 10.dp, bottom = 4.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+                            verticalAlignment = Alignment.Bottom
+                        ) {
+                            // 2nd Place (Left)
+                            PodiumPillar(
+                                place = place1,
+                                side = r[1].first,
+                                points = r[1].second,
+                                targetHeight = height1,
+                                entered = entered,
+                                night = n,
+                                showConfetti = false,
+                                modifier = Modifier.weight(1f)
+                            )
 
-                        // 1st Place (Center)
-                        PodiumPillar(
-                            place = place0,
-                            side = r[0].first,
-                            points = r[0].second,
-                            targetHeight = height0,
-                            entered = entered,
-                            night = n,
-                            showConfetti = shouldCelebrate && entered,
-                            modifier = Modifier.weight(1.15f)
-                        )
+                            // 1st Place (Center)
+                            PodiumPillar(
+                                place = place0,
+                                side = r[0].first,
+                                points = r[0].second,
+                                targetHeight = height0,
+                                entered = entered,
+                                night = n,
+                                showConfetti = shouldCelebrate && entered,
+                                modifier = Modifier.weight(1.15f)
+                            )
 
-                        // 3rd Place (Right)
-                        PodiumPillar(
-                            place = place2,
-                            side = r[2].first,
-                            points = r[2].second,
-                            targetHeight = height2,
-                            entered = entered,
-                            night = n,
-                            showConfetti = false,
-                            modifier = Modifier.weight(1f)
-                        )
+                            // 3rd Place (Right)
+                            PodiumPillar(
+                                place = place2,
+                                side = r[2].first,
+                                points = r[2].second,
+                                targetHeight = height2,
+                                entered = entered,
+                                night = n,
+                                showConfetti = false,
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
                     }
                 }
             } else if (r.isNotEmpty() && hasWinner) {

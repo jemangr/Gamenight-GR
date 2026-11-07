@@ -371,6 +371,12 @@ private fun HouseVote(g: HouseEngine, key: String, onDone: (Map<String, String>)
 /** Secret deal round with 3:4 gothic card and FlipCard hold-to-reveal. */
 @Composable
 private fun HouseDealScreen(g: HouseEngine, gameNo: Int, onDone: () -> Unit) {
+    val ctx = LocalContext.current
+    LaunchedEffect(gameNo) {
+        val paths = Role.entries.map { "house/role-${it.name.lowercase()}.webp" } + "house/back.webp"
+        gr.wsol.gamenight.ui.preloadCinemaImages(ctx, paths)
+    }
+
     val players = g.players
     var i by remember(gameNo) { mutableIntStateOf(0) }
     var ready by remember(gameNo, i) { mutableStateOf(false) }

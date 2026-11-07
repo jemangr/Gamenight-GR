@@ -26,7 +26,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.AlertDialog
+import androidx.compose.ui.Alignment
 import gr.wsol.gamenight.BuildConfig
+import gr.wsol.gamenight.core.Cinema
 import gr.wsol.gamenight.core.Store
 import gr.wsol.gamenight.core.t
 import gr.wsol.gamenight.extras.Report
@@ -37,7 +43,14 @@ import kotlinx.coroutines.launch
 fun SettingsScreen() {
     val s = Store.settings
     val scope = rememberCoroutineScope()
+    val ctx = LocalContext.current
     var checking by remember { mutableStateOf<String?>(null) }
+    var showCinemaDialog by remember { mutableStateOf(false) }
+    var cinemaDownloading by remember { mutableStateOf(false) }
+    var cinemaProgress by remember { mutableStateOf(0 to 0) }
+    var cinemaError by remember { mutableStateOf<String?>(null) }
+    val cinemaBytes = Cinema.installedSize(ctx)
+
     Page(t("Ρυθμίσεις", "Settings"), onBack = { Nav.back() }) {
         Panel {
             Label(t("ΓΛΩΣΣΑ · LANGUAGE", "LANGUAGE · ΓΛΩΣΣΑ"))
@@ -46,8 +59,46 @@ fun SettingsScreen() {
         }
         Panel {
             Label(t("ΕΜΦΑΝΙΣΗ", "LOOK"))
-            Seg(listOf(0 to t("🎲 Βραδιά", "🎲 Night"), 1 to t("☀️ Καλοκαίρι", "☀️ Summer"), 2 to t("🎄 Χριστούγεννα", "🎄 Christmas")), s.look, { Store.settings = s.copy(look = it); gr.wsol.gamenight.extras.Sfx.win() })
+            Seg(
+                listOf(
+                    0 to t("🎲 Βραδιά", "🎲 Night"),
+                    1 to t("☀️ Καλοκαίρι", "☀️ Summer"),
+                    2 to t("🎄 Χριστούγεννα", "🎄 Christmas"),
+                    3 to t("🎬 Σινεμά", "🎬 Cinema")
+                ),
+                s.look,
+                { targetLook ->
+                    if (targetLook == 3 && !Cinema.isInstalled(ctx)) {
+                        cinemaError = null
+                        showCinemaDialog = true
+                    } else {
+                        Store.settings = s.copy(look = targetLook)
+                        gr.wsol.gamenight.extras.Sfx.win()
+                    }
+                }
+            )
             Text(t("Αλλάζουν τα χρώματα και οι ήχοι της νίκης.", "The colours and the winning sounds change."), style = Type.small, color = C.muted)
+            if (cinemaBytes > 0L) {
+                Spacer(Modifier.height(4.dp))
+                val mb = cinemaBytes / 1048576.0
+                val sizeStr = if (s.english) "%.1f MB".format(mb) else "%.1f MB".format(mb).replace('.', ',')
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        t("Εικόνες Σινεμά: εγκατεστημένες ($sizeStr)", "Cinema images: installed ($sizeStr)"),
+                        style = Type.small,
+                        color = C.muted
+                    )
+                    TextButton(onClick = {
+                        Cinema.delete(ctx)
+                    }) {
+                        Text(t("Διαγραφή", "Delete"), style = Type.small, color = C.red)
+                    }
+                }
+            }
         }
         PacksPanel()
         Panel {
@@ -97,6 +148,73 @@ fun SettingsScreen() {
             Body("Gamenight GR ${BuildConfig.VERSION_NAME} · MIT © jemangr")
             Body(t("Οι μηχανισμοί θυμίζουν γνωστά παιχνίδια παρέας, όλο όμως το περιεχόμενο είναι δικό μας.", "The mechanics recall well-known party games, but all the content is our own."))
         }
+    }
+
+    if (showCinemaDialog) {
+        AlertDialog(
+            onDismissRequest = { if (!cinemaDownloading) showCinemaDialog = false },
+            containerColor = C.panel,
+            title = { Text(t("🎬 Σινεμά", "🎬 Cinema"), style = Type.title, color = C.text) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        t(
+                            "Το look Σινεμά έχει φωτογραφίες (~5 MB). Κατέβασμα τώρα από το GitHub;",
+                            "The Cinema look has photos (~5 MB). Download now from GitHub?"
+                        ),
+                        style = Type.body,
+                        color = C.text
+                    )
+                    if (cinemaDownloading) {
+                        Spacer(Modifier.height(4.dp))
+                        Text(
+                            t(
+                                "Κατέβασμα… ${cinemaProgress.first} / ${cinemaProgress.second}",
+                                "Downloading… ${cinemaProgress.first} / ${cinemaProgress.second}"
+                            ),
+                            style = Type.small,
+                            color = C.amber
+                        )
+                    }
+                    cinemaError?.let {
+                        Text(it, style = Type.small, color = C.red)
+                    }
+                }
+            },
+            confirmButton = {
+                if (!cinemaDownloading) {
+                    TextButton(onClick = {
+                        cinemaDownloading = true
+                        cinemaError = null
+                        scope.launch {
+                            val ok = Cinema.download(ctx) { done, total ->
+                                cinemaProgress = done to total
+                            }
+                            cinemaDownloading = false
+                            if (ok) {
+                                showCinemaDialog = false
+                                Store.settings = s.copy(look = 3)
+                                gr.wsol.gamenight.extras.Sfx.win()
+                            } else {
+                                cinemaError = t(
+                                    "Δεν ολοκληρώθηκε, δοκιμάστε ξανά",
+                                    "Download failed, please try again"
+                                )
+                            }
+                        }
+                    }) {
+                        Text(t("Κατέβασμα", "Download"), color = C.amber)
+                    }
+                }
+            },
+            dismissButton = {
+                if (!cinemaDownloading) {
+                    TextButton(onClick = { showCinemaDialog = false }) {
+                        Text(t("Άκυρο", "Cancel"), color = C.muted)
+                    }
+                }
+            }
+        )
     }
 }
 

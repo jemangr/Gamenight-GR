@@ -1,6 +1,14 @@
 package gr.wsol.gamenight.ui
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.provider.Settings
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.runtime.produceState
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import gr.wsol.gamenight.core.Cinema
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -11,6 +19,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
@@ -457,4 +466,87 @@ fun ArcadeBackground(modifier: Modifier = Modifier, flashRed: Boolean = false) {
             )
         }
     }
+}
+
+// ---------------------------------------------------------------------------
+// 2.3: Cinema look image loader & caching
+// ---------------------------------------------------------------------------
+
+private val cinemaCache = object : LinkedHashMap<String, ImageBitmap>(4, 0.75f, true) {
+    override fun removeEldestEntry(eldest: MutableMap.MutableEntry<String, ImageBitmap>?): Boolean = size > 4
+}
+
+fun loadCinemaBitmap(context: android.content.Context, path: String): ImageBitmap? {
+    synchronized(cinemaCache) {
+        cinemaCache[path]?.let { return it }
+    }
+    val file = Cinema.resolveImageFile(context, path) ?: return null
+    return try {
+        val boundsOpts = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        BitmapFactory.decodeFile(file.absolutePath, boundsOpts)
+        val maxTargetW = 1080
+        var sampleSize = 1
+        while (boundsOpts.outWidth / sampleSize > maxTargetW * 1.5) {
+            sampleSize *= 2
+        }
+        val decodeOpts = BitmapFactory.Options().apply {
+            inSampleSize = sampleSize
+            inPreferredConfig = Bitmap.Config.ARGB_8888
+        }
+        val bmp = BitmapFactory.decodeFile(file.absolutePath, decodeOpts) ?: return null
+        val imgBmp = bmp.asImageBitmap()
+        synchronized(cinemaCache) {
+            cinemaCache[path] = imgBmp
+        }
+        imgBmp
+    } catch (_: Throwable) {
+        null
+    }
+}
+
+/** Pre-loads images into memory so roles in House/secret games have identical access latency. */
+fun preloadCinemaImages(context: android.content.Context, paths: List<String>) {
+    if (Store.settings.look != 3) return
+    paths.forEach { loadCinemaBitmap(context, it) }
+}
+
+/**
+ * Loads a Cinema look image off the main thread with a 4-item LRU cache.
+ * Returns null if missing or if current look is not Cinema (3).
+ */
+@Composable
+fun rememberCinemaImage(path: String): ImageBitmap? {
+    if (Store.settings.look != 3) return null
+    val context = LocalContext.current
+    return produceState<ImageBitmap?>(
+        initialValue = synchronized(cinemaCache) { cinemaCache[path] } ?: loadCinemaBitmap(context, path),
+        key1 = path,
+        key2 = Store.settings.look
+    ) {
+        if (value == null) {
+            withContext(Dispatchers.IO) {
+                value = loadCinemaBitmap(context, path)
+            }
+        }
+    }.value
+}
+
+/**
+ * 2.4: Dark vertical scrim gradient (>= 0.65 alpha top/bottom, 0.25 middle) for legibility.
+ */
+@Composable
+fun CinemaScrim(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(
+                Brush.verticalGradient(
+                    listOf(
+                        Color.Black.copy(alpha = 0.70f),
+                        Color.Black.copy(alpha = 0.25f),
+                        Color.Black.copy(alpha = 0.75f)
+                    )
+                )
+            )
+    )
 }

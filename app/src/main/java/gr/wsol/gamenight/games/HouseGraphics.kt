@@ -8,6 +8,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -36,13 +38,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import gr.wsol.gamenight.core.t
+import gr.wsol.gamenight.ui.CinemaScrim
 import gr.wsol.gamenight.ui.DisplayFont
 import gr.wsol.gamenight.ui.Type
+import gr.wsol.gamenight.ui.rememberCinemaImage
 
 /** Colors for each role in the Haunted House. */
 object HousePalette {
@@ -676,6 +681,7 @@ fun GothicRoleCard(
 ) {
     val (bgTop, bgBottom) = HousePalette.colors(role)
     val accent = HousePalette.accent(role)
+    val roleImg = rememberCinemaImage("house/role-${role.name.lowercase()}.webp")
 
     Box(
         modifier = modifier
@@ -684,80 +690,160 @@ fun GothicRoleCard(
             .clip(RoundedCornerShape(20.dp))
             .background(Brush.verticalGradient(listOf(bgTop, bgBottom)))
     ) {
-        Canvas(Modifier.fillMaxSize()) {
-            drawGothicFrame(accent)
-        }
+        if (roleImg != null) {
+            // Cinema look: top 60% role photo with fade, bottom 40% role details
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.60f)
+            ) {
+                Image(
+                    bitmap = roleImg,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.verticalGradient(
+                                listOf(
+                                    Color.Transparent,
+                                    Color.Black.copy(alpha = 0.35f),
+                                    bgBottom
+                                )
+                            )
+                        )
+                )
+            }
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 20.dp, vertical = 22.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            // Role title at top
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp, vertical = 14.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Bottom
+            ) {
                 Text(
                     text = role.title,
                     fontFamily = DisplayFont,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 22.sp,
+                    fontSize = 20.sp,
                     color = accent,
                     textAlign = TextAlign.Center
                 )
                 Text(
                     text = if (role.zombie) t("ΟΜΑΔΑ ΖΟΜΠΙ", "ZOMBIE TEAM") else t("ΟΜΑΔΑ ΑΝΘΡΩΠΩΝ", "HUMAN TEAM"),
                     style = Type.label,
-                    color = accent.copy(alpha = 0.7f),
-                    letterSpacing = 1.2.sp
+                    color = accent.copy(alpha = 0.8f),
+                    letterSpacing = 1.1.sp
                 )
-            }
-
-            // Center vector emblem
-            Box(
-                modifier = Modifier
-                    .size(130.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Canvas(Modifier.fillMaxSize()) {
-                    drawRoleEmblem(role, accent)
-                }
-            }
-
-            // Description and partners at bottom
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
+                Spacer(Modifier.height(4.dp))
                 Text(
                     text = role.what,
                     style = Type.body,
                     color = Color(0xFFF7FAFC),
                     textAlign = TextAlign.Center,
-                    fontSize = 13.sp,
-                    lineHeight = 17.sp
+                    fontSize = 12.sp,
+                    lineHeight = 15.sp
                 )
-
                 if (role.zombie && otherZombies.isNotEmpty()) {
                     Text(
                         text = t("Τα άλλα ζόμπι: ", "Other zombies: ") + otherZombies.joinToString(", "),
                         style = Type.small,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF68D391),
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        fontSize = 11.sp
                     )
                 }
-
                 lover?.let {
                     Text(
                         text = t("💞 Είσαι ερωτευμένος/η με: $it", "💞 Bound to: $it"),
                         style = Type.small,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFFF687B3),
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        fontSize = 11.sp
                     )
                 }
             }
+        } else {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 20.dp, vertical = 22.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                // Role title at top
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = role.title,
+                        fontFamily = DisplayFont,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 22.sp,
+                        color = accent,
+                        textAlign = TextAlign.Center
+                    )
+                    Text(
+                        text = if (role.zombie) t("ΟΜΑΔΑ ΖΟΜΠΙ", "ZOMBIE TEAM") else t("ΟΜΑΔΑ ΑΝΘΡΩΠΩΝ", "HUMAN TEAM"),
+                        style = Type.label,
+                        color = accent.copy(alpha = 0.7f),
+                        letterSpacing = 1.2.sp
+                    )
+                }
+
+                // Center vector emblem
+                Box(
+                    modifier = Modifier.size(130.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Canvas(Modifier.fillMaxSize()) {
+                        drawRoleEmblem(role, accent)
+                    }
+                }
+
+                // Description and partners at bottom
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text(
+                        text = role.what,
+                        style = Type.body,
+                        color = Color(0xFFF7FAFC),
+                        textAlign = TextAlign.Center,
+                        fontSize = 13.sp,
+                        lineHeight = 17.sp
+                    )
+
+                    if (role.zombie && otherZombies.isNotEmpty()) {
+                        Text(
+                            text = t("Τα άλλα ζόμπι: ", "Other zombies: ") + otherZombies.joinToString(", "),
+                            style = Type.small,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF68D391),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+
+                    lover?.let {
+                        Text(
+                            text = t("💞 Είσαι ερωτευμένος/η με: $it", "💞 Bound to: $it"),
+                            style = Type.small,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFFF687B3),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+            }
+        }
+
+        Canvas(Modifier.fillMaxSize()) {
+            drawGothicFrame(accent)
         }
     }
 }
@@ -765,6 +851,7 @@ fun GothicRoleCard(
 /** 3:4 Gothic Role Card (Back). Identical for all roles. */
 @Composable
 fun GothicRoleCardBack(modifier: Modifier = Modifier) {
+    val backImg = rememberCinemaImage("house/back.webp")
     Box(
         modifier = modifier
             .fillMaxWidth(0.85f)
@@ -776,8 +863,20 @@ fun GothicRoleCardBack(modifier: Modifier = Modifier) {
                 )
             )
     ) {
+        if (backImg != null) {
+            Image(
+                bitmap = backImg,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+        } else {
+            Canvas(Modifier.fillMaxSize()) {
+                drawVictorianBack()
+            }
+        }
         Canvas(Modifier.fillMaxSize()) {
-            drawVictorianBack()
+            drawGothicFrame(Color(0xFF9F7AEA), isDark = true)
         }
     }
 }
@@ -811,8 +910,32 @@ fun HouseBackground(
             animationSpec = tween(durationMillis = 600),
             label = "houseSkyCrossfade"
         ) { night ->
-            Canvas(Modifier.fillMaxSize()) {
-                val w = size.width
+            val nightImg = rememberCinemaImage("house/night.webp")
+            val dayImg = rememberCinemaImage("house/day.webp")
+
+            if (night && nightImg != null) {
+                Box(Modifier.fillMaxSize()) {
+                    Image(
+                        bitmap = nightImg,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                    CinemaScrim()
+                }
+            } else if (!night && dayImg != null) {
+                Box(Modifier.fillMaxSize()) {
+                    Image(
+                        bitmap = dayImg,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                    CinemaScrim()
+                }
+            } else {
+                Canvas(Modifier.fillMaxSize()) {
+                    val w = size.width
                 val h = size.height
 
                 if (night) {
@@ -935,6 +1058,7 @@ fun HouseBackground(
                     }
                 }
             }
+        }
         }
 
         // Foreground game content

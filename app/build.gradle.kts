@@ -37,7 +37,11 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "PACK_BRANCH", "\"cinematic\"")
+        }
         release {
+            buildConfigField("String", "PACK_BRANCH", "\"main\"")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")

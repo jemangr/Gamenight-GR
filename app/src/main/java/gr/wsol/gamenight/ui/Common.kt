@@ -89,23 +89,29 @@ fun Page(
     title: String,
     onBack: (() -> Unit)?,
     scroll: Boolean = true,
+    scrollState: androidx.compose.foundation.ScrollState? = null,
     actions: @Composable RowScope.() -> Unit = {},
     bottom: (@Composable ColumnScope.() -> Unit)? = null,
+    background: (@Composable androidx.compose.foundation.layout.BoxScope.() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    Column(Modifier.fillMaxSize().background(C.bg).statusBarsPadding().navigationBarsPadding().imePadding()) {
-        Row(Modifier.fillMaxWidth().heightIn(min = 56.dp).padding(horizontal = 6.dp), verticalAlignment = Alignment.CenterVertically) {
-            if (onBack != null) IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, t("Πίσω", "Back"), tint = C.text) }
-            else Spacer(Modifier.width(12.dp))
-            Text(title, style = Type.h, color = C.text, modifier = Modifier.weight(1f))
-            actions()
+    val effectiveScrollState = scrollState ?: rememberScrollState()
+    Box(Modifier.fillMaxSize().background(C.bg)) {
+        background?.invoke(this)
+        Column(Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding().imePadding()) {
+            Row(Modifier.fillMaxWidth().heightIn(min = 56.dp).padding(horizontal = 6.dp), verticalAlignment = Alignment.CenterVertically) {
+                if (onBack != null) IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, t("Πίσω", "Back"), tint = C.text) }
+                else Spacer(Modifier.width(12.dp))
+                Text(title, style = Type.h, color = C.text, modifier = Modifier.weight(1f))
+                actions()
+            }
+            val m = Modifier.weight(1f).fillMaxWidth().padding(horizontal = 16.dp)
+            Column(if (scroll) m.verticalScroll(effectiveScrollState) else m, verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                content()
+                if (scroll) Spacer(Modifier.height(16.dp))
+            }
+            if (bottom != null) Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp), content = bottom)
         }
-        val m = Modifier.weight(1f).fillMaxWidth().padding(horizontal = 16.dp)
-        Column(if (scroll) m.verticalScroll(rememberScrollState()) else m, verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            content()
-            if (scroll) Spacer(Modifier.height(16.dp))
-        }
-        if (bottom != null) Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp), content = bottom)
     }
 }
 
@@ -293,18 +299,56 @@ fun SideName(night: Night, side: String, style: androidx.compose.ui.text.TextSty
 fun PassTo(name: String, color: Color, note: String? = null, button: String = t("Είμαι εγώ, πάμε", "It's me, go"), onReady: () -> Unit) {
     gr.wsol.gamenight.chaos.CalmScreen()
     val player = gr.wsol.gamenight.core.Store.night.players.firstOrNull { it.name == name }
-    Column(Modifier.fillMaxSize().padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-        if (player != null) {
-            MonsterAvatar(name = name, color = color, variant = player.avatar, size = 84.dp)
-        } else {
-            Text("📱", fontSize = 56.sp)
+    val passBg = rememberCinemaImage("bg/pass.webp")
+
+    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        if (passBg != null) {
+            androidx.compose.foundation.Image(
+                bitmap = passBg,
+                contentDescription = null,
+                contentScale = androidx.compose.ui.layout.ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+            CinemaScrim()
         }
-        Spacer(Modifier.height(14.dp))
-        Text(t("Δώσε το κινητό σε", "Pass the phone to"), style = Type.body, color = C.muted)
-        Text(name, style = Type.big, color = color, textAlign = TextAlign.Center)
-        if (note != null) { Spacer(Modifier.height(10.dp)); Body(note, align = TextAlign.Center) }
-        Spacer(Modifier.height(28.dp))
-        BigButton(button, { gr.wsol.gamenight.chaos.Chaos.holder = name; onReady() }, color = color)
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            if (passBg != null) {
+                Panel(Modifier.fillMaxWidth(0.92f)) {
+                    Column(
+                        Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        if (player != null) {
+                            MonsterAvatar(name = name, color = color, variant = player.avatar, size = 84.dp)
+                        } else {
+                            Text("📱", fontSize = 56.sp)
+                        }
+                        Text(t("Δώσε το κινητό σε", "Pass the phone to"), style = Type.body, color = C.muted)
+                        Text(name, style = Type.big, color = color, textAlign = TextAlign.Center)
+                        if (note != null) { Body(note, align = TextAlign.Center) }
+                    }
+                }
+            } else {
+                if (player != null) {
+                    MonsterAvatar(name = name, color = color, variant = player.avatar, size = 84.dp)
+                } else {
+                    Text("📱", fontSize = 56.sp)
+                }
+                Spacer(Modifier.height(14.dp))
+                Text(t("Δώσε το κινητό σε", "Pass the phone to"), style = Type.body, color = C.muted)
+                Text(name, style = Type.big, color = color, textAlign = TextAlign.Center)
+                if (note != null) { Spacer(Modifier.height(10.dp)); Body(note, align = TextAlign.Center) }
+            }
+            Spacer(Modifier.height(28.dp))
+            BigButton(button, { gr.wsol.gamenight.chaos.Chaos.holder = name; onReady() }, color = color)
+        }
     }
 }
 
