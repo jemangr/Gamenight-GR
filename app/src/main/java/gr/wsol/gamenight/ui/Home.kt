@@ -142,7 +142,7 @@ private fun GameCard(g: Game, count: Int, onBlocked: (String) -> Unit) {
                 if (g.icon != 0) {
                     Icon(
                         painter = painterResource(g.icon),
-                        contentDescription = g.title,
+                        contentDescription = null,
                         tint = g.color,
                         modifier = Modifier.size(26.dp)
                     )

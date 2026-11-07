@@ -4,6 +4,13 @@
     android:height="24dp"
     android:viewportWidth="24"
     android:viewportHeight="24">
-    <path android:fillColor="#FFFFFF" android:pathData="M21,11h-3l-2,-2H9C7.3,9 6,10.3 6,12s1.3,3 3,3h7l2,-2h3c0.6,0 1,-0.4 1,-1s-0.4,-1 -1,-1z" />
-    <path android:fillColor="#FFFFFF" android:fillAlpha="0.55" android:pathData="M2,12l3,-3v6L2,12zm9,-1h4v2h-4v-2z" />
+    <!-- Bottle body lying centered: soft tone -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.32"
+        android:pathData="M5,10.5c-0.8,0 -1.5,0.7 -1.5,1.5s0.7,1.5 1.5,1.5h8.5c1,0 1.8,-0.5 2.5,-1v-1c-0.7,-0.5 -1.5,-1 -2.5,-1H5zm12.5,0.5h2v2h-2v-2z" />
+    <!-- Curved spin arrows and bottle label: primary tone -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M8,10.5h3v3H8v-3zm0,-5C11.5,3.8 15.5,4.2 18,6.5L16.5,8H21V3.5L19.3,5.2C16.3,2.5 11.5,2.1 7.2,3.8L8,5.5zm8,13c-3.5,1.7 -7.5,1.3 -10,-1L7.5,16H3v4.5l1.7,-1.7c3,2.7 7.8,3.1 12.1,1.4L16,18.5z" />
 </vector>

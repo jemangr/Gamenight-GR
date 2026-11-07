@@ -54,7 +54,7 @@ android {
         unitTests.isIncludeAndroidResources = true
         unitTests.all {
             it.systemProperty("robolectric.dependency.repo.url", "https://repo.maven.apache.org/maven2")
-            it.maxHeapSize = "1536m"
+            it.maxHeapSize = "3g"
             listOf("core.search", "core.only").forEach { k -> System.getProperty(k)?.let { v -> it.systemProperty(k, v) } }
         }
     }

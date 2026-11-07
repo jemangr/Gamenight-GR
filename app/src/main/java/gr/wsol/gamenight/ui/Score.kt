@@ -58,6 +58,8 @@ fun shareText(n: Night): String = buildString {
     if (games.isNotEmpty()) { appendLine(); append(t("Παίξαμε: ", "We played: ") + games.joinToString(", ") { "${it.emoji} ${it.title}" }) }
 }.trim()
 
+private var lastCelebratedLeader: String? = null
+
 @Composable
 fun ScoreScreen() {
     val n = Store.night
@@ -67,6 +69,18 @@ fun ScoreScreen() {
     val top = (r.maxOfOrNull { it.second } ?: 0).coerceAtLeast(1)
     var entered by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) { entered = true }
+
+    val hasWinner = r.isNotEmpty() && r[0].second > 0
+    val isTieForFirst = r.size >= 2 && r[0].second == r[1].second
+    val canCelebrate = hasWinner && !isTieForFirst
+    val currentLeader = if (canCelebrate) r[0].first else null
+    val shouldCelebrate = currentLeader != null && currentLeader != lastCelebratedLeader
+
+    LaunchedEffect(currentLeader) {
+        if (shouldCelebrate) {
+            lastCelebratedLeader = currentLeader
+        }
+    }
 
     Box(Modifier.fillMaxSize()) {
         Page(t("Πίνακας της βραδιάς", "Tonight's scores"), onBack = { Nav.back() }, bottom = {
@@ -82,8 +96,16 @@ fun ScoreScreen() {
                 Body(t("Πρόσθεσε παίκτες για να ξεκινήσει ο πίνακας.", "Add players to start the scoreboard."))
             }
 
-            // 3-tier rising podium when 3 or more players are participating
-            if (r.size >= 3) {
+            // 3-tier rising podium when 3 or more players are participating AND winner has points
+            val showPodium = r.size >= 3 && hasWinner
+            if (showPodium) {
+                val place0 = 1
+                val height0 = 155.dp
+                val place1 = if (r[1].second == r[0].second) 1 else 2
+                val height1 = if (r[1].second == r[0].second) 155.dp else 115.dp
+                val place2 = if (r[2].second == r[1].second) place1 else 3
+                val height2 = if (r[2].second == r[1].second) height1 else 85.dp
+
                 Panel(color = Color(0x33000000)) {
                     Row(
                         modifier = Modifier
@@ -92,41 +114,44 @@ fun ScoreScreen() {
                         horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
                         verticalAlignment = Alignment.Bottom
                     ) {
-                        // 2nd Place (Silver - Left)
+                        // 2nd Place (Left)
                         PodiumPillar(
-                            place = 2,
+                            place = place1,
                             side = r[1].first,
                             points = r[1].second,
-                            targetHeight = 115.dp,
+                            targetHeight = height1,
                             entered = entered,
                             night = n,
+                            showConfetti = false,
                             modifier = Modifier.weight(1f)
                         )
 
-                        // 1st Place (Gold - Center)
+                        // 1st Place (Center)
                         PodiumPillar(
-                            place = 1,
+                            place = place0,
                             side = r[0].first,
                             points = r[0].second,
-                            targetHeight = 155.dp,
+                            targetHeight = height0,
                             entered = entered,
                             night = n,
+                            showConfetti = shouldCelebrate && entered,
                             modifier = Modifier.weight(1.15f)
                         )
 
-                        // 3rd Place (Bronze - Right)
+                        // 3rd Place (Right)
                         PodiumPillar(
-                            place = 3,
+                            place = place2,
                             side = r[2].first,
                             points = r[2].second,
-                            targetHeight = 85.dp,
+                            targetHeight = height2,
                             entered = entered,
                             night = n,
+                            showConfetti = false,
                             modifier = Modifier.weight(1f)
                         )
                     }
                 }
-            } else if (r.isNotEmpty() && r[0].second > 0) {
+            } else if (r.isNotEmpty() && hasWinner) {
                 // 1-2 players banner
                 val (s, p) = r[0]
                 Panel(color = C.panel2) {
@@ -141,9 +166,9 @@ fun ScoreScreen() {
                 }
             }
 
-            // Players list: starting from 4th for podium, or from 1st if less than 3
-            val listPlayers = if (r.size >= 3) r.drop(3) else r
-            val startIndex = if (r.size >= 3) 3 else 0
+            // Players list: starting from 4th for podium, or from 1st if no podium
+            val listPlayers = if (showPodium) r.drop(3) else r
+            val startIndex = if (showPodium) 3 else 0
 
             listPlayers.forEachIndexed { idx, (s, p) ->
                 val rank = startIndex + idx + 1
@@ -223,7 +248,7 @@ fun ScoreScreen() {
             onDismissRequest = { confirm = false },
             title = { Text(t("Νέα βραδιά;", "New night?"), color = C.text) },
             text = { Text(t("Οι πόντοι μηδενίζονται και η βραδιά μπαίνει στο ιστορικό. Οι παίκτες και οι ομάδες μένουν.", "Points go back to zero and the night goes into the history. Players and teams stay."), color = C.muted) },
-            confirmButton = { TextButton(onClick = { gr.wsol.gamenight.core.History.add(n); Store.night = n.copy(points = emptyMap(), log = emptyList(), started = System.currentTimeMillis()); confirm = false }) { Text(t("Μηδενισμός", "Reset"), color = C.amber) } },
+            confirmButton = { TextButton(onClick = { gr.wsol.gamenight.core.History.add(n); Store.night = n.copy(points = emptyMap(), log = emptyList(), started = System.currentTimeMillis()); lastCelebratedLeader = null; confirm = false }) { Text(t("Μηδενισμός", "Reset"), color = C.amber) } },
             dismissButton = { TextButton(onClick = { confirm = false }) { Text(t("Άκυρο", "Cancel"), color = C.muted) } },
             containerColor = C.panel,
         )
@@ -313,6 +338,7 @@ private fun PodiumPillar(
     targetHeight: androidx.compose.ui.unit.Dp,
     entered: Boolean,
     night: Night,
+    showConfetti: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     val height by animateDpAsState(
@@ -338,8 +364,8 @@ private fun PodiumPillar(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Bottom
     ) {
-        // Confetti for 1st place
-        if (place == 1 && points > 0) {
+        // Confetti only for celebrated leader
+        if (showConfetti) {
             Confetti(trigger = entered)
         }
 
@@ -378,6 +404,18 @@ private fun PodiumPillar(
             maxLines = 1,
             textAlign = TextAlign.Center
         )
+
+        // Teams: show members in small text below team name
+        if (night.teams) {
+            Text(
+                text = night.membersOf(side).joinToString(", "),
+                style = Type.small,
+                fontSize = 10.5.sp,
+                color = C.muted,
+                maxLines = 1,
+                textAlign = TextAlign.Center
+            )
+        }
 
         // Points
         Text(

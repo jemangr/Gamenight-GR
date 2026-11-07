@@ -48,6 +48,7 @@ import gr.wsol.gamenight.core.Cards
 import gr.wsol.gamenight.core.Deck
 import gr.wsol.gamenight.core.Prompt
 import gr.wsol.gamenight.core.Store
+import gr.wsol.gamenight.ui.haptic
 import gr.wsol.gamenight.core.t
 import gr.wsol.gamenight.extras.OnShake
 import gr.wsol.gamenight.extras.Sfx
@@ -183,9 +184,11 @@ fun BombGame(host: GameHost) {
             val loser = holder
             val alive = order.filter { it !in out && it != loser }
             var boomTrigger by remember(round) { mutableIntStateOf(0) }
+            LaunchedEffect(round) {
+                haptic(haptic, HapticFeedbackType.LongPress)
+            }
             remember(round) {
                 boomTrigger++
-                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                 host.stat(loser, "bomb"); gr.wsol.gamenight.chaos.Chaos.tease("bomb", loser)
                 if (sudden) out.add(loser) else tally.add(host, listOf(loser), -1)
                 host.log(t("Βόμβα: έσκασε στα χέρια του/της $loser", "Bomb: blew up in $loser's hands"))
