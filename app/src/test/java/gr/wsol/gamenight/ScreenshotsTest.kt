@@ -85,6 +85,22 @@ class ScreenshotsTest {
         shot("02-players") { PlayersScreen() }
     }
     @Test fun s03_score() = shot("03-score") { ScoreScreen() }
+    @Test fun s03b_score_zero() {
+        val players = names.mapIndexed { i, n -> Player(n, Palette.players[i], avatar = i) }
+        Store.night = Store.night.copy(players = players, teams = false, points = emptyMap())
+        shot("03b-score-zero") { ScoreScreen() }
+    }
+    @Test fun s03c_score_tie() {
+        val players = names.mapIndexed { i, n -> Player(n, Palette.players[i], avatar = i) }
+        Store.night = Store.night.copy(players = players, teams = false, points = mapOf("Γιάννης" to 8, "Μαρία" to 8, "Νίκος" to 8, "Ελένη" to 4, "Κώστας" to 2))
+        shot("03c-score-tie") { ScoreScreen() }
+    }
+    @Test fun s03d_score_teams() {
+        val sixNames = listOf("Γιάννης", "Μαρία", "Νίκος", "Ελένη", "Κώστας", "Δήμητρα")
+        val sixPlayers = sixNames.mapIndexed { i, n -> Player(n, Palette.players[i], avatar = i) }
+        Store.night = Store.night.copy(players = sixPlayers, teams = true, teamOf = sixNames.withIndex().associate { (i, n) -> n to i % 2 }, points = mapOf("#0" to 12, "#1" to 9))
+        shot("03d-score-teams") { ScoreScreen() }
+    }
     @Test fun s04_settings() = shot("04-settings") { SettingsScreen() }
     @Test fun s04b_havales() { Store.settings = Store.settings.copy(havales = true); shot("04b-havales") { androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(16.dp)) { gr.wsol.gamenight.ui.AiPanel() } } }
     @Test fun s05_taboo_intro() = shot("05-taboo-intro") { game("taboo")(host) }
