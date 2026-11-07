@@ -3,108 +3,143 @@
   "files": [
     {
       "path": "bg/home.webp",
-      "bytes": 55610,
-      "sha256": "554d4700527a8d288871365f9a27cf019fe178e32078767dca23dbda814c6ef6"
+      "bytes": 56618,
+      "sha256": "9bbdfe6f978b55b25be315b95df63e8636c384ce927ce1c253f8f4066cb88b0e"
     },
     {
       "path": "bg/pass.webp",
-      "bytes": 24146,
-      "sha256": "37498682e5bf7846afdfd121c1f5b5e10f058aa5784d2605929bf0e9a17e8d97"
+      "bytes": 24466,
+      "sha256": "0aa949f790f60abe6ede1f6511d1e04bd8272412f8941d847bb65fd6a1f2b0ae"
     },
     {
       "path": "bg/stage.webp",
-      "bytes": 29678,
-      "sha256": "b1286ad78a94a6d991322b6d65f030e5e2d022f78d7e5205baab67e3d8f4fd87"
+      "bytes": 30392,
+      "sha256": "713e2f9b06d13db4077ad4c8c563554eb01b9adbd3475c7b9917ddf2d89b6990"
     },
     {
       "path": "cat/roles.webp",
-      "bytes": 11348,
-      "sha256": "06b5d56f2f4223d82016cb4d2ee8c8503e9461019adb6f1f1696465f2c5f6502"
+      "bytes": 13568,
+      "sha256": "be6a28f6735649c718bd8900a397539fe7d349d194654b5d395eec734d204965"
     },
     {
       "path": "cat/words.webp",
-      "bytes": 17900,
-      "sha256": "edbe2ea62fe261923c2ea96da5f70c183957de699a45a708636958b736df6d87"
+      "bytes": 22226,
+      "sha256": "8ad849f7e06485238218a5ff9c90506b5a785e8528e41fc63855cb338da522d1"
     },
     {
       "path": "cat/party.webp",
-      "bytes": 11790,
-      "sha256": "3919b13d7d14ad13127412e31bfd45dff4707334c3b6b64c81a34d271e2a1984"
+      "bytes": 26026,
+      "sha256": "0973227fbcbea96cbeee1a482dd07166eea7663c395c8ca3d01c22082e9d8fa3"
     },
     {
       "path": "cat/bluff.webp",
-      "bytes": 12998,
-      "sha256": "0faf198c358b4f9ddf662f746eb3bcdc0bfc56617474d8fc11d3bc0d0682e4f1"
+      "bytes": 14336,
+      "sha256": "f007d4902114d7476fcb5562adf43ffc39b9a6aa689182db16f0482a639c5f18"
     },
     {
       "path": "cat/stage.webp",
-      "bytes": 14560,
-      "sha256": "ad2f561a731cb8e8a8f4f1bf2bc9a9f200335cb3fa50a640632e78156eb8dfb4"
+      "bytes": 13948,
+      "sha256": "efb93c76a53c13c95dca76ce0a7fe23e18ca7a1c7568c5aa456ea8d2ae6861d9"
     },
     {
       "path": "cat/reflex.webp",
-      "bytes": 15084,
-      "sha256": "a3c1ba2c90d897c299ea877d162acd2f71cf6b2f2e3ae4c183234d50b20a72d1"
+      "bytes": 22236,
+      "sha256": "1189ef451d9496ec7013890708645e0193348e27b232a2f38dbb934d235a928b"
     },
     {
       "path": "cat/motion.webp",
-      "bytes": 7844,
-      "sha256": "dc14cd62739442aaacf777b62629b2be6f48e8c0d253e95416c2538948db57c0"
+      "bytes": 9198,
+      "sha256": "22b6d72875f7b8b0c5e714592e3b21ae73d6d53fde564d9c6dcf97b20ac55b9f"
     },
     {
       "path": "cat/arcade.webp",
-      "bytes": 18916,
-      "sha256": "0c2ce1b4a5c0415178ca51c02332393d95198ca1f5504c6ac8ba8c28348705e4"
+      "bytes": 23738,
+      "sha256": "a911eb57e0e37b91a55e33968b37748ea8947894b89190d36338f413bde27164"
     },
     {
       "path": "cat/board.webp",
-      "bytes": 34532,
-      "sha256": "53492c338d834d60634f7a45d57ea982bc1aee1247471665b80f74cf3dda2a70"
+      "bytes": 38966,
+      "sha256": "677e9768572d8482c86fe7acad6c851c2bb8ba991964c40042cd616884b93535"
     },
     {
       "path": "cat/logic.webp",
-      "bytes": 18236,
-      "sha256": "f7e95014e051eb25f4d88f298c3e5fdb17b7783480640bbf634778902aa5a65b"
+      "bytes": 22494,
+      "sha256": "f16807303f67dd1b7e7c0a5e2a0f10591394ba943a352f410986225610892f01"
     },
     {
       "path": "cat/ai.webp",
-      "bytes": 39004,
-      "sha256": "46f01e53cd9331dbc413e7a04bea2f3a2feebeaf8c31d8cdf4e5a9419ed03c9a"
+      "bytes": 50750,
+      "sha256": "7079cb03c37bbee88972c9bee22ed78b8da30055f94ea5344566b66af1392b33"
     },
     {
       "path": "house/night.webp",
-      "bytes": 134966,
-      "sha256": "878aad2d60930dbbbde036fd604cfb77575cce77a61970e963002cf570260900"
+      "bytes": 134024,
+      "sha256": "048d38b65a2c6cd00374bec69d51561ca4617d4ce7423d629835a10e0f093e40"
     },
     {
       "path": "house/day.webp",
-      "bytes": 218236,
-      "sha256": "fc19a1a3fcd39b3700dd7ce66e829d1f3c912580f02dc9bab2feb54087481f3f"
+      "bytes": 199986,
+      "sha256": "b67fb90addcdc992a0b2d65b43d408030928c360a561e2a186ca765a06ae4728"
     },
     {
       "path": "house/role-zombie.webp",
-      "bytes": 17386,
-      "sha256": "fdae5c211c88d7978c64be4559d6970c43f823f13da8a0154db9df5a116f7239"
+      "bytes": 21714,
+      "sha256": "680140d66c45533fec4edd76821846c0c7ab558e7f09da07c73bb4a1e88a6e5e"
     },
     {
       "path": "house/role-leader.webp",
-      "bytes": 13052,
-      "sha256": "3429162f1c1ae79c0aa37494cafd06e6d31eca54fbbbac26ba88421fa113d507"
+      "bytes": 13398,
+      "sha256": "9e13d5ca6bf545113804f227e1bf10a701a19fd7901e253113cb24b4a55e8e98"
     },
     {
       "path": "house/role-healer.webp",
-      "bytes": 40300,
-      "sha256": "55e97198809f7d1701f28fcb872898d2491634c496af6131c1c3be45be7485fe"
+      "bytes": 40486,
+      "sha256": "6a4657e0ca7db949372d2b8316a617ca5e47a0b0fd0dcaa03437cf78e8feac47"
     },
     {
       "path": "house/role-mage.webp",
-      "bytes": 21560,
-      "sha256": "6ade8db9186959df04b4309be3dc4cbad780968eb89ebe81c3105d962fb6a9ec"
+      "bytes": 25250,
+      "sha256": "4847abdf4c85d82edaecd8201e582b325882e558ee16ef5f783982a65847999b"
     },
     {
       "path": "house/role-exorcist.webp",
-      "bytes": 21558,
-      "sha256": "18618f8ce934d7b4158a03b4e561601c37cae1e33df2806a9e4f31963d418b1d"
+      "bytes": 21608,
+      "sha256": "f5ac98605d5d07dc44f091e20f9882633c5b5bad2af3f54f58e31f9469dbd545"
+    },
+    {
+      "path": "house/role-medium.webp",
+      "bytes": 24054,
+      "sha256": "fade94aa6f74a72c3f092f7041a279d12115ad4838c99b8bfe49d4c158260a48"
+    },
+    {
+      "path": "house/role-hunter.webp",
+      "bytes": 31394,
+      "sha256": "95120202c926e6e6a297ee16bafd9fb52c9a9a70991072034ddf9c372eaaa020"
+    },
+    {
+      "path": "house/role-granny.webp",
+      "bytes": 34222,
+      "sha256": "06e7863ff5e6d1688a3ef7eacc12a22eaf09d5a824b914fed67d1b2a003cd7bf"
+    },
+    {
+      "path": "house/role-possessed.webp",
+      "bytes": 18558,
+      "sha256": "5f6b927414f377993431ad4037f24e03c44aa789881342f3e4064aed1bd6471f"
+    },
+    {
+      "path": "house/role-human.webp",
+      "bytes": 19578,
+      "sha256": "b56b25689686616ba5ac13d0d9fa73614543428eb4648fd07958d194d5192a7f"
+    },
+    {
+      "path": "house/back.webp",
+      "bytes": 60586,
+      "sha256": "2035bc4d0488d97aaec5000695b1cbfa2d6aa3bab90f9ef4f6803fbaea596a16"
+    },
+    {
+      "path": "intro/alien.webp",
+      "bytes": 43818,
+      "sha256": "79ac23e4799fd181428da295f41cc263b1eb1b5e0396c432d310a8bc1d1defb4"
     }
   ]
 }
