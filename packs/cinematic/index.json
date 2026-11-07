@@ -50,6 +50,61 @@
       "path": "cat/motion.webp",
       "bytes": 7844,
       "sha256": "dc14cd62739442aaacf777b62629b2be6f48e8c0d253e95416c2538948db57c0"
+    },
+    {
+      "path": "cat/arcade.webp",
+      "bytes": 18916,
+      "sha256": "0c2ce1b4a5c0415178ca51c02332393d95198ca1f5504c6ac8ba8c28348705e4"
+    },
+    {
+      "path": "cat/board.webp",
+      "bytes": 34532,
+      "sha256": "53492c338d834d60634f7a45d57ea982bc1aee1247471665b80f74cf3dda2a70"
+    },
+    {
+      "path": "cat/logic.webp",
+      "bytes": 18236,
+      "sha256": "f7e95014e051eb25f4d88f298c3e5fdb17b7783480640bbf634778902aa5a65b"
+    },
+    {
+      "path": "cat/ai.webp",
+      "bytes": 39004,
+      "sha256": "46f01e53cd9331dbc413e7a04bea2f3a2feebeaf8c31d8cdf4e5a9419ed03c9a"
+    },
+    {
+      "path": "house/night.webp",
+      "bytes": 134966,
+      "sha256": "878aad2d60930dbbbde036fd604cfb77575cce77a61970e963002cf570260900"
+    },
+    {
+      "path": "house/day.webp",
+      "bytes": 218236,
+      "sha256": "fc19a1a3fcd39b3700dd7ce66e829d1f3c912580f02dc9bab2feb54087481f3f"
+    },
+    {
+      "path": "house/role-zombie.webp",
+      "bytes": 17386,
+      "sha256": "fdae5c211c88d7978c64be4559d6970c43f823f13da8a0154db9df5a116f7239"
+    },
+    {
+      "path": "house/role-leader.webp",
+      "bytes": 13052,
+      "sha256": "3429162f1c1ae79c0aa37494cafd06e6d31eca54fbbbac26ba88421fa113d507"
+    },
+    {
+      "path": "house/role-healer.webp",
+      "bytes": 40300,
+      "sha256": "55e97198809f7d1701f28fcb872898d2491634c496af6131c1c3be45be7485fe"
+    },
+    {
+      "path": "house/role-mage.webp",
+      "bytes": 21560,
+      "sha256": "6ade8db9186959df04b4309be3dc4cbad780968eb89ebe81c3105d962fb6a9ec"
+    },
+    {
+      "path": "house/role-exorcist.webp",
+      "bytes": 21558,
+      "sha256": "18618f8ce934d7b4158a03b4e561601c37cae1e33df2806a9e4f31963d418b1d"
     }
   ]
 }
