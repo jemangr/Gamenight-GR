@@ -7,6 +7,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,7 +40,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -364,20 +368,22 @@ private fun HouseVote(g: HouseEngine, key: String, onDone: (Map<String, String>)
     }
 }
 
-/** Secret deal round with 3:4 gothic card and FlipCard animation. */
+/** Secret deal round with 3:4 gothic card and FlipCard hold-to-reveal. */
 @Composable
 private fun HouseDealScreen(g: HouseEngine, gameNo: Int, onDone: () -> Unit) {
     val players = g.players
     var i by remember(gameNo) { mutableIntStateOf(0) }
     var ready by remember(gameNo, i) { mutableStateOf(false) }
-    var revealed by remember(gameNo, i) { mutableStateOf(false) }
+    var held by remember(gameNo, i) { mutableStateOf(false) }
+    var seen by remember(gameNo, i) { mutableStateOf(false) }
     val n = Store.night
     val who = players.getOrNull(i) ?: return
 
     if (!ready) {
         PassTo(who, Color(n.colorOf(n.sideOf(who))), note = t("Μόνο εσύ πρέπει να βλέπεις την οθόνη.", "Only you should see the screen.")) {
             ready = true
-            revealed = false
+            held = false
+            seen = false
         }
         return
     }
@@ -398,14 +404,20 @@ private fun HouseDealScreen(g: HouseEngine, gameNo: Int, onDone: () -> Unit) {
         Text(who, style = Type.h, color = Color(n.colorOf(n.sideOf(who))))
         Text(t("Ο ρόλος σου", "Your role"), style = Type.body, color = C.muted)
 
-        // 3:4 Gothic role card that flips on tap
+        // 3:4 Gothic role card that flips while held
         Box(
             modifier = Modifier
-                .clickable {
-                    if (!revealed) {
-                        revealed = true
-                        Sfx.buzz(15)
-                    }
+                .semantics { contentDescription = t("Κράτα πατημένο για να δεις", "Hold to see") }
+                .pointerInput(gameNo, i) {
+                    detectTapGestures(
+                        onPress = {
+                            held = true
+                            seen = true
+                            Sfx.buzz(15)
+                            tryAwaitRelease()
+                            held = false
+                        }
+                    )
                 },
             contentAlignment = Alignment.Center
         ) {
@@ -420,47 +432,31 @@ private fun HouseDealScreen(g: HouseEngine, gameNo: Int, onDone: () -> Unit) {
                 back = {
                     GothicRoleCardBack()
                 },
-                flipped = revealed
+                flipped = held
             )
         }
 
-        if (!revealed) {
-            BigButton(
-                t("Δες τον ρόλο σου", "See your role"),
-                {
-                    revealed = true
-                    Sfx.buzz(15)
-                },
-                color = C.ghost
-            )
-        } else {
-            Row(
-                modifier = Modifier.fillMaxWidth(0.85f),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                GhostButton(
-                    t("Απόκρυψη", "Hide"),
-                    {
-                        revealed = false
-                        Sfx.buzz(15)
-                    },
-                    Modifier.weight(1f)
-                )
-                BigButton(
-                    if (i + 1 < players.size) t("Το είδα · επόμενος", "Seen it · next") else t("Το είδα · τέλος", "Seen it · done"),
-                    {
-                        if (i + 1 < players.size) {
-                            i++
-                            ready = false
-                            revealed = false
-                        } else {
-                            onDone()
-                        }
-                    },
-                    Modifier.weight(1.5f),
-                    color = C.ghost
-                )
-            }
-        }
+        Text(
+            t("Κράτα πατημένο για να δεις", "Hold to see"),
+            style = Type.body,
+            color = if (held) Color.Transparent else C.muted,
+            textAlign = TextAlign.Center
+        )
+
+        BigButton(
+            if (i + 1 < players.size) t("Το είδα · επόμενος", "Seen it · next") else t("Το είδα · τέλος", "Seen it · done"),
+            {
+                if (i + 1 < players.size) {
+                    i++
+                    ready = false
+                    held = false
+                    seen = false
+                } else {
+                    onDone()
+                }
+            },
+            enabled = seen,
+            color = C.ghost
+        )
     }
 }
