@@ -5,6 +5,51 @@
       "path": "bg/home.webp",
       "bytes": 55610,
       "sha256": "554d4700527a8d288871365f9a27cf019fe178e32078767dca23dbda814c6ef6"
+    },
+    {
+      "path": "bg/pass.webp",
+      "bytes": 24146,
+      "sha256": "37498682e5bf7846afdfd121c1f5b5e10f058aa5784d2605929bf0e9a17e8d97"
+    },
+    {
+      "path": "bg/stage.webp",
+      "bytes": 29678,
+      "sha256": "b1286ad78a94a6d991322b6d65f030e5e2d022f78d7e5205baab67e3d8f4fd87"
+    },
+    {
+      "path": "cat/roles.webp",
+      "bytes": 11348,
+      "sha256": "06b5d56f2f4223d82016cb4d2ee8c8503e9461019adb6f1f1696465f2c5f6502"
+    },
+    {
+      "path": "cat/words.webp",
+      "bytes": 17900,
+      "sha256": "edbe2ea62fe261923c2ea96da5f70c183957de699a45a708636958b736df6d87"
+    },
+    {
+      "path": "cat/party.webp",
+      "bytes": 11790,
+      "sha256": "3919b13d7d14ad13127412e31bfd45dff4707334c3b6b64c81a34d271e2a1984"
+    },
+    {
+      "path": "cat/bluff.webp",
+      "bytes": 12998,
+      "sha256": "0faf198c358b4f9ddf662f746eb3bcdc0bfc56617474d8fc11d3bc0d0682e4f1"
+    },
+    {
+      "path": "cat/stage.webp",
+      "bytes": 14560,
+      "sha256": "ad2f561a731cb8e8a8f4f1bf2bc9a9f200335cb3fa50a640632e78156eb8dfb4"
+    },
+    {
+      "path": "cat/reflex.webp",
+      "bytes": 15084,
+      "sha256": "a3c1ba2c90d897c299ea877d162acd2f71cf6b2f2e3ae4c183234d50b20a72d1"
+    },
+    {
+      "path": "cat/motion.webp",
+      "bytes": 7844,
+      "sha256": "dc14cd62739442aaacf777b62629b2be6f48e8c0d253e95416c2538948db57c0"
     }
   ]
 }
