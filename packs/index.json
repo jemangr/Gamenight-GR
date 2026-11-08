@@ -1,0 +1,42 @@
+[
+ {
+  "id": "podosfairo",
+  "lang": "el",
+  "name": "Ποδόσφαιρο",
+  "about": "Παίκτες, ομάδες, κανόνες και το Euro 2004.",
+  "file": "el/podosfairo.json",
+  "version": 1
+ },
+ {
+  "id": "tainies-90s",
+  "lang": "el",
+  "name": "Ταινίες 90s",
+  "about": "Οι μεγάλες επιτυχίες της δεκαετίας του '90.",
+  "file": "el/tainies-90s.json",
+  "version": 1
+ },
+ {
+  "id": "kriti",
+  "lang": "el",
+  "name": "Κρήτη",
+  "about": "Μέρη, φαγητά, μουσική και μύθοι της Κρήτης.",
+  "file": "el/kriti.json",
+  "version": 1
+ },
+ {
+  "id": "football",
+  "lang": "en",
+  "name": "Football",
+  "about": "Players, clubs and the rules of the game.",
+  "file": "en/football.json",
+  "version": 1
+ },
+ {
+  "id": "movies-90s",
+  "lang": "en",
+  "name": "90s films",
+  "about": "The big hits of the nineties.",
+  "file": "en/movies-90s.json",
+  "version": 1
+ }
+]

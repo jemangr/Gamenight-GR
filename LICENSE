@@ -1,0 +1,23 @@
+Gamenight GR
+Copyright (c) 2026 jemangr. All rights reserved.
+
+From version 1.4.2 on, the source code, the content (cards, texts, questions), the images, the sounds,
+the name «Gamenight GR» and the logo are the property of jemangr. No part of them may be copied,
+modified, distributed, published or used to make another application or product, in whole or in part,
+without written permission.
+
+You may install and use the app published at https://github.com/jemangr/Gamenight-GR/releases for your
+own, non-commercial use.
+
+Third-party parts keep their own licenses (see docs/CREDITS.md), e.g. the Manrope font under the
+SIL Open Font License 1.1 (docs/licenses/OFL.txt) and the AndroidX / Kotlin libraries under the
+Apache License 2.0.
+
+Versions up to and including 1.4.1 were published under the MIT License; that does not extend to
+1.4.2 or any later version.
+
+---
+
+Πνευματικά δικαιώματα (c) 2026 jemangr. Με επιφύλαξη παντός δικαιώματος. Από την έκδοση 1.4.2 και
+μετά, ο κώδικας, το περιεχόμενο, οι εικόνες, οι ήχοι, το όνομα και το λογότυπο δεν επιτρέπεται να
+αντιγραφούν, να τροποποιηθούν, να διανεμηθούν ή να χρησιμοποιηθούν σε άλλη εφαρμογή χωρίς γραπτή άδεια.

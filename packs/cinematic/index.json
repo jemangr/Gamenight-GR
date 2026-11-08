@@ -1,0 +1,215 @@
+{
+  "version": 1,
+  "files": [
+    {
+      "path": "bg/home.webp",
+      "bytes": 56618,
+      "sha256": "9bbdfe6f978b55b25be315b95df63e8636c384ce927ce1c253f8f4066cb88b0e"
+    },
+    {
+      "path": "bg/pass.webp",
+      "bytes": 24466,
+      "sha256": "0aa949f790f60abe6ede1f6511d1e04bd8272412f8941d847bb65fd6a1f2b0ae"
+    },
+    {
+      "path": "bg/stage.webp",
+      "bytes": 30392,
+      "sha256": "713e2f9b06d13db4077ad4c8c563554eb01b9adbd3475c7b9917ddf2d89b6990"
+    },
+    {
+      "path": "cat/roles.webp",
+      "bytes": 17934,
+      "sha256": "56317aefbb4926b3ef18d5cb72f66565682a5d66b6162645ab7d715ec6770c48"
+    },
+    {
+      "path": "cat/words.webp",
+      "bytes": 18872,
+      "sha256": "b084242cc43c790271c6d70f2dc22b9c470906af6c817638a1321959f9faf891"
+    },
+    {
+      "path": "cat/party.webp",
+      "bytes": 17550,
+      "sha256": "6ce59c13fc23f2ecead5c6091e1f5582669e3e554c7950ef9270f08fa2362a16"
+    },
+    {
+      "path": "cat/bluff.webp",
+      "bytes": 16782,
+      "sha256": "a6d5d42d528faf601fa74ef0613fe1bd1ef89fec51cd7962e13a6a358afa0f22"
+    },
+    {
+      "path": "cat/stage.webp",
+      "bytes": 19542,
+      "sha256": "0e982d6f0fa8a2d4b0ada86958642418659b07d3b5a09ea557fae17a3e8b48de"
+    },
+    {
+      "path": "cat/reflex.webp",
+      "bytes": 14578,
+      "sha256": "c1ca5ad7af70dfd74c1631109e311925025c02bdbade9eeed741cc659853885d"
+    },
+    {
+      "path": "cat/motion.webp",
+      "bytes": 7072,
+      "sha256": "99ce910b9dbf53c065fd523fd06f96f10c4ccf0746cbb33f7fc06e13eef7f2f4"
+    },
+    {
+      "path": "cat/arcade.webp",
+      "bytes": 10212,
+      "sha256": "44d458809a7a82401304fb13e4321cc8b5c93be315a4add22227e63a3445b502"
+    },
+    {
+      "path": "cat/board.webp",
+      "bytes": 18890,
+      "sha256": "953869c3003c5542309184dc294565d076b1bb20f4ad4d701a2b76b7132c2928"
+    },
+    {
+      "path": "cat/logic.webp",
+      "bytes": 22494,
+      "sha256": "f16807303f67dd1b7e7c0a5e2a0f10591394ba943a352f410986225610892f01"
+    },
+    {
+      "path": "cat/ai.webp",
+      "bytes": 50750,
+      "sha256": "7079cb03c37bbee88972c9bee22ed78b8da30055f94ea5344566b66af1392b33"
+    },
+    {
+      "path": "house/night.webp",
+      "bytes": 134024,
+      "sha256": "048d38b65a2c6cd00374bec69d51561ca4617d4ce7423d629835a10e0f093e40"
+    },
+    {
+      "path": "house/day.webp",
+      "bytes": 199986,
+      "sha256": "b67fb90addcdc992a0b2d65b43d408030928c360a561e2a186ca765a06ae4728"
+    },
+    {
+      "path": "house/role-zombie.webp",
+      "bytes": 21714,
+      "sha256": "680140d66c45533fec4edd76821846c0c7ab558e7f09da07c73bb4a1e88a6e5e"
+    },
+    {
+      "path": "house/role-leader.webp",
+      "bytes": 13398,
+      "sha256": "9e13d5ca6bf545113804f227e1bf10a701a19fd7901e253113cb24b4a55e8e98"
+    },
+    {
+      "path": "house/role-healer.webp",
+      "bytes": 40486,
+      "sha256": "6a4657e0ca7db949372d2b8316a617ca5e47a0b0fd0dcaa03437cf78e8feac47"
+    },
+    {
+      "path": "house/role-mage.webp",
+      "bytes": 25250,
+      "sha256": "4847abdf4c85d82edaecd8201e582b325882e558ee16ef5f783982a65847999b"
+    },
+    {
+      "path": "house/role-exorcist.webp",
+      "bytes": 21608,
+      "sha256": "f5ac98605d5d07dc44f091e20f9882633c5b5bad2af3f54f58e31f9469dbd545"
+    },
+    {
+      "path": "house/role-medium.webp",
+      "bytes": 24054,
+      "sha256": "fade94aa6f74a72c3f092f7041a279d12115ad4838c99b8bfe49d4c158260a48"
+    },
+    {
+      "path": "house/role-hunter.webp",
+      "bytes": 31394,
+      "sha256": "95120202c926e6e6a297ee16bafd9fb52c9a9a70991072034ddf9c372eaaa020"
+    },
+    {
+      "path": "house/role-granny.webp",
+      "bytes": 34222,
+      "sha256": "06e7863ff5e6d1688a3ef7eacc12a22eaf09d5a824b914fed67d1b2a003cd7bf"
+    },
+    {
+      "path": "house/role-possessed.webp",
+      "bytes": 18558,
+      "sha256": "5f6b927414f377993431ad4037f24e03c44aa789881342f3e4064aed1bd6471f"
+    },
+    {
+      "path": "house/role-human.webp",
+      "bytes": 19578,
+      "sha256": "b56b25689686616ba5ac13d0d9fa73614543428eb4648fd07958d194d5192a7f"
+    },
+    {
+      "path": "house/back.webp",
+      "bytes": 60586,
+      "sha256": "2035bc4d0488d97aaec5000695b1cbfa2d6aa3bab90f9ef4f6803fbaea596a16"
+    },
+    {
+      "path": "intro/alien.webp",
+      "bytes": 43818,
+      "sha256": "79ac23e4799fd181428da295f41cc263b1eb1b5e0396c432d310a8bc1d1defb4"
+    },
+    {
+      "path": "intro/saboteur.webp",
+      "bytes": 37570,
+      "sha256": "a27fc04e1434552b8c3cfd3cc727d8f221053cc30c12eafae877e419ec0f86a8"
+    },
+    {
+      "path": "intro/spy.webp",
+      "bytes": 19714,
+      "sha256": "ef10e145e46eceaefa8824d8b75dedf43cc6bb84b7d8b01fcb9bc685760544aa"
+    },
+    {
+      "path": "intro/whisper.webp",
+      "bytes": 15724,
+      "sha256": "9f2d18b913ba064dcf20d36ac1ba7b0346bbc3bf9b375abac6cbb221d9537f24"
+    },
+    {
+      "path": "intro/interro.webp",
+      "bytes": 22018,
+      "sha256": "ba5a5c0d0df923cf70886a963a8d6262daac3c1c9d7ad47b80e159db46ce80ef"
+    },
+    {
+      "path": "chaos/crazy.webp",
+      "bytes": 42428,
+      "sha256": "c0846e9e77a05bdb283e3007ee75139ca4cd3ee0180a81adccd8fac47108a0b0"
+    },
+    {
+      "path": "chaos/curse.webp",
+      "bytes": 34220,
+      "sha256": "9546e9d84ae69e6c0e2fccc31b16d4bb63e057fe8f27a3dd043d44ff5597f7c4"
+    },
+    {
+      "path": "chaos/gift.webp",
+      "bytes": 24426,
+      "sha256": "9725c6fcf62481521a2f9d2443bedd39d29e058c0d05f04f060680392e5b8a5b"
+    },
+    {
+      "path": "chaos/penalty.webp",
+      "bytes": 23094,
+      "sha256": "1225d5168130ecf2819ca60997b5f4921406996f9b668266e96d94502e78ac8f"
+    },
+    {
+      "path": "chaos/sheriff.webp",
+      "bytes": 33006,
+      "sha256": "4ce1076150be31474a6004876f289ad54939d6818481feaa96a8a59071f68238"
+    },
+    {
+      "path": "intro/bomb.webp",
+      "bytes": 42814,
+      "sha256": "e14a895ee88b9c66344ff365b90d5418a1b4b41b5f88ea4bf4a87817c98a0ba7"
+    },
+    {
+      "path": "intro/court.webp",
+      "bytes": 22120,
+      "sha256": "163865812676976077b465771775dff65336f89a3acafba0b1daf212d7c4c2c2"
+    },
+    {
+      "path": "intro/defuse.webp",
+      "bytes": 43832,
+      "sha256": "033642151a03330667af53d112ead199f2d7a50a698126a32e8b013817fa722d"
+    },
+    {
+      "path": "intro/oracle.webp",
+      "bytes": 29702,
+      "sha256": "5e87cb01df9ff5d98378b8d24d178ea14175625e290561e846e83797dab712e1"
+    },
+    {
+      "path": "intro/safe.webp",
+      "bytes": 27116,
+      "sha256": "c18da0c459a005963f62c96b0f95a346700367dda72f91b9be974295d167a004"
+    }
+  ]
+}

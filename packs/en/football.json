@@ -1,0 +1,284 @@
+{
+ "taboo": [
+  {
+   "w": "Offside",
+   "no": [
+    "defender",
+    "line",
+    "flag",
+    "attacker",
+    "position"
+   ],
+   "c": "Football"
+  },
+  {
+   "w": "Penalty",
+   "no": [
+    "foul",
+    "box",
+    "shot",
+    "goalkeeper",
+    "spot"
+   ],
+   "c": "Football"
+  },
+  {
+   "w": "Corner kick",
+   "no": [
+    "flag",
+    "cross",
+    "corner",
+    "header",
+    "set piece"
+   ],
+   "c": "Football"
+  },
+  {
+   "w": "Goalkeeper",
+   "no": [
+    "gloves",
+    "save",
+    "goal",
+    "hands",
+    "net"
+   ],
+   "c": "Football"
+  },
+  {
+   "w": "Referee",
+   "no": [
+    "whistle",
+    "card",
+    "foul",
+    "decision",
+    "match"
+   ],
+   "c": "Football"
+  },
+  {
+   "w": "World Cup",
+   "no": [
+    "four",
+    "years",
+    "nations",
+    "trophy",
+    "FIFA"
+   ],
+   "c": "Football"
+  },
+  {
+   "w": "Hat-trick",
+   "no": [
+    "three",
+    "goals",
+    "player",
+    "match",
+    "ball"
+   ],
+   "c": "Football"
+  },
+  {
+   "w": "Own goal",
+   "no": [
+    "mistake",
+    "defender",
+    "own",
+    "net",
+    "score"
+   ],
+   "c": "Football"
+  },
+  {
+   "w": "Derby",
+   "no": [
+    "rivals",
+    "city",
+    "fans",
+    "match",
+    "local"
+   ],
+   "c": "Football"
+  },
+  {
+   "w": "Half-time",
+   "no": [
+    "break",
+    "forty-five",
+    "minutes",
+    "dressing room",
+    "whistle"
+   ],
+   "c": "Football"
+  },
+  {
+   "w": "Transfer",
+   "no": [
+    "club",
+    "player",
+    "contract",
+    "money",
+    "window"
+   ],
+   "c": "Football"
+  },
+  {
+   "w": "Captain",
+   "no": [
+    "armband",
+    "leader",
+    "team",
+    "skipper",
+    "player"
+   ],
+   "c": "Football"
+  }
+ ],
+ "forehead": [
+  {
+   "w": "Lionel Messi",
+   "c": "Football"
+  },
+  {
+   "w": "Cristiano Ronaldo",
+   "c": "Football"
+  },
+  {
+   "w": "Zinedine Zidane",
+   "c": "Football"
+  },
+  {
+   "w": "Pelé",
+   "c": "Football"
+  },
+  {
+   "w": "Diego Maradona",
+   "c": "Football"
+  },
+  {
+   "w": "Zlatan Ibrahimović",
+   "c": "Football"
+  },
+  {
+   "w": "Kylian Mbappé",
+   "c": "Football"
+  },
+  {
+   "w": "Erling Haaland",
+   "c": "Football"
+  },
+  {
+   "w": "David Beckham",
+   "c": "Football"
+  },
+  {
+   "w": "Real Madrid",
+   "c": "Football"
+  },
+  {
+   "w": "Barcelona",
+   "c": "Football"
+  },
+  {
+   "w": "Liverpool",
+   "c": "Football"
+  },
+  {
+   "w": "Manchester United",
+   "c": "Football"
+  },
+  {
+   "w": "Juventus",
+   "c": "Football"
+  },
+  {
+   "w": "Bayern Munich",
+   "c": "Football"
+  },
+  {
+   "w": "AC Milan",
+   "c": "Football"
+  },
+  {
+   "w": "Ajax",
+   "c": "Football"
+  },
+  {
+   "w": "World Cup",
+   "c": "Football"
+  },
+  {
+   "w": "Champions League",
+   "c": "Football"
+  },
+  {
+   "w": "Ballon d'Or",
+   "c": "Football"
+  },
+  {
+   "w": "Red card",
+   "c": "Football"
+  },
+  {
+   "w": "Penalty",
+   "c": "Football"
+  },
+  {
+   "w": "Offside",
+   "c": "Football"
+  },
+  {
+   "w": "VAR",
+   "c": "Football"
+  },
+  {
+   "w": "Corner kick",
+   "c": "Football"
+  },
+  {
+   "w": "Goalkeeper",
+   "c": "Football"
+  }
+ ],
+ "draw": [
+  {
+   "w": "Ball",
+   "c": "Football"
+  },
+  {
+   "w": "Goalpost",
+   "c": "Football"
+  },
+  {
+   "w": "Whistle",
+   "c": "Football"
+  },
+  {
+   "w": "Red card",
+   "c": "Football"
+  },
+  {
+   "w": "Pitch",
+   "c": "Football"
+  },
+  {
+   "w": "Football boots",
+   "c": "Football"
+  },
+  {
+   "w": "Trophy",
+   "c": "Football"
+  },
+  {
+   "w": "Corner flag",
+   "c": "Football"
+  },
+  {
+   "w": "Net",
+   "c": "Football"
+  },
+  {
+   "w": "Shirt",
+   "c": "Football"
+  }
+ ]
+}

@@ -1,0 +1,277 @@
+{
+ "taboo": [
+  {
+   "w": "Titanic",
+   "no": [
+    "ship",
+    "iceberg",
+    "Rose",
+    "Jack",
+    "sinks"
+   ],
+   "c": "90s films"
+  },
+  {
+   "w": "Jurassic Park",
+   "no": [
+    "dinosaurs",
+    "park",
+    "island",
+    "Spielberg",
+    "T. rex"
+   ],
+   "c": "90s films"
+  },
+  {
+   "w": "The Matrix",
+   "no": [
+    "Neo",
+    "pill",
+    "red",
+    "blue",
+    "simulation"
+   ],
+   "c": "90s films"
+  },
+  {
+   "w": "Forrest Gump",
+   "no": [
+    "chocolates",
+    "run",
+    "Tom Hanks",
+    "box",
+    "bench"
+   ],
+   "c": "90s films"
+  },
+  {
+   "w": "Home Alone",
+   "no": [
+    "Kevin",
+    "Christmas",
+    "burglars",
+    "traps",
+    "forgot"
+   ],
+   "c": "90s films"
+  },
+  {
+   "w": "The Lion King",
+   "no": [
+    "Simba",
+    "lion",
+    "Mufasa",
+    "Disney",
+    "Hakuna"
+   ],
+   "c": "90s films"
+  },
+  {
+   "w": "Toy Story",
+   "no": [
+    "toys",
+    "Woody",
+    "Buzz",
+    "Pixar",
+    "cowboy"
+   ],
+   "c": "90s films"
+  },
+  {
+   "w": "Men in Black",
+   "no": [
+    "aliens",
+    "suits",
+    "sunglasses",
+    "Will Smith",
+    "agents"
+   ],
+   "c": "90s films"
+  },
+  {
+   "w": "Terminator 2",
+   "no": [
+    "robot",
+    "Schwarzenegger",
+    "be back",
+    "future",
+    "machine"
+   ],
+   "c": "90s films"
+  },
+  {
+   "w": "The Mask",
+   "no": [
+    "mask",
+    "Jim Carrey",
+    "green",
+    "face",
+    "dog"
+   ],
+   "c": "90s films"
+  },
+  {
+   "w": "Aladdin",
+   "no": [
+    "lamp",
+    "genie",
+    "carpet",
+    "wishes",
+    "Jasmine"
+   ],
+   "c": "90s films"
+  }
+ ],
+ "forehead": [
+  {
+   "w": "Titanic",
+   "c": "90s films"
+  },
+  {
+   "w": "Jurassic Park",
+   "c": "90s films"
+  },
+  {
+   "w": "The Matrix",
+   "c": "90s films"
+  },
+  {
+   "w": "Forrest Gump",
+   "c": "90s films"
+  },
+  {
+   "w": "The Lion King",
+   "c": "90s films"
+  },
+  {
+   "w": "Pulp Fiction",
+   "c": "90s films"
+  },
+  {
+   "w": "Home Alone",
+   "c": "90s films"
+  },
+  {
+   "w": "Toy Story",
+   "c": "90s films"
+  },
+  {
+   "w": "Men in Black",
+   "c": "90s films"
+  },
+  {
+   "w": "Armageddon",
+   "c": "90s films"
+  },
+  {
+   "w": "Independence Day",
+   "c": "90s films"
+  },
+  {
+   "w": "Pretty Woman",
+   "c": "90s films"
+  },
+  {
+   "w": "The Mask",
+   "c": "90s films"
+  },
+  {
+   "w": "Mrs. Doubtfire",
+   "c": "90s films"
+  },
+  {
+   "w": "Jumanji",
+   "c": "90s films"
+  },
+  {
+   "w": "Braveheart",
+   "c": "90s films"
+  },
+  {
+   "w": "Fight Club",
+   "c": "90s films"
+  },
+  {
+   "w": "The Sixth Sense",
+   "c": "90s films"
+  },
+  {
+   "w": "Aladdin",
+   "c": "90s films"
+  },
+  {
+   "w": "Terminator 2",
+   "c": "90s films"
+  },
+  {
+   "w": "The Silence of the Lambs",
+   "c": "90s films"
+  },
+  {
+   "w": "Speed",
+   "c": "90s films"
+  },
+  {
+   "w": "Space Jam",
+   "c": "90s films"
+  },
+  {
+   "w": "Notting Hill",
+   "c": "90s films"
+  },
+  {
+   "w": "Ghost",
+   "c": "90s films"
+  },
+  {
+   "w": "Saving Private Ryan",
+   "c": "90s films"
+  },
+  {
+   "w": "The Green Mile",
+   "c": "90s films"
+  },
+  {
+   "w": "Twister",
+   "c": "90s films"
+  },
+  {
+   "w": "Mulan",
+   "c": "90s films"
+  }
+ ],
+ "draw": [
+  {
+   "w": "Iceberg",
+   "c": "90s films"
+  },
+  {
+   "w": "Dinosaur",
+   "c": "90s films"
+  },
+  {
+   "w": "Lamp",
+   "c": "90s films"
+  },
+  {
+   "w": "Mask",
+   "c": "90s films"
+  },
+  {
+   "w": "Box of chocolates",
+   "c": "90s films"
+  },
+  {
+   "w": "Sunglasses",
+   "c": "90s films"
+  },
+  {
+   "w": "Tornado",
+   "c": "90s films"
+  },
+  {
+   "w": "Sword",
+   "c": "90s films"
+  }
+ ]
+}
