@@ -160,6 +160,56 @@
       "path": "intro/interro.webp",
       "bytes": 22018,
       "sha256": "ba5a5c0d0df923cf70886a963a8d6262daac3c1c9d7ad47b80e159db46ce80ef"
+    },
+    {
+      "path": "chaos/crazy.webp",
+      "bytes": 42428,
+      "sha256": "c0846e9e77a05bdb283e3007ee75139ca4cd3ee0180a81adccd8fac47108a0b0"
+    },
+    {
+      "path": "chaos/curse.webp",
+      "bytes": 34220,
+      "sha256": "9546e9d84ae69e6c0e2fccc31b16d4bb63e057fe8f27a3dd043d44ff5597f7c4"
+    },
+    {
+      "path": "chaos/gift.webp",
+      "bytes": 24426,
+      "sha256": "9725c6fcf62481521a2f9d2443bedd39d29e058c0d05f04f060680392e5b8a5b"
+    },
+    {
+      "path": "chaos/penalty.webp",
+      "bytes": 23094,
+      "sha256": "1225d5168130ecf2819ca60997b5f4921406996f9b668266e96d94502e78ac8f"
+    },
+    {
+      "path": "chaos/sheriff.webp",
+      "bytes": 33006,
+      "sha256": "4ce1076150be31474a6004876f289ad54939d6818481feaa96a8a59071f68238"
+    },
+    {
+      "path": "intro/bomb.webp",
+      "bytes": 42814,
+      "sha256": "e14a895ee88b9c66344ff365b90d5418a1b4b41b5f88ea4bf4a87817c98a0ba7"
+    },
+    {
+      "path": "intro/court.webp",
+      "bytes": 22120,
+      "sha256": "163865812676976077b465771775dff65336f89a3acafba0b1daf212d7c4c2c2"
+    },
+    {
+      "path": "intro/defuse.webp",
+      "bytes": 43832,
+      "sha256": "033642151a03330667af53d112ead199f2d7a50a698126a32e8b013817fa722d"
+    },
+    {
+      "path": "intro/oracle.webp",
+      "bytes": 29702,
+      "sha256": "5e87cb01df9ff5d98378b8d24d178ea14175625e290561e846e83797dab712e1"
+    },
+    {
+      "path": "intro/safe.webp",
+      "bytes": 27116,
+      "sha256": "c18da0c459a005963f62c96b0f95a346700367dda72f91b9be974295d167a004"
     }
   ]
 }
