@@ -531,7 +531,7 @@ class ScreenshotsTest {
                             modifier = androidx.compose.ui.Modifier
                                 .size(140.dp)
                                 .clip(androidx.compose.foundation.shape.RoundedCornerShape(32.dp))
-                                .background(androidx.compose.ui.graphics.Color(0xFF0B0A12))
+                                .background(androidx.compose.ui.graphics.Color(0xFF0F173C))
                         ) {
                             androidx.compose.foundation.Image(androidx.compose.ui.res.painterResource(R.drawable.ic_launcher_foreground), null, androidx.compose.ui.Modifier.fillMaxSize())
                         }
@@ -559,7 +559,7 @@ class ScreenshotsTest {
                             modifier = androidx.compose.ui.Modifier
                                 .size(80.dp)
                                 .clip(androidx.compose.foundation.shape.RoundedCornerShape(18.dp))
-                                .background(androidx.compose.ui.graphics.Color(0xFF0B0A12))
+                                .background(androidx.compose.ui.graphics.Color(0xFF0F173C))
                         ) {
                             androidx.compose.foundation.Image(androidx.compose.ui.res.painterResource(R.drawable.ic_launcher_foreground), null, androidx.compose.ui.Modifier.fillMaxSize())
                         }
@@ -570,7 +570,7 @@ class ScreenshotsTest {
                             modifier = androidx.compose.ui.Modifier
                                 .size(48.dp)
                                 .clip(androidx.compose.foundation.shape.RoundedCornerShape(12.dp))
-                                .background(androidx.compose.ui.graphics.Color(0xFF0B0A12))
+                                .background(androidx.compose.ui.graphics.Color(0xFF0F173C))
                         ) {
                             androidx.compose.foundation.Image(androidx.compose.ui.res.painterResource(R.drawable.ic_launcher_foreground), null, androidx.compose.ui.Modifier.fillMaxSize())
                         }
@@ -595,8 +595,8 @@ class ScreenshotsTest {
 
     @Test fun logo() {
         compose.setContent {
-            androidx.compose.foundation.layout.Box(androidx.compose.ui.Modifier.size(androidx.compose.ui.unit.Dp(180f)).background(androidx.compose.ui.graphics.Color(0xFF0B0A12), androidx.compose.foundation.shape.RoundedCornerShape(androidx.compose.ui.unit.Dp(40f)))) {
-                androidx.compose.foundation.Image(androidx.compose.ui.res.painterResource(R.drawable.ic_launcher_foreground), null, androidx.compose.ui.Modifier.fillMaxSize())
+            androidx.compose.foundation.layout.Box(androidx.compose.ui.Modifier.size(androidx.compose.ui.unit.Dp(180f)).background(androidx.compose.ui.graphics.Color(0xFF0F173C), androidx.compose.foundation.shape.RoundedCornerShape(androidx.compose.ui.unit.Dp(40f)))) {
+                androidx.compose.foundation.Image(androidx.compose.ui.res.painterResource(R.drawable.logo_tile), null, androidx.compose.ui.Modifier.fillMaxSize())
             }
         }
         compose.onRoot().captureRoboImage("../docs/logo.png")

@@ -100,9 +100,8 @@ fun HomeScreen() {
         },
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Box(Modifier.size(44.dp).clip(RoundedCornerShape(13.dp)).background(Brush.sweepGradient(listOf(C.amber, C.pink, C.ghost, C.green, C.amber))), contentAlignment = Alignment.Center) {
-                Text(Looks.current.emoji, fontSize = 22.sp)
-            }
+            // The app's logo (the same picture as the launcher icon).
+            Image(painterResource(gr.wsol.gamenight.R.drawable.logo_tile), null, Modifier.size(44.dp).clip(RoundedCornerShape(11.dp)))
             Spacer(Modifier.width(12.dp))
             Column {
                 Text("Gamenight GR", style = Type.title, color = C.text)

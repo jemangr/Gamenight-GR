@@ -6,4 +6,6 @@
         <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
     <color name="bg">#0B0A12</color>
+    <!-- Background of the app icon: the navy of the logo -->
+    <color name="icon_bg">#0F173C</color>
 </resources>
