@@ -605,10 +605,13 @@ class ScreenshotsTest {
     // -----------------------------------------------------------------------
     // Cinema look screenshots (96 - 104)
     // -----------------------------------------------------------------------
-    private fun cinemaShot(name: String, vararg clicks: String, wait: Long = 1200, content: @Composable () -> Unit) {
+    private fun cinemaShot(name: String, vararg clicks: String, wait: Long = 1200, warm: List<String> = emptyList(), content: @Composable () -> Unit) {
         Store.settings = Store.settings.copy(look = 3)
         val ctx = androidx.test.core.app.ApplicationProvider.getApplicationContext<android.content.Context>()
         gr.wsol.gamenight.ui.HouseCinemaImages.preloadSync(ctx)
+        // The app decodes on Dispatchers.IO; Robolectric captures before that finishes, so the images of the shot
+        // are decoded here first (they are then served from the memory cache, as on a phone after the first view).
+        warm.forEach { org.junit.Assert.assertNotNull("missing cinema image $it", gr.wsol.gamenight.ui.loadCinemaBitmap(ctx, it)) }
         shot(name, *clicks, wait = wait, content = content)
     }
 
@@ -643,21 +646,21 @@ class ScreenshotsTest {
         }
     }
 
-    @Test fun s96_cinema_home() = cinemaShot("96-cinema-home") { HomeScreen() }
+    @Test fun s96_cinema_home() = cinemaShot("96-cinema-home", warm = listOf("bg/home.webp", "cat/roles.webp")) { HomeScreen() }
 
-    @Test fun s97_cinema_category() = cinemaShot("97-cinema-category") {
+    @Test fun s97_cinema_category() = cinemaShot("97-cinema-category", warm = listOf("bg/home.webp", "cat/roles.webp", "cat/words.webp")) {
         HomeScreen()
     }
 
-    @Test fun s98_cinema_intro_alien() = cinemaShot("98-cinema-intro-alien") {
+    @Test fun s98_cinema_intro_alien() = cinemaShot("98-cinema-intro-alien", warm = listOf("intro/alien.webp")) {
         game("alien")(host)
     }
 
-    @Test fun s99_cinema_pass() = cinemaShot("99-cinema-pass") {
+    @Test fun s99_cinema_pass() = cinemaShot("99-cinema-pass", warm = listOf("bg/pass.webp")) {
         PassTo(names[0], androidx.compose.ui.graphics.Color(Palette.players[0])) {}
     }
 
-    @Test fun s100_cinema_house_night() = cinemaShot("100-cinema-house-night") {
+    @Test fun s100_cinema_house_night() = cinemaShot("100-cinema-house-night", warm = listOf("house/night.webp", "house/day.webp")) {
         gr.wsol.gamenight.games.HouseBackground(isNight = true) {
             androidx.compose.foundation.layout.Box(
                 modifier = androidx.compose.ui.Modifier.fillMaxSize(),
@@ -695,7 +698,7 @@ class ScreenshotsTest {
         }
     }
 
-    @Test fun s103_cinema_chaos() = cinemaShot("103-cinema-chaos") {
+    @Test fun s103_cinema_chaos() = cinemaShot("103-cinema-chaos", warm = listOf("chaos/gift.webp")) {
         gr.wsol.gamenight.chaos.ChaosOverlay(
             event = gr.wsol.gamenight.chaos.Chaos.Event(
                 gr.wsol.gamenight.chaos.Chaos.Kind.Gift,
@@ -708,7 +711,7 @@ class ScreenshotsTest {
         ) {}
     }
 
-    @Test fun s104_cinema_score() = cinemaShot("104-cinema-score") {
+    @Test fun s104_cinema_score() = cinemaShot("104-cinema-score", warm = listOf("bg/stage.webp")) {
         ScoreScreen()
     }
 }
