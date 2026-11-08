@@ -587,7 +587,8 @@ fun rememberCinemaImage(path: String): ImageBitmap? {
     return produceState<ImageBitmap?>(
         initialValue = HouseCinemaImages.getPinned(path) ?: cinemaCache.get(path),
         key1 = path,
-        key2 = Store.settings.look
+        key2 = Store.settings.look,
+        key3 = Cinema.revision
     ) {
         if (value == null) {
             withContext(Dispatchers.IO) {

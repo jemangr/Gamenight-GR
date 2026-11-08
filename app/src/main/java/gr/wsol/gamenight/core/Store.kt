@@ -27,12 +27,14 @@ data class Settings(
     val havalesRude: Boolean = false,
     /** Which provider the key below is for (Provider.name). */
     val aiProvider: String = "GEMINI",
-    /** 1.1: 0 «Βραδιά» (dark), 1 «Καλοκαίρι», 2 «Χριστούγεννα»: colours and sounds. */
+    /** 1.1: 0 «Βραδιά» (dark), 1 «Καλοκαίρι», 2 «Χριστούγεννα»; 1.4: 3 «Σινεμά» (photos, the default): colours and sounds. */
     val look: Int = 0,
     /** 1.3: shake the phone to open the bug report (never while a game is on screen). */
     val shakeReport: Boolean = true,
     /** Reduce motion: no confetti, shakes or flips. */
     val reduceMotion: Boolean = false,
+    /** 1.4: the «Σινεμά» look was made the default once for everyone (they can change it in the settings). */
+    val cinemaDefault: Boolean = false,
 )
 
 /**
@@ -71,6 +73,8 @@ object Store {
         // First start: English unless the phone is in Greek.
         if (saved == null) settingsState = settingsState.copy(english = java.util.Locale.getDefault().language != "el")
         Lang.english = settingsState.english
+        // 1.4: «Σινεμά» becomes the look of everyone, once (new installs and the update); the photos download in the background.
+        if (!settingsState.cinemaDefault) settings = settingsState.copy(look = 3, cinemaDefault = true)
     }
 
     /** For tests and previews: no file, just memory. */

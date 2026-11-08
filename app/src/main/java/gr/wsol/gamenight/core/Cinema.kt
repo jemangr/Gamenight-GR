@@ -1,6 +1,8 @@
 package gr.wsol.gamenight.core
 
 import android.content.Context
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import gr.wsol.gamenight.BuildConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -18,6 +20,9 @@ import java.security.MessageDigest
  * Each file's sha256 and size are strictly verified against index.json.
  */
 object Cinema {
+    /** Goes up when a download finishes, so the screens that showed the drawn graphics load the photos. */
+    var revision by androidx.compose.runtime.mutableIntStateOf(0)
+
     const val REPO_RAW = "https://raw.githubusercontent.com/jemangr/Gamenight-GR"
     val BASE_URL get() = "$REPO_RAW/${BuildConfig.PACK_BRANCH}/packs/cinematic"
     val INDEX_URL get() = "$BASE_URL/index.json"
@@ -172,6 +177,7 @@ object Cinema {
                 tmpDir.copyRecursively(targetDir, overwrite = true)
                 tmpDir.deleteRecursively()
             }
+            revision++
             true
         } catch (_: Throwable) {
             tmpDir.deleteRecursively()
