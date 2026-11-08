@@ -18,48 +18,48 @@
     },
     {
       "path": "cat/roles.webp",
-      "bytes": 13568,
-      "sha256": "be6a28f6735649c718bd8900a397539fe7d349d194654b5d395eec734d204965"
+      "bytes": 17934,
+      "sha256": "56317aefbb4926b3ef18d5cb72f66565682a5d66b6162645ab7d715ec6770c48"
     },
     {
       "path": "cat/words.webp",
-      "bytes": 22226,
-      "sha256": "8ad849f7e06485238218a5ff9c90506b5a785e8528e41fc63855cb338da522d1"
+      "bytes": 18872,
+      "sha256": "b084242cc43c790271c6d70f2dc22b9c470906af6c817638a1321959f9faf891"
     },
     {
       "path": "cat/party.webp",
-      "bytes": 26026,
-      "sha256": "0973227fbcbea96cbeee1a482dd07166eea7663c395c8ca3d01c22082e9d8fa3"
+      "bytes": 17550,
+      "sha256": "6ce59c13fc23f2ecead5c6091e1f5582669e3e554c7950ef9270f08fa2362a16"
     },
     {
       "path": "cat/bluff.webp",
-      "bytes": 14336,
-      "sha256": "f007d4902114d7476fcb5562adf43ffc39b9a6aa689182db16f0482a639c5f18"
+      "bytes": 16782,
+      "sha256": "a6d5d42d528faf601fa74ef0613fe1bd1ef89fec51cd7962e13a6a358afa0f22"
     },
     {
       "path": "cat/stage.webp",
-      "bytes": 13948,
-      "sha256": "efb93c76a53c13c95dca76ce0a7fe23e18ca7a1c7568c5aa456ea8d2ae6861d9"
+      "bytes": 19542,
+      "sha256": "0e982d6f0fa8a2d4b0ada86958642418659b07d3b5a09ea557fae17a3e8b48de"
     },
     {
       "path": "cat/reflex.webp",
-      "bytes": 22236,
-      "sha256": "1189ef451d9496ec7013890708645e0193348e27b232a2f38dbb934d235a928b"
+      "bytes": 14578,
+      "sha256": "c1ca5ad7af70dfd74c1631109e311925025c02bdbade9eeed741cc659853885d"
     },
     {
       "path": "cat/motion.webp",
-      "bytes": 9198,
-      "sha256": "22b6d72875f7b8b0c5e714592e3b21ae73d6d53fde564d9c6dcf97b20ac55b9f"
+      "bytes": 7072,
+      "sha256": "99ce910b9dbf53c065fd523fd06f96f10c4ccf0746cbb33f7fc06e13eef7f2f4"
     },
     {
       "path": "cat/arcade.webp",
-      "bytes": 23738,
-      "sha256": "a911eb57e0e37b91a55e33968b37748ea8947894b89190d36338f413bde27164"
+      "bytes": 10212,
+      "sha256": "44d458809a7a82401304fb13e4321cc8b5c93be315a4add22227e63a3445b502"
     },
     {
       "path": "cat/board.webp",
-      "bytes": 38966,
-      "sha256": "677e9768572d8482c86fe7acad6c851c2bb8ba991964c40042cd616884b93535"
+      "bytes": 18890,
+      "sha256": "953869c3003c5542309184dc294565d076b1bb20f4ad4d701a2b76b7132c2928"
     },
     {
       "path": "cat/logic.webp",
@@ -140,6 +140,26 @@
       "path": "intro/alien.webp",
       "bytes": 43818,
       "sha256": "79ac23e4799fd181428da295f41cc263b1eb1b5e0396c432d310a8bc1d1defb4"
+    },
+    {
+      "path": "intro/saboteur.webp",
+      "bytes": 37570,
+      "sha256": "a27fc04e1434552b8c3cfd3cc727d8f221053cc30c12eafae877e419ec0f86a8"
+    },
+    {
+      "path": "intro/spy.webp",
+      "bytes": 19714,
+      "sha256": "ef10e145e46eceaefa8824d8b75dedf43cc6bb84b7d8b01fcb9bc685760544aa"
+    },
+    {
+      "path": "intro/whisper.webp",
+      "bytes": 15724,
+      "sha256": "9f2d18b913ba064dcf20d36ac1ba7b0346bbc3bf9b375abac6cbb221d9537f24"
+    },
+    {
+      "path": "intro/interro.webp",
+      "bytes": 22018,
+      "sha256": "ba5a5c0d0df923cf70886a963a8d6262daac3c1c9d7ad47b80e159db46ce80ef"
     }
   ]
 }
