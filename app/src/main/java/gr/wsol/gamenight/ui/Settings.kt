@@ -14,6 +14,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,6 +50,9 @@ fun SettingsScreen() {
     var cinemaDownloading by remember { mutableStateOf(false) }
     var cinemaProgress by remember { mutableStateOf(0 to 0) }
     var cinemaError by remember { mutableStateOf<String?>(null) }
+    var remoteIndex by remember { mutableStateOf<Cinema.Index?>(null) }
+    var checkingIndex by remember { mutableStateOf(false) }
+    var noConnection by remember { mutableStateOf(false) }
     val cinemaBytes = Cinema.installedSize(ctx)
 
     Page(t("Ρυθμίσεις", "Settings"), onBack = { Nav.back() }) {
@@ -70,6 +74,8 @@ fun SettingsScreen() {
                 { targetLook ->
                     if (targetLook == 3 && !Cinema.isInstalled(ctx)) {
                         cinemaError = null
+                        noConnection = false
+                        remoteIndex = null
                         showCinemaDialog = true
                     } else {
                         Store.settings = s.copy(look = targetLook)
@@ -151,20 +157,62 @@ fun SettingsScreen() {
     }
 
     if (showCinemaDialog) {
+        LaunchedEffect(showCinemaDialog) {
+            if (remoteIndex == null && !cinemaDownloading) {
+                checkingIndex = true
+                noConnection = false
+                val idx = Cinema.fetchIndex()
+                checkingIndex = false
+                if (idx != null) {
+                    remoteIndex = idx
+                } else {
+                    noConnection = true
+                }
+            }
+        }
+
         AlertDialog(
             onDismissRequest = { if (!cinemaDownloading) showCinemaDialog = false },
             containerColor = C.panel,
             title = { Text(t("🎬 Σινεμά", "🎬 Cinema"), style = Type.title, color = C.text) },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text(
-                        t(
-                            "Το look Σινεμά έχει φωτογραφίες (~5 MB). Κατέβασμα τώρα από το GitHub;",
-                            "The Cinema look has photos (~5 MB). Download now from GitHub?"
-                        ),
-                        style = Type.body,
-                        color = C.text
-                    )
+                    if (noConnection) {
+                        Text(
+                            t(
+                                "Χρειάζεται σύνδεση στο internet για το κατέβασμα.",
+                                "An internet connection is required to download."
+                            ),
+                            style = Type.body,
+                            color = C.red
+                        )
+                    } else if (checkingIndex || remoteIndex == null) {
+                        Text(
+                            t(
+                                "Έλεγχος μεγέθους πακέτου…",
+                                "Checking package size…"
+                            ),
+                            style = Type.body,
+                            color = C.muted
+                        )
+                    } else {
+                        val totalBytes = remoteIndex?.files?.sumOf { it.bytes } ?: 0L
+                        val mb = totalBytes / 1048576.0
+                        val sizeStr = if (Store.settings.english) {
+                            String.format(java.util.Locale.US, "%.1f MB", mb)
+                        } else {
+                            String.format(java.util.Locale.forLanguageTag("el"), "%.1f MB", mb)
+                        }
+                        Text(
+                            t(
+                                "Το look Σινεμά έχει φωτογραφίες ($sizeStr). Κατέβασμα τώρα από το GitHub;",
+                                "The Cinema look has photos ($sizeStr). Download now from GitHub?"
+                            ),
+                            style = Type.body,
+                            color = C.text
+                        )
+                    }
+
                     if (cinemaDownloading) {
                         Spacer(Modifier.height(4.dp))
                         Text(
@@ -182,7 +230,8 @@ fun SettingsScreen() {
                 }
             },
             confirmButton = {
-                if (!cinemaDownloading) {
+                val canDownload = !cinemaDownloading && !checkingIndex && !noConnection && remoteIndex != null
+                if (canDownload) {
                     TextButton(onClick = {
                         cinemaDownloading = true
                         cinemaError = null

@@ -681,7 +681,7 @@ fun GothicRoleCard(
 ) {
     val (bgTop, bgBottom) = HousePalette.colors(role)
     val accent = HousePalette.accent(role)
-    val roleImg = rememberCinemaImage("house/role-${role.name.lowercase()}.webp")
+    val roleImg = gr.wsol.gamenight.ui.HouseCinemaImages.getRoleImage(role)
 
     Box(
         modifier = modifier
@@ -851,7 +851,7 @@ fun GothicRoleCard(
 /** 3:4 Gothic Role Card (Back). Identical for all roles. */
 @Composable
 fun GothicRoleCardBack(modifier: Modifier = Modifier) {
-    val backImg = rememberCinemaImage("house/back.webp")
+    val backImg = gr.wsol.gamenight.ui.HouseCinemaImages.getBackImage()
     Box(
         modifier = modifier
             .fillMaxWidth(0.85f)

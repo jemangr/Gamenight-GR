@@ -4,10 +4,12 @@ import gr.wsol.gamenight.core.Cinema
 import gr.wsol.gamenight.core.Settings
 import gr.wsol.gamenight.core.Store
 import gr.wsol.gamenight.ui.Looks
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -21,6 +23,13 @@ class CinemaTest {
     fun setUp() {
         tempDir = Files.createTempDirectory("cinema_test").toFile()
         Store.inMemory(s = Settings(look = 0))
+        Cinema.testBaseDir = null
+    }
+
+    @After
+    fun tearDown() {
+        Cinema.testBaseDir = null
+        tempDir.deleteRecursively()
     }
 
     @Test
@@ -95,5 +104,60 @@ class CinemaTest {
         val dummyEmptyDir = File(tempDir, "empty_files")
         val missing = File(dummyEmptyDir, "cinematic/non_existent.webp").takeIf { it.exists() }
         assertEquals(null, missing)
+    }
+
+    @Test
+    fun validateIndexRejectsPathTraversalAndInvalidPaths() {
+        assertFalse("Relative traversal should be rejected", Cinema.isValidPath("../evil.webp"))
+        assertFalse("Absolute path should be rejected", Cinema.isValidPath("/evil.webp"))
+        assertFalse("Subdirectory traversal should be rejected", Cinema.isValidPath("bg/../../secret.webp"))
+        assertFalse("Backslash should be rejected", Cinema.isValidPath("bg\\home.webp"))
+        assertFalse("Non-webp should be rejected", Cinema.isValidPath("bg/home.png"))
+        assertFalse("Extra trailing extension rejected", Cinema.isValidPath("bg/home.webp.exe"))
+        assertFalse("Empty string rejected", Cinema.isValidPath(""))
+
+        assertTrue("Valid top-level webp should pass", Cinema.isValidPath("home.webp"))
+        assertTrue("Valid subdirectory webp should pass", Cinema.isValidPath("bg/home.webp"))
+        assertTrue("Valid nested webp with dash and underscore should pass", Cinema.isValidPath("house/role-zombie_v1.webp"))
+    }
+
+    @Test
+    fun validateIndexEnforcesLimits() {
+        // Empty index rejected
+        assertFalse("Empty file list rejected", Cinema.validateIndex(Cinema.Index(1, emptyList())))
+
+        // Valid entries
+        val validEntries = (1..10).map { Cinema.FileEntry("cat/image$it.webp", 100_000L, "dummy_hash") }
+        assertTrue("Valid 10-file index passes", Cinema.validateIndex(Cinema.Index(1, validEntries)))
+
+        // More than 80 files rejected
+        val tooMany = (1..85).map { Cinema.FileEntry("cat/image$it.webp", 1000L, "dummy_hash") }
+        assertFalse("Index with > 80 files rejected", Cinema.validateIndex(Cinema.Index(1, tooMany)))
+
+        // Total bytes > 20 MB rejected
+        val tooLarge = listOf(
+            Cinema.FileEntry("cat/big1.webp", 15 * 1024 * 1024L, "dummy_hash"),
+            Cinema.FileEntry("cat/big2.webp", 6 * 1024 * 1024L, "dummy_hash")
+        )
+        assertFalse("Index with > 20 MB total rejected", Cinema.validateIndex(Cinema.Index(1, tooLarge)))
+
+        // Zero or negative bytes rejected
+        val zeroBytes = listOf(Cinema.FileEntry("cat/zero.webp", 0L, "dummy_hash"))
+        assertFalse("Index with 0 bytes entry rejected", Cinema.validateIndex(Cinema.Index(1, zeroBytes)))
+    }
+
+    @Test
+    fun testBaseDirResolvesCorrectly() {
+        val testImageDir = File(tempDir, "bg").apply { mkdirs() }
+        val testFile = File(testImageDir, "home.webp").apply { writeText("mock image") }
+
+        val dummyFilesDir = File(tempDir, "files").apply { mkdirs() }
+
+        assertNull("Should not find in test base dir when testBaseDir is null", Cinema.resolveImageFile(dummyFilesDir, "bg/home.webp"))
+
+        Cinema.testBaseDir = tempDir
+        val resolved = Cinema.resolveImageFile(dummyFilesDir, "bg/home.webp")
+        assertNotNull("Should resolve via testBaseDir", resolved)
+        assertEquals(testFile.absolutePath, resolved!!.absolutePath)
     }
 }

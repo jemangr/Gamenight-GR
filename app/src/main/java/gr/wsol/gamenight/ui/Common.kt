@@ -296,7 +296,14 @@ fun SideName(night: Night, side: String, style: androidx.compose.ui.text.TextSty
  * The next step starts only when that player presses the button.
  */
 @Composable
-fun PassTo(name: String, color: Color, note: String? = null, button: String = t("Είμαι εγώ, πάμε", "It's me, go"), onReady: () -> Unit) {
+fun PassTo(
+    name: String,
+    color: Color,
+    note: String? = null,
+    button: String = t("Είμαι εγώ, πάμε", "It's me, go"),
+    enabled: Boolean = true,
+    onReady: () -> Unit
+) {
     gr.wsol.gamenight.chaos.CalmScreen()
     val player = gr.wsol.gamenight.core.Store.night.players.firstOrNull { it.name == name }
     val passBg = rememberCinemaImage("bg/pass.webp")
@@ -347,7 +354,7 @@ fun PassTo(name: String, color: Color, note: String? = null, button: String = t(
                 if (note != null) { Spacer(Modifier.height(10.dp)); Body(note, align = TextAlign.Center) }
             }
             Spacer(Modifier.height(28.dp))
-            BigButton(button, { gr.wsol.gamenight.chaos.Chaos.holder = name; onReady() }, color = color)
+            BigButton(button, { gr.wsol.gamenight.chaos.Chaos.holder = name; onReady() }, color = color, enabled = enabled)
         }
     }
 }

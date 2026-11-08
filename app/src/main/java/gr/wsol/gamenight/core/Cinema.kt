@@ -22,6 +22,13 @@ object Cinema {
     val BASE_URL get() = "$REPO_RAW/${BuildConfig.PACK_BRANCH}/packs/cinematic"
     val INDEX_URL get() = "$BASE_URL/index.json"
 
+    val PATH_REGEX = Regex("^[a-z0-9_-]+(/[a-z0-9_-]+)*\\.webp$")
+    const val MAX_FILES = 80
+    const val MAX_TOTAL_BYTES = 20 * 1024 * 1024L // 20 MB
+
+    /** Optional base directory set only during unit/screenshot tests. */
+    var testBaseDir: File? = null
+
     val json = Json { ignoreUnknownKeys = true; encodeDefaults = true }
 
     @Serializable
@@ -29,6 +36,20 @@ object Cinema {
 
     @Serializable
     data class Index(val version: Int = 1, val files: List<FileEntry> = emptyList())
+
+    fun isValidPath(path: String): Boolean = PATH_REGEX.matches(path)
+
+    fun validateIndex(index: Index): Boolean {
+        if (index.files.isEmpty() || index.files.size > MAX_FILES) return false
+        var totalBytes = 0L
+        for (f in index.files) {
+            if (!isValidPath(f.path)) return false
+            if (f.bytes <= 0L) return false
+            totalBytes += f.bytes
+            if (totalBytes > MAX_TOTAL_BYTES) return false
+        }
+        return true
+    }
 
     fun dir(baseDir: File): File = File(baseDir, "cinematic").apply { mkdirs() }
     fun dir(c: Context): File = dir(c.filesDir)
@@ -81,20 +102,29 @@ object Cinema {
         return digest.digest().joinToString("") { "%02x".format(it) }
     }
 
-    fun resolveImageFile(c: Context, path: String): File? {
-        val f = File(c.filesDir, "cinematic/$path")
+    fun resolveImageFile(baseDir: File, path: String): File? {
+        testBaseDir?.let { base ->
+            val f = File(base, path)
+            if (f.exists()) return f
+        }
+        val f = File(baseDir, "cinematic/$path")
         if (f.exists()) return f
-        val dev1 = File("../packs/cinematic/$path")
-        if (dev1.exists()) return dev1
-        val dev2 = File("packs/cinematic/$path")
-        if (dev2.exists()) return dev2
         return null
     }
+    fun resolveImageFile(c: Context, path: String): File? = resolveImageFile(c.filesDir, path)
 
     suspend fun fetchIndex(): Index? = withContext(Dispatchers.IO) {
+        testBaseDir?.let { base ->
+            val idxFile = File(base, "index.json")
+            if (idxFile.exists()) {
+                val parsed = runCatching { json.decodeFromString(Index.serializer(), idxFile.readText()) }.getOrNull()
+                if (parsed != null && validateIndex(parsed)) return@withContext parsed
+            }
+        }
         runCatching {
             val text = get(INDEX_URL)
-            json.decodeFromString(Index.serializer(), text)
+            val parsed = json.decodeFromString(Index.serializer(), text)
+            if (validateIndex(parsed)) parsed else null
         }.getOrNull()
     }
 
@@ -106,7 +136,6 @@ object Cinema {
 
     suspend fun download(c: Context, onProgress: (done: Int, total: Int) -> Unit): Boolean = withContext(Dispatchers.IO) {
         val remoteIndex = fetchIndex() ?: return@withContext false
-        if (remoteIndex.files.isEmpty()) return@withContext false
 
         val tmpDir = File(c.filesDir, "cinematic_tmp")
         if (tmpDir.exists()) tmpDir.deleteRecursively()
@@ -115,7 +144,9 @@ object Cinema {
         try {
             val total = remoteIndex.files.size
             remoteIndex.files.forEachIndexed { i, entry ->
+                if (!isValidPath(entry.path)) error("Invalid path: ${entry.path}")
                 val targetFile = File(tmpDir, entry.path)
+                if (!targetFile.canonicalPath.startsWith(tmpDir.canonicalPath)) error("Path traversal: ${entry.path}")
                 targetFile.parentFile?.mkdirs()
 
                 val url = "$BASE_URL/${entry.path}"

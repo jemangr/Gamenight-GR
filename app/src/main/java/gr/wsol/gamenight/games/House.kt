@@ -372,9 +372,19 @@ private fun HouseVote(g: HouseEngine, key: String, onDone: (Map<String, String>)
 @Composable
 private fun HouseDealScreen(g: HouseEngine, gameNo: Int, onDone: () -> Unit) {
     val ctx = LocalContext.current
+    var preloaded by remember(gameNo) { mutableStateOf(Store.settings.look != 3) }
+
     LaunchedEffect(gameNo) {
-        val paths = Role.entries.map { "house/role-${it.name.lowercase()}.webp" } + "house/back.webp"
-        gr.wsol.gamenight.ui.preloadCinemaImages(ctx, paths)
+        if (Store.settings.look == 3) {
+            gr.wsol.gamenight.ui.HouseCinemaImages.preload(ctx)
+            preloaded = true
+        }
+    }
+
+    DisposableEffect(gameNo) {
+        onDispose {
+            gr.wsol.gamenight.ui.HouseCinemaImages.clear()
+        }
     }
 
     val players = g.players
@@ -386,7 +396,13 @@ private fun HouseDealScreen(g: HouseEngine, gameNo: Int, onDone: () -> Unit) {
     val who = players.getOrNull(i) ?: return
 
     if (!ready) {
-        PassTo(who, Color(n.colorOf(n.sideOf(who))), note = t("Μόνο εσύ πρέπει να βλέπεις την οθόνη.", "Only you should see the screen.")) {
+        PassTo(
+            name = who,
+            color = Color(n.colorOf(n.sideOf(who))),
+            note = t("Μόνο εσύ πρέπει να βλέπεις την οθόνη.", "Only you should see the screen."),
+            button = t("Είμαι ο/η $who · Πάμε!", "I am $who · Let's go!"),
+            enabled = preloaded
+        ) {
             ready = true
             held = false
             seen = false

@@ -6,9 +6,11 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.performSemanticsAction
+import gr.wsol.gamenight.core.Cinema
 import gr.wsol.gamenight.core.Night
 import gr.wsol.gamenight.core.Palette
 import gr.wsol.gamenight.core.Player
+import java.io.File
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -49,6 +51,9 @@ class ScreenshotsTest {
     private val names = listOf("Γιάννης", "Μαρία", "Νίκος", "Ελένη", "Κώστας")
 
     @Before fun night() {
+        Cinema.testBaseDir = File("../packs/cinematic").takeIf { it.exists() } ?: File("packs/cinematic")
+        gr.wsol.gamenight.ui.clearCinemaCache()
+        gr.wsol.gamenight.ui.HouseCinemaImages.clear()
         val players = names.mapIndexed { i, n -> Player(n, Palette.players[i], avatar = i) }
         Store.inMemory(Night(players = players, points = mapOf("Γιάννης" to 7, "Μαρία" to 9, "Νίκος" to 4, "Ελένη" to 6, "Κώστας" to 2)), Settings(sounds = false, haptics = false, updateCheck = false))
     }
@@ -602,7 +607,40 @@ class ScreenshotsTest {
     // -----------------------------------------------------------------------
     private fun cinemaShot(name: String, vararg clicks: String, wait: Long = 1200, content: @Composable () -> Unit) {
         Store.settings = Store.settings.copy(look = 3)
+        val ctx = androidx.test.core.app.ApplicationProvider.getApplicationContext<android.content.Context>()
+        gr.wsol.gamenight.ui.HouseCinemaImages.preloadSync(ctx)
         shot(name, *clicks, wait = wait, content = content)
+    }
+
+    @Test fun s95_house_preload_all_or_none() {
+        val ctx = androidx.test.core.app.ApplicationProvider.getApplicationContext<android.content.Context>()
+        Store.settings = Store.settings.copy(look = 3)
+        gr.wsol.gamenight.ui.clearCinemaCache()
+        gr.wsol.gamenight.ui.HouseCinemaImages.clear()
+
+        val emptyDir = java.nio.file.Files.createTempDirectory("empty_cinema").toFile()
+        try {
+            Cinema.testBaseDir = emptyDir
+            val failed = gr.wsol.gamenight.ui.HouseCinemaImages.preloadSync(ctx)
+            org.junit.Assert.assertFalse("Preload must fail when images are missing", failed)
+            org.junit.Assert.assertFalse("isReady must be false", gr.wsol.gamenight.ui.HouseCinemaImages.isReady)
+            org.junit.Assert.assertNull(gr.wsol.gamenight.ui.HouseCinemaImages.getRoleImage(gr.wsol.gamenight.games.Role.Zombie))
+            org.junit.Assert.assertNull(gr.wsol.gamenight.ui.HouseCinemaImages.getBackImage())
+
+            val realPack = File("../packs/cinematic").takeIf { it.exists() } ?: File("packs/cinematic")
+            if (realPack.exists()) {
+                Cinema.testBaseDir = realPack
+                val success = gr.wsol.gamenight.ui.HouseCinemaImages.preloadSync(ctx)
+                org.junit.Assert.assertTrue("Preload must succeed with 11 house images", success)
+                org.junit.Assert.assertTrue("isReady must be true", gr.wsol.gamenight.ui.HouseCinemaImages.isReady)
+                org.junit.Assert.assertNotNull(gr.wsol.gamenight.ui.HouseCinemaImages.getRoleImage(gr.wsol.gamenight.games.Role.Zombie))
+                org.junit.Assert.assertNotNull(gr.wsol.gamenight.ui.HouseCinemaImages.getBackImage())
+                gr.wsol.gamenight.ui.HouseCinemaImages.clear()
+            }
+        } finally {
+            emptyDir.deleteRecursively()
+            Cinema.testBaseDir = File("../packs/cinematic").takeIf { it.exists() } ?: File("packs/cinematic")
+        }
     }
 
     @Test fun s96_cinema_home() = cinemaShot("96-cinema-home") { HomeScreen() }

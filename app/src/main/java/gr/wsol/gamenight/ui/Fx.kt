@@ -3,7 +3,9 @@ package gr.wsol.gamenight.ui
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.provider.Settings
+import android.util.LruCache
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.runtime.produceState
 import kotlinx.coroutines.Dispatchers
@@ -472,14 +474,79 @@ fun ArcadeBackground(modifier: Modifier = Modifier, flashRed: Boolean = false) {
 // 2.3: Cinema look image loader & caching
 // ---------------------------------------------------------------------------
 
-private val cinemaCache = object : LinkedHashMap<String, ImageBitmap>(4, 0.75f, true) {
-    override fun removeEldestEntry(eldest: MutableMap.MutableEntry<String, ImageBitmap>?): Boolean = size > 4
+private const val MAX_CINEMA_CACHE_BYTES = 48 * 1024 * 1024 // 48 MB (~6-8 images 1080x1920)
+
+private val cinemaCache = object : LruCache<String, ImageBitmap>(MAX_CINEMA_CACHE_BYTES) {
+    override fun sizeOf(key: String, value: ImageBitmap): Int {
+        return value.asAndroidBitmap().byteCount
+    }
+}
+
+fun clearCinemaCache() {
+    cinemaCache.evictAll()
+}
+
+/**
+ * Dedicated pinned cache for House deal phase (§2.6).
+ * All 10 roles + back card are preloaded into memory before the deal starts.
+ * If any image fails or is missing, all-or-none fallback to Phase C vector graphics is used.
+ */
+object HouseCinemaImages {
+    private val pinned = java.util.concurrent.ConcurrentHashMap<String, ImageBitmap>()
+    var isReady: Boolean = false
+        private set
+
+    fun getPinned(path: String): ImageBitmap? = if (isReady) pinned[path] else null
+
+    fun getRoleImage(role: gr.wsol.gamenight.games.Role): ImageBitmap? {
+        if (Store.settings.look != 3 || !isReady) return null
+        return pinned["house/role-${role.name.lowercase()}.webp"]
+    }
+
+    fun getBackImage(): ImageBitmap? {
+        if (Store.settings.look != 3 || !isReady) return null
+        return pinned["house/back.webp"]
+    }
+
+    suspend fun preload(context: android.content.Context): Boolean = withContext(Dispatchers.IO) {
+        val paths = gr.wsol.gamenight.games.Role.entries.map { "house/role-${it.name.lowercase()}.webp" } + "house/back.webp"
+        val loaded = mutableMapOf<String, ImageBitmap>()
+        for (path in paths) {
+            val bmp = loadCinemaBitmap(context, path) ?: run {
+                clear()
+                return@withContext false
+            }
+            loaded[path] = bmp
+        }
+        pinned.putAll(loaded)
+        isReady = true
+        true
+    }
+
+    fun preloadSync(context: android.content.Context): Boolean {
+        val paths = gr.wsol.gamenight.games.Role.entries.map { "house/role-${it.name.lowercase()}.webp" } + "house/back.webp"
+        val loaded = mutableMapOf<String, ImageBitmap>()
+        for (path in paths) {
+            val bmp = loadCinemaBitmap(context, path) ?: run {
+                clear()
+                return false
+            }
+            loaded[path] = bmp
+        }
+        pinned.putAll(loaded)
+        isReady = true
+        return true
+    }
+
+    fun clear() {
+        pinned.clear()
+        isReady = false
+    }
 }
 
 fun loadCinemaBitmap(context: android.content.Context, path: String): ImageBitmap? {
-    synchronized(cinemaCache) {
-        cinemaCache[path]?.let { return it }
-    }
+    HouseCinemaImages.getPinned(path)?.let { return it }
+    cinemaCache.get(path)?.let { return it }
     val file = Cinema.resolveImageFile(context, path) ?: return null
     return try {
         val boundsOpts = BitmapFactory.Options().apply { inJustDecodeBounds = true }
@@ -495,9 +562,7 @@ fun loadCinemaBitmap(context: android.content.Context, path: String): ImageBitma
         }
         val bmp = BitmapFactory.decodeFile(file.absolutePath, decodeOpts) ?: return null
         val imgBmp = bmp.asImageBitmap()
-        synchronized(cinemaCache) {
-            cinemaCache[path] = imgBmp
-        }
+        cinemaCache.put(path, imgBmp)
         imgBmp
     } catch (_: Throwable) {
         null
@@ -505,21 +570,22 @@ fun loadCinemaBitmap(context: android.content.Context, path: String): ImageBitma
 }
 
 /** Pre-loads images into memory so roles in House/secret games have identical access latency. */
-fun preloadCinemaImages(context: android.content.Context, paths: List<String>) {
-    if (Store.settings.look != 3) return
+suspend fun preloadCinemaImages(context: android.content.Context, paths: List<String>) = withContext(Dispatchers.IO) {
+    if (Store.settings.look != 3) return@withContext
     paths.forEach { loadCinemaBitmap(context, it) }
 }
 
 /**
- * Loads a Cinema look image off the main thread with a 4-item LRU cache.
+ * Loads a Cinema look image off the main thread with a 48 MB LRU cache.
  * Returns null if missing or if current look is not Cinema (3).
+ * Initial value is strictly whatever is already cached in memory; all decoding happens on Dispatchers.IO.
  */
 @Composable
 fun rememberCinemaImage(path: String): ImageBitmap? {
     if (Store.settings.look != 3) return null
     val context = LocalContext.current
     return produceState<ImageBitmap?>(
-        initialValue = synchronized(cinemaCache) { cinemaCache[path] } ?: loadCinemaBitmap(context, path),
+        initialValue = HouseCinemaImages.getPinned(path) ?: cinemaCache.get(path),
         key1 = path,
         key2 = Store.settings.look
     ) {
