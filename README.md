@@ -98,7 +98,7 @@
 
 Μια εφαρμογή για βραδιές με φίλους. Γράφετε τους παίκτες (ή φτιάχνετε ομάδες), διαλέγετε παιχνίδι και το κινητό πηγαίνει από χέρι σε χέρι. Οι πόντοι μαζεύονται σε όλα τα παιχνίδια της βραδιάς, και στο τέλος υπάρχει κατάταξη και απονομή βραβείων.
 
-Όλο το περιεχόμενο (πάνω από 2.000 κάρτες) είναι γραμμένο από την αρχή στα ελληνικά, με ελληνικά τραγούδια, ταινίες, φαγητά και πειράγματα. Υπάρχει και αγγλική έκδοση για τις ξένες παρέες.
+Όλο το περιεχόμενο (πάνω από 2.000 κάρτες) είναι γραμμένο από την αρχή στα ελληνικά, με ελληνικά τραγούδια, ταινίες, φαγητά και πειράγματα. Υπάρχει και πλήρης αγγλική έκδοση, γραμμένη ξεχωριστά για αγγλόφωνες παρέες (όχι μετάφραση): η γλώσσα αλλάζει από τις Ρυθμίσεις.
 
 ## Τα παιχνίδια
 
@@ -120,7 +120,8 @@
 
 - **📦 Πακέτα καρτών** από το GitHub («Ποδόσφαιρο», «Ταινίες 90s», «Κρήτη») και **δικές σας λέξεις** («ο σκύλος του Νίκου»), που μπαίνουν σε όλα τα παιχνίδια λέξεων. Ρυθμίσεις → 📦.
 - **📜 Ιστορικό βραδιών:** ποιος κέρδισε πόσες βραδιές, με σερί νικών. Μια βραδιά κρατιέται όταν πατήσετε «Νέα βραδιά».
-- **Εμφάνιση:** 🎲 Βραδιά, ☀️ Καλοκαίρι ή 🎄 Χριστούγεννα, με άλλα χρώματα και ήχους νίκης.
+- **Εμφάνιση:** 🎬 Σινεμά (σκοτεινές κινηματογραφικές φωτογραφίες), 🎲 Βραδιά, ☀️ Καλοκαίρι ή 🎄 Χριστούγεννα, με άλλα χρώματα και ήχους νίκης.
+- **📤 Κοινοποίηση:** στείλε το GameNight στην παρέα από τις Ρυθμίσεις.
 
 ## 🌀 Χάος
 
@@ -144,36 +145,61 @@
 
 ## Πρόβλημα;
 
-Ρυθμίσεις → 🐞 Αναφορά προβλήματος: ετοιμάζει email στο info@3wsol.gr με την έκδοση και το κινητό, χωρίς τα ονόματα των παικτών. Ή άνοιξε ένα [issue](https://github.com/jemangr/Gamenight-GR/issues).
+Ρυθμίσεις → 🐞 Αναφορά προβλήματος (ή κούνησε το κινητό 3 φορές): στέλνεται κατευθείαν από την εφαρμογή, με την έκδοση και το κινητό, χωρίς τα ονόματα των παικτών. Ή άνοιξε ένα [issue](https://github.com/jemangr/Gamenight-GR/issues).
 
 ---
 
 <a id="english"></a>
 ## English
 
-**GameNight**: 54 party games on one phone (screenshots of every game above, under «Δες όλα τα παιχνίδια») that goes from hand to hand. Offline, no account, no ads. Android 10+, 1 to 7 players or teams, Greek and English content.
+**GameNight** is 54 party games on one phone that goes from hand to hand. Add the players (or make teams), pick a game and pass the phone. Points add up across every game of the night, and at the end there is a podium and an awards ceremony.
 
-- **Hidden roles:** The haunted house (with a narrator), The Alien, The Saboteur, One is missing, Whisper in the dark, The spy at home, Tower of lies.
-- **Words:** Say it otherwise, On your forehead, Fours, Minefield, Find 10, Related words.
-- **Party:** Who of us?, How well do you know me?, Dice of shame, Spin the bottle.
-- **Bluff and trivia:** The Bluffer, Lie under pressure, The Witness, Guess the film or series, Closest wins, Neighbourhood quiz (a buzzer in each corner).
-- **Acting, singing, drawing:** Your number, Broken telephone, Word in a song, Sound chain, Mime with a rule.
-- **Reflexes:** Bomb, Balance (gyroscope).
-- **Motion:** The human drone, Defuse the bomb, Balance trivia, The safe.
-- **Arcade:** 12 one-touch games, alone for a record or against the group.
-- **Board games:** Backgammon (Portes, Plakoto, Fevga) for two on one phone.
-- **Logic:** The Core, 40 levels of nodes and signals, no luck.
-- **With AI** (your own key): The interrogator, Draw for the AI, Endless cards, Courtroom, Who is the AI?, The Oracle.
+Offline, no account, no ads. Android 10+, 1 to 7 players or teams. The English version is written for English-speaking groups, not translated: over 2,000 cards of its own (quiz questions, penalties, mimes, drawings, roasts). Switch the language in Settings. Screenshots of every game are above, under «Δες όλα τα παιχνίδια».
 
-**Also:** card packs from GitHub and your own words, a history of past nights with winning streaks, and Night, Summer or Christmas looks.
+| | Category | Games |
+|---|---|---|
+| 🕵️ | **Hidden roles** | 🏚️ The haunted house (with a narrator) · 👽 The Alien · 🧨 The Saboteur · 🎨 The faker · 🤫 Whisper in the dark · 🕶️ The spy at home · 🗼 Tower of lies |
+| 🗣️ | **Words** | 🗣️ Say it another way · 🤳 On your forehead · 🟨 Fours · 💣 Minefield · 🔟 Find 10 · 🔗 Related words |
+| 🎉 | **Party** | 👉 Which of us? · 🪞 How well do you know me? · 😳 Dice of shame · 🍾 Spin the bottle |
+| 🤥 | **Bluff and trivia** | 🃏 The Bluffer · 🤥 Lie under pressure · 🔍 The Witness · 🎬 Guess the film or series · 📏 Closest wins · 🛎️ Buzzer quiz (a buzzer in each corner) |
+| 🎭 | **Acting, singing, drawing** | 🔢 Your number · 📞 Broken telephone · 🎤 Word in a song · 🔊 Sound chain · 🙊 Mime with a rule |
+| ⚡ | **Reflexes** | ⏱️ Bomb · ⚖️ Balance (with the gyroscope) |
+| 📱 | **Motion** | 🛸 The human drone · 🤲 Defuse the bomb · 🧊 Balance trivia · 🔐 The safe |
+| 🎮 | **Arcade** | 🌈 Colour gate · 🕳️ Dive · 🔢 Quick grid · 🪐 Orbit · ✂️ Slice and match · 🏗️ Tower · ✨ Light path · 🎯 Slingshot · ↔️ Dual dodge · 💫 Orbit bounce · 🟥 Laser grid · 🛡️ Spiral. Alone for a record or against the group |
+| 🎲 | **Board games** | 🎲 Backgammon: Portes, Plakoto and Fevga for two, with the real rules |
+| 🧠 | **Logic** | ⚛️ The Core: 40 levels of nodes and signals, no luck |
+| 🤖 | **With AI** (your own key) | 🔦 The interrogator · 🖍️ Draw for the AI · ♾️ Endless cards · 🧑‍⚖️ Courtroom · 🤖 Who is the AI? · 🔮 The Oracle |
 
-**🌀 Chaos** drops small funny surprises between rounds (penalties, gifts, curses, a sheriff, duels) and adds a «🎯 Roast someone» button, once every 5 minutes. Never during a timed round or a secret screen.
+### Also
 
-**🎙️ Havales (optional AI)** teases the group from what happened tonight and writes the story of the night, with your own key (Gemini, Groq and OpenRouter have free keys). The same key plays the 6 AI games.
+- **📦 Card packs** from GitHub and **your own words** (“Nick's dog”), used in every word game. Settings → 📦.
+- **📜 Past nights:** who won how many nights, with winning streaks. A night is kept when you press “New night”.
+- **Looks:** 🎬 Cinema (dark cinematic photos), 🎲 Night, ☀️ Summer or 🎄 Christmas, each with its own colours and victory sounds.
+- **📤 Share:** send GameNight to your friends from Settings.
 
-**Install:** tap **Download APK** above on your phone, allow “unknown sources”, add the players and pick a game. New versions show up on the home screen and install with one tap.
+### 🌀 Chaos
 
-**Privacy:** names, points and records stay on the phone. The internet is used only for the update check and card packs (GitHub), and for Havales and the AI games, if you add a key. See [PRIVACY.md](PRIVACY.md).
+When it is on (it is from the start), small funny surprises drop between rounds: penalties, gifts, curses, a sheriff who taxes, duels. The app then says who to hand the phone to, and shows nothing until they have it. There is also a **🎯 Roast someone** button, once every 5 minutes. None of this ever appears during a timed round or on a secret screen.
+
+### 🎙️ Havales (AI, optional)
+
+An AI joker who pops up now and then between rounds, teases the group about what happened tonight, roasts whoever you pick with “🎯 Roast” and writes **the story of the night**. It needs your own key (Gemini, Groq and OpenRouter have free keys with no card, or DeepSeek). A switch allows light, friendly swearing. The same key plays the 6 🤖 AI games. Everything else works without it.
+
+### Install
+
+1. Tap **Download APK** above, in your phone's browser.
+2. Open the file and allow “install unknown apps”.
+3. Add the players and pick a game.
+
+New versions show up on the home screen: one tap, and they download and install.
+
+### Privacy
+
+Names, points and records stay on the phone. There is no account, server, ads or analytics. The internet is used only for the update check and the card packs (on GitHub), and for Havales and the AI games if you add a key. See [PRIVACY.md](PRIVACY.md).
+
+### Problem?
+
+Settings → 🐞 Report a problem (or shake the phone 3 times): it is sent straight from the app with the version and the phone model, without the players' names. Or open an [issue](https://github.com/jemangr/Gamenight-GR/issues).
 
 ## License
 
