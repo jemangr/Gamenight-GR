@@ -1,6 +1,6 @@
-<p align="center"><img src="docs/logo.png" width="120" alt="Gamenight GR logo"></p>
+<p align="center"><img src="docs/logo.png" width="120" alt="GameNight logo"></p>
 
-<h1 align="center">Gamenight GR</h1>
+<h1 align="center">GameNight</h1>
 
 <p align="center"><b>54 παιχνίδια παρέας σε ένα κινητό.</b><br>
 Ένα κινητό, που περνάει από χέρι σε χέρι. Χωρίς internet, χωρίς λογαριασμό, χωρίς διαφημίσεις.</p>
@@ -151,7 +151,7 @@
 <a id="english"></a>
 ## English
 
-**Gamenight GR**: 54 party games on one phone (screenshots of every game above, under «Δες όλα τα παιχνίδια») that goes from hand to hand. Offline, no account, no ads. Android 10+, 1 to 7 players or teams, Greek and English content.
+**GameNight**: 54 party games on one phone (screenshots of every game above, under «Δες όλα τα παιχνίδια») that goes from hand to hand. Offline, no account, no ads. Android 10+, 1 to 7 players or teams, Greek and English content.
 
 - **Hidden roles:** The haunted house (with a narrator), The Alien, The Saboteur, One is missing, Whisper in the dark, The spy at home, Tower of lies.
 - **Words:** Say it otherwise, On your forehead, Fours, Minefield, Find 10, Related words.
