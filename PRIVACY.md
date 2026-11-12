@@ -13,7 +13,7 @@
 - **Ο Χαβαλές (AI), προαιρετικός:** μόνο αν τον ανοίξεις και βάλεις δικό σου κλειδί. Τότε στον πάροχο που διάλεξες (Google Gemini, Groq, OpenRouter ή DeepSeek) στέλνονται τα ονόματα των παικτών, οι πόντοι και μια σύντομη λίστα με το τι έγινε απόψε, για να γράψει το πείραγμα. Ισχύουν οι όροι και η πολιτική του παρόχου. Το κλειδί μένει μόνο στο κινητό.
 - **Αναφορά προβλήματος:** ετοιμάζει ένα email που το βλέπεις και το στέλνεις εσύ, με την έκδοση, το μοντέλο του κινητού και τα τελευταία σφάλματα. Χωρίς ονόματα παικτών και χωρίς κλειδιά.
 - **Άδειες:** Internet (έλεγχος έκδοσης, πακέτα καρτών, Χαβαλές και παιχνίδια AI), εγκατάσταση ενημερώσεων, δόνηση. Οι αισθητήρες κίνησης χρησιμοποιούνται μόνο μέσα στο παιχνίδι.
-- **Επικοινωνία:** info@3wsol.gr
+- **Επικοινωνία:** privacy@jemangr.app (αναφορές προβλημάτων: support@jemangr.app)
 
 ## English
 
@@ -26,4 +26,4 @@
 - **Havales (AI), optional:** only if you turn it on with your own key. Then the player names, the points and a short list of tonight's events go to the provider you picked (Google Gemini, Groq, OpenRouter or DeepSeek), under that provider's terms. The key stays on the phone.
 - **Problem report:** prepares an email you review and send yourself, with the version, the phone model and recent errors. No player names, no keys.
 - **Permissions:** Internet (update check, card packs, Havales and the AI games), installing updates, vibration. Motion sensors are used only inside games.
-- **Contact:** info@3wsol.gr
+- **Contact:** privacy@jemangr.app (problem reports: support@jemangr.app)
