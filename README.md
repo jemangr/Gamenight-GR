@@ -2,7 +2,7 @@
 
 <h1 align="center">GameNight</h1>
 
-<p align="center"><b>54 παιχνίδια παρέας σε ένα κινητό.</b><br>
+<p align="center"><b>62 παιχνίδια παρέας σε ένα κινητό.</b><br>
 Ένα κινητό, που περνάει από χέρι σε χέρι. Χωρίς internet, χωρίς λογαριασμό, χωρίς διαφημίσεις.</p>
 
 <p align="center">
@@ -105,15 +105,15 @@
 | | Κατηγορία | Παιχνίδια |
 |---|---|---|
 | 🕵️ | **Κρυφοί ρόλοι** | 🏚️ Το στοιχειωμένο σπίτι (με αφηγητή) · 👽 Ο Εξωγήινος · 🧨 Ο Σαμποτέρ · 🎨 Ένας λείπει · 🤫 Ψίθυρος στο σκοτάδι · 🕶️ Ο κατάσκοπος στο σπίτι · 🗼 Πύργος από ψέματα |
-| 🗣️ | **Λέξεις** | 🗣️ Πες το αλλιώς · 🤳 Στο μέτωπο · 🟨 Τετράδες · 💣 Ναρκοπέδιο · 🔟 Βρες 10 · 🔗 Σχετικές λέξεις |
-| 🎉 | **Παρέα** | 👉 Ποιος από εμάς; · 🪞 Πόσο με ξέρεις; · 😳 Ζάρι της ντροπής · 🍾 Ρουλέτα μπουκαλιού |
+| 🗣️ | **Λέξεις** | 🗣️ Πες το αλλιώς · 🤳 Στο μέτωπο · 🟨 Τετράδες · 💣 Ναρκοπέδιο · 🔟 Βρες 10 · 🔗 Σχετικές λέξεις · 🟦 Κωδικές λέξεις · ✍️ Κατηγορίες |
+| 🎉 | **Παρέα** | 👉 Ποιος από εμάς; · 🪞 Πόσο με ξέρεις; · 😳 Ζάρι της ντροπής · 🍾 Ρουλέτα μπουκαλιού · 📡 Μήκος κύματος |
 | 🤥 | **Μπλόφα και γνώσεις** | 🃏 Ο Μπλοφατζής · 🤥 Ψέμα υπό πίεση · 🔍 Ο Μάρτυρας · 🎬 Μάντεψε την ταινία ή σειρά · 📏 Το κοντινότερο · 🛎️ Κουίζ γειτονιάς (buzzer στις γωνίες) |
 | 🎭 | **Θέατρο, τραγούδι, ζωγραφική** | 🔢 Το νούμερό σου · 📞 Χαλασμένο τηλέφωνο · 🎤 Λέξη σε τραγούδι · 🔊 Αλυσίδα ήχων · 🙊 Μίμηση με κανόνα |
-| ⚡ | **Αντανακλαστικά** | ⏱️ Βόμβα · ⚖️ Ισορροπία (με το γυροσκόπιο) |
+| ⚡ | **Αντανακλαστικά** | ⏱️ Βόμβα · ⚖️ Ισορροπία (με το γυροσκόπιο) · 🧠 Μνήμη-ακολουθία · 🎨 Χρώμα ή λέξη; |
 | 📱 | **Με κίνηση** | 🛸 Το ανθρώπινο drone · 🤲 Αφόπλισε τη βόμβα · 🧊 Trivia σε ισορροπία · 🔐 Χρηματοκιβώτιο |
 | 🎮 | **Arcade** | 🌈 Χρωματική πύλη · 🕳️ Βουτιά · 🔢 Γρήγορο πλέγμα · 🪐 Τροχιά · ✂️ Κόψε και ταίριαξε · 🏗️ Πύργος · ✨ Φωτεινή διαδρομή · 🎯 Σφεντόνα · ↔️ Διπλή αποφυγή · 💫 Αναπήδηση σε δακτύλιο · 🟥 Πλέγμα λέιζερ · 🛡️ Σπείρα. Μόνος σου για ρεκόρ ή κόντρα στην παρέα |
-| 🎲 | **Επιτραπέζια** | 🎲 Τάβλι: Πόρτες, Πλακωτό και Φεύγα για δύο, με τους κανονικούς κανόνες |
-| 🧠 | **Λογική** | ⚛️ Ο Πυρήνας: 40 επίπεδα με κόμβους και σήματα, χωρίς τύχη |
+| 🎲 | **Επιτραπέζια** | 🎲 Τάβλι: Πόρτες, Πλακωτό και Φεύγα για δύο, με τους κανονικούς κανόνες · ⚓ Ναυμαχία για δύο. Στο Τάβλι παίζεις και κόντρα στο κινητό |
+| 🧠 | **Λογική** | ⚛️ Ο Πυρήνας: 40 επίπεδα με κόμβους και σήματα, χωρίς τύχη · 🔐 Κωδικός · 🕵️ Ποιος το έκανε; |
 | 🤖 | **Με AI** (δικό σου κλειδί) | 🔦 Ο Ανακριτής · 🖍️ Ζωγράφισε για το AI · ♾️ Ατελείωτες κάρτες · 🧑‍⚖️ Δικαστήριο · 🤖 Ποιος είναι το AI; · 🔮 Ο Μάντης |
 
 ## Ακόμα
@@ -152,22 +152,22 @@
 <a id="english"></a>
 ## English
 
-**GameNight** is 54 party games on one phone that goes from hand to hand. Add the players (or make teams), pick a game and pass the phone. Points add up across every game of the night, and at the end there is a podium and an awards ceremony.
+**GameNight** is 62 party games on one phone that goes from hand to hand. Add the players (or make teams), pick a game and pass the phone. Points add up across every game of the night, and at the end there is a podium and an awards ceremony.
 
 Offline, no account, no ads. Android 10+, 1 to 7 players or teams. The English version is written for English-speaking groups, not translated: over 2,000 cards of its own (quiz questions, penalties, mimes, drawings, roasts). Switch the language in Settings. Screenshots of every game are above, under «Δες όλα τα παιχνίδια».
 
 | | Category | Games |
 |---|---|---|
 | 🕵️ | **Hidden roles** | 🏚️ The haunted house (with a narrator) · 👽 The Alien · 🧨 The Saboteur · 🎨 The faker · 🤫 Whisper in the dark · 🕶️ The spy at home · 🗼 Tower of lies |
-| 🗣️ | **Words** | 🗣️ Say it another way · 🤳 On your forehead · 🟨 Fours · 💣 Minefield · 🔟 Find 10 · 🔗 Related words |
-| 🎉 | **Party** | 👉 Which of us? · 🪞 How well do you know me? · 😳 Dice of shame · 🍾 Spin the bottle |
+| 🗣️ | **Words** | 🗣️ Say it another way · 🤳 On your forehead · 🟨 Fours · 💣 Minefield · 🔟 Find 10 · 🔗 Related words · 🟦 Codewords · ✍️ Categories |
+| 🎉 | **Party** | 👉 Which of us? · 🪞 How well do you know me? · 😳 Dice of shame · 🍾 Spin the bottle · 📡 Wavelength |
 | 🤥 | **Bluff and trivia** | 🃏 The Bluffer · 🤥 Lie under pressure · 🔍 The Witness · 🎬 Guess the film or series · 📏 Closest wins · 🛎️ Buzzer quiz (a buzzer in each corner) |
 | 🎭 | **Acting, singing, drawing** | 🔢 Your number · 📞 Broken telephone · 🎤 Word in a song · 🔊 Sound chain · 🙊 Mime with a rule |
-| ⚡ | **Reflexes** | ⏱️ Bomb · ⚖️ Balance (with the gyroscope) |
+| ⚡ | **Reflexes** | ⏱️ Bomb · ⚖️ Balance (with the gyroscope) · 🧠 Memory chain · 🎨 Colour or word? |
 | 📱 | **Motion** | 🛸 The human drone · 🤲 Defuse the bomb · 🧊 Balance trivia · 🔐 The safe |
 | 🎮 | **Arcade** | 🌈 Colour gate · 🕳️ Dive · 🔢 Quick grid · 🪐 Orbit · ✂️ Slice and match · 🏗️ Tower · ✨ Light path · 🎯 Slingshot · ↔️ Dual dodge · 💫 Orbit bounce · 🟥 Laser grid · 🛡️ Spiral. Alone for a record or against the group |
-| 🎲 | **Board games** | 🎲 Backgammon: Portes, Plakoto and Fevga for two, with the real rules |
-| 🧠 | **Logic** | ⚛️ The Core: 40 levels of nodes and signals, no luck |
+| 🎲 | **Board games** | 🎲 Backgammon: Portes, Plakoto and Fevga for two, with the real rules · ⚓ Battleship for two. Backgammon can also be played against the phone |
+| 🧠 | **Logic** | ⚛️ The Core: 40 levels of nodes and signals, no luck · 🔐 The Code · 🕵️ Whodunit |
 | 🤖 | **With AI** (your own key) | 🔦 The interrogator · 🖍️ Draw for the AI · ♾️ Endless cards · 🧑‍⚖️ Courtroom · 🤖 Who is the AI? · 🔮 The Oracle |
 
 ### Also
