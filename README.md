@@ -3,7 +3,7 @@
 <h1 align="center">GameNight</h1>
 
 <p align="center"><b>62 παιχνίδια παρέας σε ένα κινητό.</b><br>
-Ένα κινητό, που περνάει από χέρι σε χέρι. Χωρίς internet, χωρίς λογαριασμό, χωρίς διαφημίσεις.</p>
+Ένα κινητό, που περνάει από χέρι σε χέρι. Χωρίς internet, χωρίς λογαριασμό. Η εφαρμογή δείχνει διαφημίσεις μέσω του Google AdMob.</p>
 
 <p align="center">
   <a href="https://github.com/jemangr/Gamenight-GR/releases/latest/download/GamenightGR.apk"><img src="https://img.shields.io/badge/Download-APK-FFB020?style=for-the-badge&logo=android&logoColor=black" width="230" alt="Download APK"></a>
@@ -168,7 +168,7 @@
 
 ## Ιδιωτικότητα
 
-Τα ονόματα, οι πόντοι και τα ρεκόρ μένουν μόνο στο κινητό. Δεν υπάρχει λογαριασμός, server, διαφημίσεις ή analytics. Το internet χρησιμοποιείται μόνο για τον έλεγχο νέας έκδοσης και τα πακέτα καρτών (στο GitHub), και για τον Χαβαλέ και τα παιχνίδια AI, αν βάλεις κλειδί. Δες το [PRIVACY.md](PRIVACY.md).
+Τα ονόματα, οι πόντοι και τα ρεκόρ μένουν μόνο στο κινητό. Δεν υπάρχει λογαριασμός, server ή analytics. Η εφαρμογή δείχνει διαφημίσεις μέσω του Google AdMob. Το internet χρησιμοποιείται μόνο για τις διαφημίσεις, τον έλεγχο νέας έκδοσης και τα πακέτα καρτών (στο GitHub), και για τον Χαβαλέ και τα παιχνίδια AI, αν βάλεις κλειδί. Δες το [PRIVACY.md](PRIVACY.md).
 
 ## Πρόβλημα;
 
@@ -181,7 +181,7 @@
 
 **GameNight** is 62 party games on one phone that goes from hand to hand. Add the players (or make teams), pick a game and pass the phone. Points add up across every game of the night, and at the end there is a podium and an awards ceremony.
 
-Offline, no account, no ads. Android 10+, 1 to 7 players or teams. The English version is written for English-speaking groups, not translated: over 2,000 cards of its own (quiz questions, penalties, mimes, drawings, roasts). Switch the language in Settings. Screenshots of every game are above, under «Δες όλα τα παιχνίδια».
+Offline, no account. The app shows ads through Google AdMob. Android 10+, 1 to 7 players or teams. The English version is written for English-speaking groups, not translated: over 2,000 cards of its own (quiz questions, penalties, mimes, drawings, roasts). Switch the language in Settings. Screenshots of every game are above, under «Δες όλα τα παιχνίδια».
 
 **New in 1.10: the «3D cartoon» look.** Buttons and cards like stickers, with ink outlines and depth; buttons sink when you press them.
 
@@ -228,7 +228,7 @@ New versions show up on the home screen: one tap, and they download and install.
 
 ### Privacy
 
-Names, points and records stay on the phone. There is no account, server, ads or analytics. The internet is used only for the update check and the card packs (on GitHub), and for Havales and the AI games if you add a key. See [PRIVACY.md](PRIVACY.md).
+Names, points and records stay on the phone. There is no account, server or analytics. The app shows ads through Google AdMob. The internet is used only for ads, the update check and the card packs (on GitHub), and for Havales and the AI games if you add a key. See [PRIVACY.md](PRIVACY.md).
 
 ### Problem?
 
