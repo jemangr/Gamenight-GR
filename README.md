@@ -19,7 +19,7 @@
 </table>
 
 <details>
-<summary><b>📸 Δες όλα τα παιχνίδια (46 ακόμα)</b></summary>
+<summary><b>📸 Δες όλα τα παιχνίδια (54 ακόμα)</b></summary>
 
 
 <h4>🕵️ Κρυφοί ρόλοι</h4>
@@ -33,6 +33,7 @@
 
 <table width="100%">
 <tr><td align="center" valign="top" width="25%"><img src="docs/screenshots/games/quads.png" width="100%" alt="Τετράδες"><br><sub><b>🟨 Τετράδες</b></sub></td><td align="center" valign="top" width="25%"><img src="docs/screenshots/games/minefield.png" width="100%" alt="Ναρκοπέδιο"><br><sub><b>💣 Ναρκοπέδιο</b></sub></td><td align="center" valign="top" width="25%"><img src="docs/screenshots/games/find10.png" width="100%" alt="Βρες 10"><br><sub><b>🔟 Βρες 10</b></sub></td><td align="center" valign="top" width="25%"><img src="docs/screenshots/games/related.png" width="100%" alt="Σχετικές λέξεις"><br><sub><b>🔗 Σχετικές λέξεις</b></sub></td></tr>
+<tr><td align="center" valign="top" width="25%"><img src="docs/screenshots/games/codewords.png" width="100%" alt="Κωδικές λέξεις"><br><sub><b>🟦 Κωδικές λέξεις</b></sub></td><td align="center" valign="top" width="25%"><img src="docs/screenshots/games/letters.png" width="100%" alt="Κατηγορίες"><br><sub><b>✍️ Κατηγορίες</b></sub></td><td width="25%"></td><td width="25%"></td></tr>
 </table>
 
 
@@ -40,6 +41,7 @@
 
 <table width="100%">
 <tr><td align="center" valign="top" width="25%"><img src="docs/screenshots/games/whois.png" width="100%" alt="Ποιος από εμάς;"><br><sub><b>👉 Ποιος από εμάς;</b></sub></td><td align="center" valign="top" width="25%"><img src="docs/screenshots/games/knowme.png" width="100%" alt="Πόσο με ξέρεις;"><br><sub><b>🪞 Πόσο με ξέρεις;</b></sub></td><td align="center" valign="top" width="25%"><img src="docs/screenshots/games/dice.png" width="100%" alt="Ζάρι της ντροπής"><br><sub><b>😳 Ζάρι της ντροπής</b></sub></td><td align="center" valign="top" width="25%"><img src="docs/screenshots/games/bottle.png" width="100%" alt="Ρουλέτα μπουκαλιού"><br><sub><b>🍾 Ρουλέτα μπουκαλιού</b></sub></td></tr>
+<tr><td align="center" valign="top" width="25%"><img src="docs/screenshots/games/wave.png" width="100%" alt="Μήκος κύματος"><br><sub><b>📡 Μήκος κύματος</b></sub></td><td width="25%"></td><td width="25%"></td><td width="25%"></td></tr>
 </table>
 
 
@@ -62,7 +64,7 @@
 <h4>⚡ Αντανακλαστικά</h4>
 
 <table width="100%">
-<tr><td align="center" valign="top" width="25%"><img src="docs/screenshots/games/bomb.png" width="100%" alt="Βόμβα"><br><sub><b>⏱️ Βόμβα</b></sub></td><td align="center" valign="top" width="25%"><img src="docs/screenshots/games/balance.png" width="100%" alt="Ισορροπία"><br><sub><b>⚖️ Ισορροπία</b></sub></td><td width="25%"></td><td width="25%"></td></tr>
+<tr><td align="center" valign="top" width="25%"><img src="docs/screenshots/games/bomb.png" width="100%" alt="Βόμβα"><br><sub><b>⏱️ Βόμβα</b></sub></td><td align="center" valign="top" width="25%"><img src="docs/screenshots/games/balance.png" width="100%" alt="Ισορροπία"><br><sub><b>⚖️ Ισορροπία</b></sub></td><td align="center" valign="top" width="25%"><img src="docs/screenshots/games/simon.png" width="100%" alt="Μνήμη-ακολουθία"><br><sub><b>🧠 Μνήμη-ακολουθία</b></sub></td><td align="center" valign="top" width="25%"><img src="docs/screenshots/games/stroop.png" width="100%" alt="Χρώμα ή λέξη;"><br><sub><b>🎨 Χρώμα ή λέξη;</b></sub></td></tr>
 </table>
 
 
@@ -79,6 +81,20 @@
 <tr><td align="center" valign="top" width="25%"><img src="docs/screenshots/games/gate.png" width="100%" alt="Χρωματική πύλη"><br><sub><b>🌈 Χρωματική πύλη</b></sub></td><td align="center" valign="top" width="25%"><img src="docs/screenshots/games/drop.png" width="100%" alt="Βουτιά"><br><sub><b>🕳️ Βουτιά</b></sub></td><td align="center" valign="top" width="25%"><img src="docs/screenshots/games/grid.png" width="100%" alt="Γρήγορο πλέγμα"><br><sub><b>🔢 Γρήγορο πλέγμα</b></sub></td><td align="center" valign="top" width="25%"><img src="docs/screenshots/games/orbit.png" width="100%" alt="Τροχιά"><br><sub><b>🪐 Τροχιά</b></sub></td></tr>
 <tr><td align="center" valign="top" width="25%"><img src="docs/screenshots/games/slice.png" width="100%" alt="Κόψε και ταίριαξε"><br><sub><b>✂️ Κόψε και ταίριαξε</b></sub></td><td align="center" valign="top" width="25%"><img src="docs/screenshots/games/tower.png" width="100%" alt="Πύργος"><br><sub><b>🏗️ Πύργος</b></sub></td><td align="center" valign="top" width="25%"><img src="docs/screenshots/games/path.png" width="100%" alt="Φωτεινή διαδρομή"><br><sub><b>✨ Φωτεινή διαδρομή</b></sub></td><td align="center" valign="top" width="25%"><img src="docs/screenshots/games/sling.png" width="100%" alt="Σφεντόνα"><br><sub><b>🎯 Σφεντόνα</b></sub></td></tr>
 <tr><td align="center" valign="top" width="25%"><img src="docs/screenshots/games/dual.png" width="100%" alt="Διπλή αποφυγή"><br><sub><b>↔️ Διπλή αποφυγή</b></sub></td><td align="center" valign="top" width="25%"><img src="docs/screenshots/games/ring.png" width="100%" alt="Αναπήδηση σε δακτύλιο"><br><sub><b>💫 Αναπήδηση σε δακτύλιο</b></sub></td><td align="center" valign="top" width="25%"><img src="docs/screenshots/games/laser.png" width="100%" alt="Πλέγμα λέιζερ"><br><sub><b>🟥 Πλέγμα λέιζερ</b></sub></td><td align="center" valign="top" width="25%"><img src="docs/screenshots/games/spiral.png" width="100%" alt="Σπείρα"><br><sub><b>🛡️ Σπείρα</b></sub></td></tr>
+</table>
+
+
+<h4>🎲 Επιτραπέζια</h4>
+
+<table width="100%">
+<tr><td align="center" valign="top" width="25%"><img src="docs/screenshots/games/battleship.png" width="100%" alt="Ναυμαχία"><br><sub><b>⚓ Ναυμαχία</b></sub></td><td width="25%"></td><td width="25%"></td><td width="25%"></td></tr>
+</table>
+
+
+<h4>🧠 Λογική</h4>
+
+<table width="100%">
+<tr><td align="center" valign="top" width="25%"><img src="docs/screenshots/games/code.png" width="100%" alt="Κωδικός"><br><sub><b>🔐 Κωδικός</b></sub></td><td align="center" valign="top" width="25%"><img src="docs/screenshots/games/whodunit.png" width="100%" alt="Ποιος το έκανε;"><br><sub><b>🕵️ Ποιος το έκανε;</b></sub></td><td width="25%"></td><td width="25%"></td></tr>
 </table>
 
 
