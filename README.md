@@ -110,6 +110,14 @@
 
 *[English below](#english)*
 
+## Νέα εμφάνιση (1.10)
+
+Κουμπιά και κάρτες σαν αυτοκόλλητα, με περίγραμμα και βάθος· τα κουμπιά βουλιάζουν όταν τα πατάς.
+
+<table width="100%">
+<tr><td align="center" valign="top" width="25%"><img src="docs/screenshots/app/el/1-home.png" width="100%" alt="Αρχική"><br><sub><b>Αρχική</b></sub></td><td align="center" valign="top" width="25%"><img src="docs/screenshots/app/el/3-taboo.png" width="100%" alt="Πες το αλλιώς"><br><sub><b>Πες το αλλιώς</b></sub></td><td align="center" valign="top" width="25%"><img src="docs/screenshots/app/el/6-score.png" width="100%" alt="Πίνακας της βραδιάς"><br><sub><b>Πίνακας της βραδιάς</b></sub></td><td align="center" valign="top" width="25%"><img src="docs/screenshots/app/el/4-alien.png" width="100%" alt="Ο Εξωγήινος"><br><sub><b>Ο Εξωγήινος</b></sub></td></tr>
+</table>
+
 ## Τι είναι
 
 Μια εφαρμογή για βραδιές με φίλους. Γράφετε τους παίκτες (ή φτιάχνετε ομάδες), διαλέγετε παιχνίδι και το κινητό πηγαίνει από χέρι σε χέρι. Οι πόντοι μαζεύονται σε όλα τα παιχνίδια της βραδιάς, και στο τέλος υπάρχει κατάταξη και απονομή βραβείων.
@@ -174,6 +182,12 @@
 **GameNight** is 62 party games on one phone that goes from hand to hand. Add the players (or make teams), pick a game and pass the phone. Points add up across every game of the night, and at the end there is a podium and an awards ceremony.
 
 Offline, no account, no ads. Android 10+, 1 to 7 players or teams. The English version is written for English-speaking groups, not translated: over 2,000 cards of its own (quiz questions, penalties, mimes, drawings, roasts). Switch the language in Settings. Screenshots of every game are above, under «Δες όλα τα παιχνίδια».
+
+**New in 1.10: the «3D cartoon» look.** Buttons and cards like stickers, with ink outlines and depth; buttons sink when you press them.
+
+<table width="100%">
+<tr><td align="center" valign="top" width="25%"><img src="docs/screenshots/app/en/1-home.png" width="100%" alt="Home"><br><sub><b>Home</b></sub></td><td align="center" valign="top" width="25%"><img src="docs/screenshots/app/en/3-taboo.png" width="100%" alt="Say it another way"><br><sub><b>Say it another way</b></sub></td><td align="center" valign="top" width="25%"><img src="docs/screenshots/app/en/6-score.png" width="100%" alt="Tonight's scores"><br><sub><b>Tonight's scores</b></sub></td><td align="center" valign="top" width="25%"><img src="docs/screenshots/app/en/4-alien.png" width="100%" alt="The Alien"><br><sub><b>The Alien</b></sub></td></tr>
+</table>
 
 | | Category | Games |
 |---|---|---|
